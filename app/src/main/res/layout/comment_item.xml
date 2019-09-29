@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_comment_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_comment_picture"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="15dp"
+            android:src="@mipmap/app_icon" />
+
+        <TextView
+            android:id="@+id/tv_commentName"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignTop="@id/iv_comment_picture"
+            android:layout_marginStart="10dp"
+            android:layout_toRightOf="@id/iv_comment_picture"
+            android:gravity="center_vertical"
+            android:textColor="@color/color_6e"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_commenttime"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_below="@id/tv_commentName"
+            android:layout_marginStart="10dp"
+            android:layout_toRightOf="@id/iv_comment_picture"
+            android:gravity="center_vertical"
+
+            android:textColor="@color/color_6e"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_atnickname"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_below="@id/tv_commenttime"
+            android:layout_alignStart="@id/tv_commenttime"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@id/iv_comment_picture"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorjuse"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_commentContent"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_below="@id/tv_commenttime"
+            android:layout_alignTop="@id/tv_atnickname"
+            android:layout_marginStart="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toEndOf="@id/tv_atnickname"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/iv_usersuppport"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="10dp"
+            android:src="@mipmap/guanzhu_1" />
+
+        <RelativeLayout
+            android:id="@+id/rl_authoritycomment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_commentContent"
+            android:layout_alignStart="@id/tv_commentName"
+            android:background="@color/colorlowgray">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_secondcomment_picture"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="7dp"
+                android:src="@mipmap/app_icon" />
+
+            <TextView
+                android:id="@+id/tv_secondcommentName"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_alignTop="@id/iv_secondcomment_picture"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/iv_secondcomment_picture"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/tv_secondcommenttime"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_below="@id/tv_secondcommentName"
+                android:layout_alignLeft="@+id/tv_secondcommentName"
+                android:layout_alignBottom="@id/iv_secondcomment_picture"
+                android:layout_toRightOf="@id/iv_secondcomment_picture"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="10dp" />
+
+            <TextView
+                android:id="@+id/tv_replayname"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_below="@id/tv_secondcommenttime"
+                android:layout_alignLeft="@+id/tv_secondcommentName"
+                android:layout_toRightOf="@id/iv_secondcomment_picture"
+                android:gravity="center_vertical"
+                android:textColor="@color/colorjuse"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/tv_secondcommentContent"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_below="@id/tv_secondcommenttime"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="7dp"
+                android:layout_toRightOf="@id/tv_replayname"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="14dp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

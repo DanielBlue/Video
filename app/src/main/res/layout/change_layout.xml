@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@mipmap/toolbar_background">
+
+        <com.am.shortVideo.view.StatusBarHeightView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            app:use_type="use_padding_top">
+
+            <include layout="@layout/fans_title" />
+
+        </com.am.shortVideo.view.StatusBarHeightView>
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/et_changepassword"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@null"
+        android:hint="@string/user_changepassword"
+        android:textColor="@color/black"
+        android:textColorHint="@color/colorGray"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/colorGray" />
+
+    <EditText
+        android:id="@+id/et_confirm_changepassword"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:hint="@string/user_confirm_changepassword"
+        android:textColor="@color/black"
+        android:textColorHint="@color/colorGray"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorGray" />
+
+    <Button
+        android:id="@+id/bt_changpassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:background="@color/colorDarkRed"
+        android:gravity="center"
+        android:text="@string/user_confirm_password"
+        android:textSize="24sp" />
+</LinearLayout>

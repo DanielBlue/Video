@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="15dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/attention_personvideo_picture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/app_icon" />
+
+    <TextView
+        android:id="@+id/tv_attentionvideo_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/attention_personvideo_picture"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toEndOf="@id/attention_personvideo_picture"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_attentionvideo_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_attentionvideo_nickname"
+        android:layout_alignStart="@id/tv_attentionvideo_nickname"
+        android:layout_alignBottom="@id/attention_personvideo_picture"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_attentionvideo_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/attention_personvideo_picture"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="8dp"
+        android:paddingEnd="10dp"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_videoimg"
+        android:layout_width="140dp"
+        android:layout_height="210dp"
+        android:layout_below="@id/tv_attentionvideo_content"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:id="@+id/iv_attentionpersonvideo_videoimg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/video_list_stop" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/rl_commentcount"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/rl_videoimg"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_attentionperson_share"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="3dp"
+                android:src="@mipmap/list_fenxiang" />
+
+            <TextView
+                android:id="@+id/tv_attentionperson_sharecount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_attentionperson_comment"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="3dp"
+                android:src="@mipmap/list_pinglun" />
+
+            <TextView
+                android:id="@+id/tv_attentionperson_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_attentionperson_like"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@mipmap/guanzhu_1" />
+
+            <TextView
+                android:id="@+id/tv_attentionperson_likecount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_attentionpersonvideo_comentinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_commentcount"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/login_bg_edt"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/tv_attentionperson_commentcount"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/attentionperson_line1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/tv_attentionperson_commentcount"
+            android:background="@color/colorDarkGray"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/attentionperson_line1"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_usercomment_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="1111"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_usercomment_comentcontent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:gravity="center"
+                android:textColor="@color/color_6e"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_attentionperson_edit"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_below="@id/ll_linearlayout"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="7dp"
+            android:background="@mipmap/xiepinglun" />
+
+        <TextView
+            android:id="@+id/et_attentionperson_sendcontent"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@id/ll_linearlayout"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/iv_attentionperson_edit"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:text="@string/tv_attentionpersonvideo_sendmessage"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

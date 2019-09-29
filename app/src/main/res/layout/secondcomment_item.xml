@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rl_secondLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/iv_secondcomment_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@mipmap/app_icon"/>
+        <TextView
+            android:id="@+id/tv_secondperson_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</RinearLayout>

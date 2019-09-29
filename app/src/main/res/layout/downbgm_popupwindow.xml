@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:background="@color/white">
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="@string/tv_downbgm"
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+        <Button
+            android:id="@+id/bt_logincancel"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:text="@string/bt_eidtorcancel"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="30dp"
+            android:layout_below="@id/tv_content"
+            android:textColor="@color/black"
+            android:background="@null"
+            android:textSize="18sp"/>
+        <Button
+            android:id="@+id/bt_loginconfirm"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:text="@string/bt_eidtorconfirm"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="30dp"
+            android:layout_below="@id/tv_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:background="@null"/>
+    </RelativeLayout>
+</RelativeLayout>

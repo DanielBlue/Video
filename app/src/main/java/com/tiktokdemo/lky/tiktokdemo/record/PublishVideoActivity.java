@@ -1,0 +1,451 @@
+package com.tiktokdemo.lky.tiktokdemo.record;
+
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.method.KeyListener;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.am.shortVideo.R;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.gson.Gson;
+import com.tiktokdemo.lky.tiktokdemo.Constant;
+import com.tiktokdemo.lky.tiktokdemo.MainActivity;
+import com.tiktokdemo.lky.tiktokdemo.record.bean.TidalPatRecordDraftBean;
+import com.tiktokdemo.lky.tiktokdemo.utils.FileUtils;
+import com.tiktokdemo.lky.tiktokdemo.utils.ToastTool;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
+import application.MyApplication;
+import bean.PublishVideo;
+import bean.PublishVideoInfo;
+import http.OktHttpUtil;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import util.HttpUri;
+
+/**
+ * Created by 李杰 on 2019/9/13.
+ */
+
+public class PublishVideoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, View.OnKeyListener {
+    private static final String TAG = "PublishVideoActivity";
+    private ImageView personinfo_back;
+    private Button personinfo_save;
+    private TextView tv_title;
+    private ImageView iv_publishview;
+    private EditText ed_publishmessage;
+    private EditText ed_publishfoodid;
+    private TextView tv_limitinput;
+    private Button bt_publishVideo;
+    private OktHttpUtil okHttpUtil;
+    private TidalPatRecordDraftBean mTidalPatRecordDraftBean;
+    private PublishVideoInfo publishVideoInfo;
+    private LocationManager mLocationManager;
+    private boolean isOpenGps;
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 1:
+                    Toast.makeText(PublishVideoActivity.this,"发布成功",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(PublishVideoActivity.this, com.am.shortVideo.activity.MainActivity.class);
+                    startActivity(intent);
+                    break;
+                case 2:
+                    Toast.makeText(PublishVideoActivity.this,"发布失败",Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    Toast.makeText(PublishVideoActivity.this,"商品不存在",Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
+    LocationListener networkListener = new LocationListener() {
+
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.d(TAG, "onLocationChanged: ");
+            isOpenGps=true;
+            float accuracy = location.getAccuracy();//获取精确位置
+            double altitude = location.getAltitude();//获取海拔
+            final double latitude = location.getLatitude();//获取纬度，平行
+            final double longitude = location.getLongitude();//获取经度，垂直
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<Address> addsList = null;
+                    Geocoder geocoder = new Geocoder(PublishVideoActivity.this);
+                    try {
+                        addsList = geocoder.getFromLocation(latitude, longitude, 10);//得到的位置可能有多个当前只取其中一个
+                        Log.e("打印拿到的城市", addsList.toString());
+                    } catch (IOException e) {
+
+                        e.printStackTrace();
+                    }
+                    if (addsList != null && addsList.size() > 0) {
+                        for (int i = 0; i < addsList.size(); i++) {
+                            final Address ads = addsList.get(i);
+                            final String latLongString = ads.getLocality();//拿到城市
+                            if(latLongString.contains("市")) {
+                                String city = latLongString.substring(0,latLongString.indexOf("市"));
+                                publishVideoInfo.setLocation(city);
+                                Log.d(TAG, "run: "+city);
+                            }else{
+                                publishVideoInfo.setLocation(latLongString);
+                            }
+
+//                            latLongString = ads.getAddressLine(0);//拿到地址
+//                                runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Log.e("打印拿到的城市的地址", latLongString + ads.getAddressLine(0)  );
+//                                    String city=latLongString + ads.getAddressLine(0);
+//
+//                                }
+//                            });
+                        }
+                    }
+                }
+            }).start();
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.d(TAG, "onStatusChanged: ");
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.d(TAG, "onProviderEnabled: ");
+            isOpenGps=true;
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            isOpenGps=false;
+            Log.d(TAG, "onProviderDisabled: ");
+        }
+
+    };
+    private RelativeLayout rl_editext;
+    private ProgressDialog progressDialog;
+    private boolean isSelectMusic;
+    private String curAudio;
+    private String playName;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.publishvideo_layout);
+        okHttpUtil = OktHttpUtil.getInstance();
+        mTidalPatRecordDraftBean = (TidalPatRecordDraftBean) getIntent().getSerializableExtra("mTidalPatRecordDraftBean");
+        isSelectMusic = getIntent().getBooleanExtra("isSelectMusic",false);
+        if(isSelectMusic){
+            curAudio =getIntent().getStringExtra("AudioId" );
+            playName=getIntent().getStringExtra("Name");
+        }
+        saveVideo1(mTidalPatRecordDraftBean);
+        initView();
+    }
+
+    private void initView() {
+        personinfo_back = (ImageView) findViewById(R.id.personinfo_back);
+        tv_title = (TextView) findViewById(R.id.tv_title);
+        tv_title.setText(getResources().getString(R.string.bt_publishvideo));
+        personinfo_save = (Button) findViewById(R.id.personinfo_save);
+        iv_publishview = (ImageView) findViewById(R.id.iv_publishview);
+        ed_publishmessage = (EditText) findViewById(R.id.ed_inputthinking);
+        ed_publishfoodid = (EditText) findViewById(R.id.ed_inputfoodid);
+        tv_limitinput = (TextView) findViewById(R.id.tv_limitinput);
+        bt_publishVideo = (Button) findViewById(R.id.bt_publishvideo);
+        rl_editext=(RelativeLayout)findViewById(R.id.rl_editext);
+        personinfo_save.setText("保存至本地");
+//        Glide.with(this).load(mTidalPatRecordDraftBean.getVideoLocalUrl()).diskCacheStrategy(DiskCacheStrategy.RESULT)
+//                .crossFade().centerCrop().into(iv_publishview);
+        personinfo_save.setOnClickListener(this);
+        personinfo_back.setOnClickListener(this);
+        ed_publishmessage.addTextChangedListener(this);
+        ed_publishfoodid.setOnKeyListener(this);
+        ed_publishfoodid.setOnKeyListener(this);
+        bt_publishVideo.setOnClickListener(this);
+        rl_editext.setOnClickListener(this);
+        getVideoInfo(mTidalPatRecordDraftBean.getVideoLocalUrl());
+        iv_publishview.setImageBitmap(publishVideoInfo.getBitmap());
+
+        mLocationManager=(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria=new Criteria();
+        criteria.setAltitudeRequired(true);
+        String providers =mLocationManager.NETWORK_PROVIDER;
+        Log.d(TAG, "getLocationAddress: "+providers);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "initView: ");
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocationManager.getLastKnownLocation(providers);
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3000, 1, networkListener);
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.rl_editext:
+                openKeybord(ed_publishmessage,this);
+                break;
+            case R.id.personinfo_back:
+                finish();
+                break;
+            case R.id.personinfo_save:
+                saveVideo(mTidalPatRecordDraftBean);
+                break;
+            case R.id.bt_publishvideo:
+                if(!isOpenGps){
+                    openAlertDialog(this);
+                    return;
+                }
+                Log.d(TAG, "onClick: "+Constant.RECORD_VIDEO_PATH_TEMP1+File.separator+"shibo"+".mp4");
+                Log.d(TAG, "publishVideoInfo:\n "+publishVideoInfo.toString());
+                if(publishVideo()){
+                    HashMap<String,String> maps1=new HashMap<>();
+                    if(isSelectMusic) {
+                        maps1.put("audioId", curAudio);
+                    }else{
+                        maps1.put("audioId","null");
+                    }
+                    maps1.put("coverFile",Constant.DOWNBGM+File.separator+"audio.jpg");
+                    maps1.put("location",publishVideoInfo.getLocation());
+                    if(ed_publishfoodid.getText().toString().trim().isEmpty()) {
+                        maps1.put("shopId","null");
+                    }else if(!ed_publishfoodid.getText().toString().trim().isEmpty()) {
+                        maps1.put("shopId",ed_publishfoodid.getText().toString().trim());
+                    }
+                    maps1.put("uploadFile",Constant.RECORD_VIDEO_PATH_TEMP1+File.separator+"shibo"+".mp4");
+                    if(ed_publishmessage.getText().toString().trim().isEmpty()){
+                        maps1.put("videoDesc","null");
+                    }else{
+                        maps1.put("videoDesc",ed_publishmessage.getText().toString().trim());
+                    }
+
+                    maps1.put("videoDuration",publishVideoInfo.getVideoDuraion());
+                    maps1.put("videoHeight",publishVideoInfo.getVideoheight());
+                    maps1.put("videoWidth",publishVideoInfo.getVideowidth());
+                    openGrogressAlterdialog();
+                    okHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHVIDEO
+                            , ((MyApplication) getApplication()).getMaps(), maps1, 1, new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
+                                    Log.d(TAG, "onFailure: ");
+                                    e.printStackTrace();
+                                    handler.sendEmptyMessage(2);
+                                    progressDialog.dismiss();
+                                }
+
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    String publishVideoResult=response.body().string();
+                                    Log.d(TAG, "onResponse: \n"+publishVideoResult);
+                                    Gson gson=new Gson();
+                                    PublishVideo publishVideo=gson.fromJson(publishVideoResult,PublishVideo.class);
+                                    if(publishVideo.getCode()==0&&publishVideo.getMessage().equals("成功上传")){
+                                            handler.sendEmptyMessage(1);
+                                    }else if(publishVideo.getCode()==1016){
+                                        handler.sendEmptyMessage(3);
+
+                                    }else{
+                                        handler.sendEmptyMessage(2);
+                                    }
+                                    progressDialog.dismiss();
+                                }
+                            });
+                }
+                break;
+        }
+    }
+    public void openAlertDialog(Context context){
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setMessage("发布时,需要开启定位服务")
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        openGPS(PublishVideoActivity.this);
+                    }
+                }).
+                setNegativeButton("取消",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).show();
+    }
+
+    public void getVideoInfo(String videoPath){
+        publishVideoInfo=new PublishVideoInfo();
+        MediaMetadataRetriever media = new MediaMetadataRetriever();
+        media.setDataSource(videoPath);// videoPath 本地视频的路径
+        Bitmap bitmap  = media.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC );
+       // mIvBigShow.setImageBitmap(bitmap);
+        publishVideoInfo.setBitmap(bitmap);
+        String timeString =  media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        String width =  media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH );
+        String height =  media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT );
+       publishVideoInfo.setVideoDuraion(timeString);
+       publishVideoInfo.setVideowidth(width);
+       publishVideoInfo.setVideoheight(height);
+       saveBitmap(publishVideoInfo);
+    }
+    /** 保存方法 */
+    public void saveBitmap(PublishVideoInfo publishVideoInfo) {
+        Log.e(TAG, "保存图片");
+        File f = new File(Constant.DOWNBGM, "audio.jpg");
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            publishVideoInfo.getBitmap().compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+            Log.i(TAG, "已经保存");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    //保存视频
+    public void saveVideo1(final TidalPatRecordDraftBean tidalPatRecordDraftBean) {
+            File file=new File(Constant.RECORD_VIDEO_PATH_TEMP1);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        if(TextUtils.isEmpty(tidalPatRecordDraftBean.getVideoName())){
+            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH_TEMP1,"shibo" + ".mp4");
+        }
+    }
+    //保存视频
+    public void saveVideo(final TidalPatRecordDraftBean tidalPatRecordDraftBean) {
+        if(TextUtils.isEmpty(tidalPatRecordDraftBean.getVideoName())){
+            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH,System.currentTimeMillis() + ".mp4");
+            ToastTool.showShort(this,"保存成功！" );
+        }
+    }
+    public boolean publishVideo(){
+        if(ed_publishmessage.getText().toString().trim().length()>20){
+            Toast.makeText(this,"超过限定数字",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+    String content=ed_publishmessage.getText().toString().trim();
+      tv_limitinput.setText(content.length()+"/"+20);
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+    //打开软键盘
+    public  void openKeybord(EditText mEditText, Context mContext) {
+        InputMethodManager imm = (InputMethodManager) mContext
+                .getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+    }
+    //关闭软键盘
+    public static void closeKeybord(EditText mEditText, Context mContext) {
+        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+    }
+
+    @Override
+    public boolean onKey(View view, int keyCode, KeyEvent event) {
+        if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()){
+            if(view.getId()==R.id.ed_inputthinking){
+                closeKeybord(ed_publishmessage,this);
+            }else if(view.getId()==R.id.ed_inputfoodid){
+                closeKeybord(ed_publishfoodid,this);
+            }
+            return  true;
+        }
+        return false;
+    }
+    public void openGPS(Context context) {
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivityForResult(intent,887);
+
+    }
+    public void openGrogressAlterdialog(){
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setTitle("文件正在上传");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+    }
+
+}
