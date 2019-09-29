@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
@@ -30,7 +29,6 @@ import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,17 +38,13 @@ import java.util.List;
 import adapter.ShorVideoAdapter;
 import application.MyApplication;
 import bean.HomeVideoImg;
-import bean.MessageWrap;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
-
 import okhttp3.Response;
 import util.HttpUri;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 
 
 /**
@@ -204,7 +198,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == SCROLL_STATE_DRAGGING || newState == SCROLL_STATE_SETTLING) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING || newState == RecyclerView.SCROLL_STATE_SETTLING) {
                     isScolled = true;
                 } else {
                     isScolled = false;
