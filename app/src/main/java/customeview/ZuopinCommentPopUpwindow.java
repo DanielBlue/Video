@@ -28,7 +28,6 @@ import adapter.AtUserNickAdapter;
 import adapter.CommentAdapter;
 import application.MyApplication;
 import bean.AttentionPerson;
-import bean.HomeVideoImg;
 import bean.PublishComment;
 import bean.SerachPublishVideo;
 import bean.UserInfo;
@@ -37,6 +36,7 @@ import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
 
@@ -168,7 +168,7 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                                         ((Activity)context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }
@@ -180,7 +180,7 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                             ((Activity)context).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    new LoginPopupwindow(context);
+                                    BaseUtils.getLoginDialog(context).show();
                                 }
                             });
                         }
@@ -354,7 +354,7 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                                         @Override
                                         public void run() {
                                             dismiss();
-                                            new LoginPopupwindow(context);
+                                            BaseUtils.getLoginDialog(context).show();
                                         }
                                     });
                                 }else if(publishComment.getCode()==400){

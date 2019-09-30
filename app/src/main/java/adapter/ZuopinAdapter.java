@@ -32,13 +32,13 @@ import bean.AttentionOrCancelPerson;
 import bean.SerachPublishVideo;
 import bean.ShareVideo;
 import bean.VideoSupportOrUn;
-import customeview.LoginPopupwindow;
 import customeview.ShortVideoPlayer;
 import customeview.ZuopinCommentPopUpwindow;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.SystemUtils;
 
@@ -159,7 +159,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                     ((Activity) mContext).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            new LoginPopupwindow(mContext);
+                                            BaseUtils.getLoginDialog(mContext).show();
                                         }
                                     });
                                 }
@@ -413,7 +413,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                         }
                                     });
                                 } else if (cancelPerson.getCode() == 1005) {
-                                    new LoginPopupwindow(mContext);
+                                    BaseUtils.getLoginDialog(mContext).show();
                                 }
                             }
                         });
@@ -436,7 +436,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
 //                    intent.putExtra("good_common_id", "123456");//id
                     mContext.startActivity(intent);
                 } else {
-                    new LoginPopupwindow(mContext);
+                    BaseUtils.getLoginDialog(mContext).show();
                 }
             }
         });

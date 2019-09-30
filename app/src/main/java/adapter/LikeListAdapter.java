@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.am.shortVideo.R;
-import com.am.shortVideo.activity.LikeListActivity;
 import com.am.shortVideo.activity.LookFullScreenVideo;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
 import com.bumptech.glide.Glide;
@@ -26,13 +25,12 @@ import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
 import bean.LikeListShow;
 import bean.UserInfo;
-import customeview.LoginPopupwindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.FootViewHolder;
 import util.FormatTime;
 import util.HttpUri;
@@ -116,7 +114,7 @@ public class LikeListAdapter extends MyAllBaseAdapter<LikeListShow.DataBean.Page
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }

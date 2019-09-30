@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,18 +34,16 @@ import application.MyApplication;
 import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
 import bean.AttentionPersonVideo;
-import bean.PublishComment;
 import bean.ShareVideo;
 import bean.UserInfo;
 import bean.VideoSupportOrUn;
-import customeview.CommentPopupWindow;
-import customeview.LoginPopupwindow;
 import customeview.ShowVideoPopUpWindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.FootViewHolder;
 import util.FormatTime;
 import util.HttpUri;
@@ -157,7 +154,7 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }
@@ -419,7 +416,7 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }

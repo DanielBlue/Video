@@ -3,13 +3,11 @@ package adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,15 +25,14 @@ import application.MyApplication;
 import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
 import bean.CommentSupport;
-import bean.CommentSupportOrUn;
 import bean.UserInfo;
 import bean.VideoComment;
-import customeview.LoginPopupwindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.FootViewHolder;
 import util.FormatTime;
 import util.HttpUri;
@@ -136,7 +133,7 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }
@@ -172,7 +169,7 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
 

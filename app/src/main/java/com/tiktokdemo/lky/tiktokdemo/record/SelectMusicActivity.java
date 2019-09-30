@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.sql.language.Condition;
 
 import java.io.IOException;
 
@@ -25,11 +24,11 @@ import adapter.SelectMusicAdapter;
 import application.MyApplication;
 import bean.SelectMusicBean;
 import customeview.DownBGMPopupWindow;
-import customeview.LoginPopupwindow;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
 
@@ -61,7 +60,7 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
                             music_recycleview.setAdapter(selectmusicAdatper);
                         }
                     } else if (musicBean.getCode() == 1005) {
-                        new LoginPopupwindow(SelectMusicActivity.this);
+                        BaseUtils.getLoginDialog(SelectMusicActivity.this).show();
                     }
                     break;
             }

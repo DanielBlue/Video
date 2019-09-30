@@ -1,21 +1,13 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +27,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +43,6 @@ import bean.MessageWrap;
 import bean.UserIMG;
 import bean.UserInfo;
 import customeview.EditInfoPopupwindow;
-import customeview.LoginPopupwindow;
 import customeview.MyPopUpWindow;
 import customeview.SexPopupWindow;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -60,7 +50,7 @@ import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import util.FileUtilcll;
+import util.BaseUtils;
 import util.GetJsonDataUtil;
 import util.HttpUri;
 
@@ -150,7 +140,7 @@ public class PersonInfoActivity extends BaseActivity implements MyPopUpWindow.Po
                         Toast.makeText(PersonInfoActivity.this, "修改信息成功", Toast.LENGTH_SHORT).show();
                         finish();
                     } else if (chageUserinfo.getCode() == 1005) {
-                        new LoginPopupwindow(PersonInfoActivity.this);
+                        BaseUtils.getLoginDialog(PersonInfoActivity.this).show();
                     }
                     break;
                 case 5:
@@ -186,7 +176,8 @@ public class PersonInfoActivity extends BaseActivity implements MyPopUpWindow.Po
                             personinfo_birthday.setText(userInfo.getData().getUserInfo().getBirthday());
                         }
                     } else if (userInfo.getCode() == 1005) {
-                        new LoginPopupwindow(PersonInfoActivity.this);
+                        BaseUtils.getLoginDialog(PersonInfoActivity.this).show();
+
                     }
                     break;
 

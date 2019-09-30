@@ -2,7 +2,6 @@ package com.am.shortVideo.activity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,14 +38,12 @@ import adapter.SearchUserinfoAdapter;
 import application.MyApplication;
 import bean.MessageSearchinfo;
 import bean.SearchUserinfo;
-import customeview.LoginPopupwindow;
 import customeview.SliderView;
-import db.UserModel;
-import db.UserModel_Table;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.PinYinUtil;
 
@@ -103,7 +99,7 @@ public class SearchUserinfoFragment extends Fragment implements SliderView.Chang
                         }
                     } else if (searchUserinfo.getCode() == 1005) {
                         circleprogressDialog.dismiss();
-                        new LoginPopupwindow(getActivity());
+                        BaseUtils.getLoginDialog(getActivity()).show();
                     } else {
                         Toast.makeText(getActivity(), "没有搜索到相关用户", Toast.LENGTH_SHORT).show();
                     }

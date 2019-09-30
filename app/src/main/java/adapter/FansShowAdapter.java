@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +25,12 @@ import base.MyBaseViewHolder;
 import bean.AttentionOrCancelPerson;
 import bean.FansShow;
 import bean.UserInfo;
-import customeview.LoginPopupwindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.FootViewHolder;
 import util.FormatTime;
 import util.HttpUri;
@@ -127,7 +126,7 @@ public class FansShowAdapter extends MyAllBaseAdapter<FansShow.DataBean.PageList
                                             });
                                         }
                                     }else if(attentionPersonorcancel.getCode()==1005){
-                                        new LoginPopupwindow(context);
+                                        BaseUtils.getLoginDialog(context).show();
                                     }
 
                                 }
@@ -167,7 +166,7 @@ public class FansShowAdapter extends MyAllBaseAdapter<FansShow.DataBean.PageList
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }

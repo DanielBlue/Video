@@ -1,8 +1,5 @@
 package com.tiktokdemo.lky.tiktokdemo.record;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -24,9 +21,10 @@ import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.am.shortVideo.R;
+import com.heyhou.social.video.VideoInfo;
+import com.heyhou.social.video.VideoTimeType;
 import com.tiktokdemo.lky.tiktokdemo.Constant;
 import com.tiktokdemo.lky.tiktokdemo.record.adapter.TidalPatRecordFilterAdapter;
 import com.tiktokdemo.lky.tiktokdemo.record.bean.MusicBean;
@@ -51,8 +49,9 @@ import com.tiktokdemo.lky.tiktokdemo.utils.DensityUtils;
 import com.tiktokdemo.lky.tiktokdemo.utils.FileUtils;
 import com.tiktokdemo.lky.tiktokdemo.utils.StringUtil;
 import com.tiktokdemo.lky.tiktokdemo.utils.ToastTool;
-import com.heyhou.social.video.VideoInfo;
-import com.heyhou.social.video.VideoTimeType;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import application.MyApplication;
 import bean.UserInfoBean;
@@ -797,6 +796,7 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
             localFiles.add(videoInfo.getVideoPath());
         }
         mTidalPatRecordDraftBean.setVideoLocalArraysFromList(localFiles);
+        intent.putExtra("mUploadFilePath", outputVideoPath);
         intent.putExtra("mTidalPatRecordDraftBean", mTidalPatRecordDraftBean);
         intent.putExtra("isSelectMusic", isSelectMusic);
         if (isSelectMusic) {

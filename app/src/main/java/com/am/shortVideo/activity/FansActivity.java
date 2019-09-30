@@ -1,7 +1,5 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -29,15 +27,14 @@ import java.util.List;
 import adapter.FansShowAdapter;
 import application.MyApplication;
 import base.BaseActivity;
-import bean.AttentionPerson;
 import bean.FansShow;
 import bean.MessageWrap;
-import customeview.LoginPopupwindow;
 import customeview.SliderView;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.PinYinUtil;
 import util.RecycleViewDivider;
@@ -129,7 +126,7 @@ public class FansActivity extends BaseActivity implements View.OnClickListener, 
                         if (fasnshowAdapter != null) {
                             fasnshowAdapter.clearAllData();
                         }
-                        new LoginPopupwindow(FansActivity.this);
+                        BaseUtils.getLoginDialog(FansActivity.this).show();
                     }
                     break;
             }

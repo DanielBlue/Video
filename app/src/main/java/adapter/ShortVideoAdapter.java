@@ -37,12 +37,12 @@ import bean.ShareVideo;
 import bean.UserInfo;
 import bean.VideoSupportOrUn;
 import customeview.CommentPopupWindow;
-import customeview.LoginPopupwindow;
 import customeview.ShortVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.SystemUtils;
 
@@ -145,9 +145,6 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                     }
                 })
                 .build(videoPlayer);
-        if (helper.getLayoutPosition() == 0) {
-            videoPlayer.startPlayLogic();
-        }
 
         //用户点赞
         helper.getView(R.id.iv_support).setOnClickListener(new View.OnClickListener() {
@@ -185,7 +182,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                     ((Activity) mContext).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            new LoginPopupwindow(mContext);
+                                            BaseUtils.getLoginDialog(mContext).show();
                                         }
                                     });
                                 }
@@ -446,7 +443,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                     ((Activity) mContext).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            new LoginPopupwindow(mContext);
+                                            BaseUtils.getLoginDialog(mContext).show();
                                         }
                                     });
                                 }
@@ -489,7 +486,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                         }
                                     });
                                 } else if (cancelPerson.getCode() == 1005) {
-                                    new LoginPopupwindow(mContext);
+                                    BaseUtils.getLoginDialog(mContext).show();
                                 }
                             }
                         });
@@ -532,7 +529,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                     ((Activity) mContext).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            new LoginPopupwindow(mContext);
+                                            BaseUtils.getLoginDialog(mContext).show();
                                         }
                                     });
                                 }

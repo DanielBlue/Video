@@ -1,13 +1,10 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +19,6 @@ import com.am.shortVideo.R;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
-import com.tiktokdemo.lky.tiktokdemo.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,18 +31,16 @@ import java.util.List;
 import adapter.UserVideoAdapter;
 import application.MyApplication;
 import base.BaseActivity;
-import base.onLoadMoreLinstener;
 import bean.AttentionOrCancelPerson;
 import bean.OtherUserInfo;
 import bean.PublishVideoInfo;
 import bean.SerachPublishVideo;
-import bean.UserInfo;
-import customeview.LoginPopupwindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.SpaceItemDecoration;
 
@@ -117,7 +111,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                         requstVideo();
                     } else if (userInfo.getCode() == 1005) {
                         circleprogressDialog.dismiss();
-                        new LoginPopupwindow(OtherUserInfoActivity.this);
+                        BaseUtils.getLoginDialog(OtherUserInfoActivity.this).show();
                     }
                     break;
                 case 2:
@@ -342,7 +336,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                                     EventBus.getDefault().post(attentionEvent);
                                     changeAttention();
                                 } else if (attentionPersonorcancel.getCode() == 1005) {
-                                    new LoginPopupwindow(OtherUserInfoActivity.this);
+                                    BaseUtils.getLoginDialog(OtherUserInfoActivity.this).show();
                                 }
                             }
                         });

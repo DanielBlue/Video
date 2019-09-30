@@ -19,11 +19,11 @@ import application.MyApplication;
 import base.BaseActivity;
 import bean.HistoryMessageBean;
 import butterknife.BindView;
-import customeview.LoginPopupwindow;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
 
@@ -47,7 +47,7 @@ public class MessageHelpActivity extends BaseActivity {
                         datas.addAll(historymessage.getData().getPushHistory());
                         messageAdapter.notifyDataSetChanged();
                     } else if (historymessage.getCode() == 1005) {
-                        new LoginPopupwindow(MessageHelpActivity.this);
+                        BaseUtils.getLoginDialog(MessageHelpActivity.this).show();
                     }
 
                     break;

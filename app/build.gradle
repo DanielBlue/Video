@@ -5,13 +5,13 @@ android {
         release {
             keyAlias 'shortvideo'
             keyPassword '123456'
-            storeFile file('shorvideo.jks')
+            storeFile file('./shorvideo.jks')
             storePassword '123456'
         }
         debug {
             keyAlias 'shortvideo'
             keyPassword '123456'
-            storeFile file('shorvideo.jks')
+            storeFile file('./shorvideo.jks')
             storePassword '123456'
         }
     }

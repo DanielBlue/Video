@@ -30,13 +30,13 @@ import application.MyApplication;
 import bean.AttentionPerson;
 import bean.AttentionPersonVideo;
 import bean.PublishComment;
-import bean.SerachPublishVideo;
 import bean.UserInfo;
 import bean.VideoComment;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
 
@@ -170,7 +170,7 @@ public class ShowVideoPopUpWindow extends PopupWindow implements View.OnClickLis
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }
@@ -182,7 +182,7 @@ public class ShowVideoPopUpWindow extends PopupWindow implements View.OnClickLis
                             ((Activity) context).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    new LoginPopupwindow(context);
+                                    BaseUtils.getLoginDialog(context).show();
                                 }
                             });
                         }
@@ -356,7 +356,7 @@ public class ShowVideoPopUpWindow extends PopupWindow implements View.OnClickLis
                                         @Override
                                         public void run() {
                                             dismiss();
-                                            new LoginPopupwindow(context);
+                                            BaseUtils.getLoginDialog(context).show();
                                         }
                                     });
                                 } else if (publishComment.getCode() == 400) {

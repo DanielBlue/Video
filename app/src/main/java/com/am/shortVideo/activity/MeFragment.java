@@ -15,7 +15,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,9 +57,6 @@ import okhttp3.Response;
 import util.HttpUri;
 import util.MeSpaceItemDecoration;
 import util.PreferencesUtil;
-import util.SpaceItemDecoration;
-
-import static com.tiktokdemo.lky.tiktokdemo.record.camera.utils.MagicParams.videoPath;
 
 /**
  * Created by 李杰 on 2019/8/12.
@@ -99,6 +95,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         PreferencesUtil.put(getActivity(), PreferencesUtil.SP_USER_INFO, new Gson().toJson(userInfo.getData().getUserInfo()));
 //                        MyApplication.getInstance().setUserInfo(userInfo.getData().getUserInfo());
                         circleprogress.dismiss();
+                        me_swiprefreshlayout.setRefreshing(false);
                         islogin = false;
                         bt_changpersoninfo.setText(getActivity().getResources().getString(R.string.me_editorinfo));
                         bt_changpersoninfo.setBackground(getActivity().getResources().getDrawable(R.drawable.bg_round_999999));
@@ -186,6 +183,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
                     circleprogress.dismiss();
+                    me_swiprefreshlayout.setRefreshing(false);
                 }
             });
 
@@ -284,6 +282,16 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         me_recycleview = (RecyclerView) view.findViewById(R.id.me_recycleview);
         me_recycleview2 = (RecyclerView) view.findViewById(R.id.me_recycleview2);
         me_swiprefreshlayout = (SwipeRefreshLayout) view.findViewById(R.id.me_swipeFreshLayout);
+        me_swiprefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (curSelect==0){
+                    initData();
+                }else {
+                    getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
+                }
+            }
+        });
         bt_changpersoninfo = (TextView) view.findViewById(R.id.me_editorinfo);
         me_line2 = (View) view.findViewById(R.id.me_line2);
         me_line3 = (View) view.findViewById(R.id.me_line3);

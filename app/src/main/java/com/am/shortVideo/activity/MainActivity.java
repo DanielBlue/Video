@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -37,11 +36,11 @@ import application.MyApplication;
 import base.BaseActivity;
 import bean.MessageWrap;
 import bean.UserInfo;
-import customeview.LoginPopupwindow;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.PreferencesUtil;
 
@@ -56,7 +55,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ImageView iv_message;
     private ImageView iv_me;
     private FragmentManager fragmentManger;
-    private int curFragment = 0;
+    private int curFragment = -1;
     private HomeFragment homeFragment;
     private AttentionFragment attentionFragment;
     private MessageFragment messageFragment;
@@ -74,7 +73,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         startActivity(intent);
                     } else if (userInfo.getCode() == 1005) {
                         isLogin = false;
-                        new LoginPopupwindow(MainActivity.this);
+                        BaseUtils.getLoginDialog(MainActivity.this).show();
                     }
                     break;
 
@@ -133,6 +132,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (curFragment == 0) {
+            if (homeFragment != null && homeFragment.getCurPlayer() != null) {
+                homeFragment.getCurPlayer().startPlayLogic();
+            }
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
 //        super.onSaveInstanceState(outState, outPersistentState);
         outState.putInt("POSITIONKEY", curFragment);
@@ -164,7 +173,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         iv_message = (ImageView) findViewById(R.id.iv_message);
         iv_me = (ImageView) findViewById(R.id.iv_me);
         fragmentManger = getSupportFragmentManager();
-        switchFragment(curFragment);
+        switchFragment(0);
     }
 
     private void initPermission() {
@@ -240,25 +249,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home:
-                if (curFragment != 0) {
-                    curFragment = 0;
-                    switchFragment(curFragment);
-
-                }
+                switchFragment(0);
                 break;
             case R.id.iv_attention:
-                if (curFragment != 1) {
-                    curFragment = 1;
-                    switchFragment(curFragment);
-
-                }
+                switchFragment(1);
                 break;
             case R.id.bt_capture:
-//                if (curFragment != 2) {
-//                    curFragment = 2;
-//                    switchFragment(curFragment);
-//
-//                }
                 if (isLogin) {
                     Intent intent = new Intent(MainActivity.this, RecordVideoActivity.class);
                     startActivity(intent);
@@ -268,18 +264,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.iv_message:
-                if (curFragment != 3) {
-                    curFragment = 3;
-                    switchFragment(curFragment);
-
-                }
+                switchFragment(3);
                 break;
             case R.id.iv_me:
-                if (curFragment != 4) {
-                    curFragment = 4;
-                    switchFragment(curFragment);
-
-                }
+                switchFragment(4);
                 break;
             default:
         }
@@ -293,7 +281,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             if (homeFragment != null && homeFragment.getCurPlayer() != null) {
                 homeFragment.getCurPlayer().release();
             }
-        }else {
+        } else {
             if (homeFragment != null && homeFragment.getCurPlayer() != null) {
                 homeFragment.getCurPlayer().startPlayLogic();
             }
@@ -340,6 +328,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             default:
         }
         fragmentTran.commit();
+        curFragment = switchType;
     }
 
     public void hideFragment(FragmentTransaction fragmentTransaction) {
@@ -403,21 +392,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private long mExitTime = 0;
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if ((System.currentTimeMillis() - mExitTime) > 2000) {
-                mExitTime = System.currentTimeMillis();
-            } else {
-                //模拟Home键操作
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addCategory(Intent.CATEGORY_HOME);
-                startActivity(intent);
-            }
-            return true;
+    public void onBackPressed() {
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            mExitTime = System.currentTimeMillis();
+        } else {
+            super.onBackPressed();
         }
-
-        return super.onKeyDown(keyCode, event);
     }
 
 }

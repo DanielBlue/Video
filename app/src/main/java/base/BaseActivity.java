@@ -1,7 +1,5 @@
 package base;
 
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,15 +9,11 @@ import util.StatusBarUtil;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    private SensorManager sensorManager;
-//    private JCVideoPlayer.JCAutoFullscreenListener sensorEventListener;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
         ButterKnife.bind(this);
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 //        sensorEventListener = new JCVideoPlayer.JCAutoFullscreenListener();
         setStatusBar();
         initEventAndData();
@@ -36,27 +30,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             //这样半透明+白=灰, 状态栏的文字能看得清
             StatusBarUtil.setStatusBarColor(this, 0x55000000);
         }
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//        sensorManager.registerListener(sensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        sensorManager.unregisterListener(sensorEventListener);
-//        JCVideoPlayer.releaseAllVideos();
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     protected abstract int getLayout();

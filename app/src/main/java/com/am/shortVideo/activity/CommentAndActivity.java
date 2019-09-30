@@ -26,10 +26,10 @@ import application.MyApplication;
 import base.BaseActivity;
 import bean.CommentAtBean;
 import bean.MessageWrap;
-import customeview.LoginPopupwindow;
 import http.OktHttpUtil;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
 
@@ -83,7 +83,7 @@ public class CommentAndActivity extends BaseActivity implements View.OnClickList
                         }
                     }else if(messagecommentshow.getCode()==1005){
                         circleprogress.dismiss();
-                        new LoginPopupwindow(CommentAndActivity.this);
+                        BaseUtils.getLoginDialog(CommentAndActivity.this).show();
                     }
                     break;
             }

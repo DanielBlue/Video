@@ -83,6 +83,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         } else {
                             mAdapter.loadMoreEnd();
                         }
+                        if (mCurPlayer == null) {
+                            startPlay(0);
+                        }
                     } else {
                         circleDialog.dismiss();
                         mAdapter.loadMoreFail();
@@ -187,11 +190,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 super.onScrollStateChanged(recyclerView, newState);
                 switch (newState) {
                     case RecyclerView.SCROLL_STATE_IDLE://停止滑动
-//                        if(isCanPlay){
-//                            JCVideoPlayer.releaseAllVideos();
-//                            isCanPlay=false;
-//                            break;
-//                        }
                         View view = pagerSnapHelper.findSnapView(layoutManger);
                         int position = layoutManger.getPosition(view);
                         if (position != mCurPosition) {
@@ -256,8 +254,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        if (mCurPosition != -1) {
-            startPlay(mCurPosition);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mCurPlayer != null) {
+            mCurPlayer.getCurrentPlayer().onVideoPause();
         }
     }
 
@@ -326,8 +329,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         if (mCurPlayer != null) {
             mCurPlayer.getCurrentPlayer().release();
         }

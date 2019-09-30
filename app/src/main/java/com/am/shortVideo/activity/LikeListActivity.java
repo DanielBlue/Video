@@ -1,10 +1,7 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,10 +26,10 @@ import application.MyApplication;
 import base.BaseActivity;
 import bean.LikeListShow;
 import bean.MessageWrap;
-import customeview.LoginPopupwindow;
 import http.OktHttpUtil;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
 
@@ -70,7 +67,7 @@ public class LikeListActivity extends BaseActivity implements View.OnClickListen
                         if (likelistAdapter != null) {
                             likelistAdapter.clearAllData();
                         }
-                        new LoginPopupwindow(LikeListActivity.this);
+                        BaseUtils.getLoginDialog(LikeListActivity.this).show();
                     }
                     break;
                 default:

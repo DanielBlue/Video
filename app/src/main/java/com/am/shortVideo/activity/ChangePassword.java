@@ -1,6 +1,5 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,11 +24,11 @@ import java.util.HashMap;
 
 import application.MyApplication;
 import bean.ChangUserpassword;
-import customeview.LoginPopupwindow;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 
 /**
@@ -57,7 +56,7 @@ public class ChangePassword extends AppCompatActivity implements View.OnClickLis
                     finish();
                 }else  if(changeuserpassword.getCode()==1005){
                     cricleprogressDialog.dismiss();
-                    new LoginPopupwindow(ChangePassword.this);
+                    BaseUtils.getLoginDialog(ChangePassword.this).show();
                 }else if(changeuserpassword.getCode()==1011){
                     cricleprogressDialog.dismiss();
                     Toast.makeText(ChangePassword.this,"用户不存在",Toast.LENGTH_SHORT).show();

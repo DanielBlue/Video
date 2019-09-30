@@ -37,11 +37,11 @@ import adapter.AttentionPersonVideoAdapter;
 import application.MyApplication;
 import bean.AttentionPersonVideo;
 import bean.MessageSearchinfo;
-import customeview.LoginPopupwindow;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
 
@@ -91,7 +91,7 @@ public class SearchUserVideoFragment extends Fragment {
                         }
                     } else if (attentionPersonVidep.getCode() == 1005) {
                         cicleprogress.dismiss();
-                        new LoginPopupwindow(getActivity());
+                        BaseUtils.getLoginDialog(getActivity()).show();
                     }
                     break;
             }

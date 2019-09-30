@@ -3,12 +3,10 @@ package adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,15 +24,13 @@ import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
 import bean.AttentionOrCancelPerson;
 import bean.AttentionPerson;
-import bean.AttentionPersonVideo;
-import bean.FansShow;
 import bean.UserInfo;
-import customeview.LoginPopupwindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.PinYinUtil;
 
@@ -125,7 +120,7 @@ public class AttentionAdapter extends MyAllBaseAdapter<AttentionPerson.DataBean.
                                             });
                                         }
                                     } else if (attentionPersonorcancel.getCode() == 1005) {
-                                        new LoginPopupwindow(context);
+                                        BaseUtils.getLoginDialog(context).show();
                                     }
 
                                 }
@@ -165,7 +160,7 @@ public class AttentionAdapter extends MyAllBaseAdapter<AttentionPerson.DataBean.
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }

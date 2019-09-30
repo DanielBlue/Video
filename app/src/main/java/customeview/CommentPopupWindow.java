@@ -2,7 +2,6 @@ package customeview;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,11 +25,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import adapter.AtUserNickAdapter;
 import adapter.CommentAdapter;
@@ -44,6 +40,7 @@ import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
 
@@ -179,7 +176,7 @@ public class CommentPopupWindow extends PopupWindow implements View.OnClickListe
                                         ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                new LoginPopupwindow(context);
+                                                BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
                                     }
@@ -191,7 +188,7 @@ public class CommentPopupWindow extends PopupWindow implements View.OnClickListe
                             ((Activity) context).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    new LoginPopupwindow(context);
+                                    BaseUtils.getLoginDialog(context).show();
                                 }
                             });
                         }
@@ -370,7 +367,7 @@ public class CommentPopupWindow extends PopupWindow implements View.OnClickListe
                                         @Override
                                         public void run() {
                                             dismiss();
-                                            new LoginPopupwindow(context);
+                                            BaseUtils.getLoginDialog(context).show();
                                         }
                                     });
                                 } else if (publishComment.getCode() == 400) {

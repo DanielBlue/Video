@@ -35,12 +35,12 @@ import adapter.AttentionAdapter;
 import application.MyApplication;
 import bean.AttentionPerson;
 import bean.MessageWrap;
-import customeview.LoginPopupwindow;
 import customeview.SliderView;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.BaseUtils;
 import util.HttpUri;
 import util.PinYinUtil;
 import util.RecycleViewDivider;
@@ -92,7 +92,7 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
                         if (attenPersonAdapter != null) {
                             attenPersonAdapter.clearAllData();
                         }
-                        new LoginPopupwindow(getActivity());
+                        BaseUtils.getLoginDialog(getActivity()).show();
                     }
                     break;
                 default:
