@@ -3,14 +3,10 @@ package com.am.shortVideo.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,26 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.am.shortVideo.R;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.tiktokdemo.lky.tiktokdemo.Constant;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import adapter.CaogaoAdapter;
-import adapter.CaogaoImgAdapter;
-import adapter.ShorVideoAdapter;
-import application.MyApplication;
 import base.BaseActivity;
 import bean.PublishVideoInfo;
-import bean.SerachPublishVideo;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
-import http.OktHttpUtil;
-import util.HttpUri;
-
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
+import customeview.ShortVideoPlayer;
 
 /**
  * Created by 李杰 on 2019/9/17.
@@ -46,9 +33,9 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 
 public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "ShortVideoPlayingActivi";
-    private RecyclerView rl_view;
+    private RecyclerView mRvList;
     private List<String> datas=new ArrayList<>();
-    private PagerSnapHelper pagerSnapHelper;
+    private PagerSnapHelper mSnapHelper;
     private LinearLayoutManager layoutManger;
     private DrawerLayout drawLayout;
     private RelativeLayout rl_menu;
@@ -57,11 +44,7 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
     private TextView systemmessage;
     private ImageView iv_back;
     private int curChannel;
-    private boolean isScolled;
-    private int countItem;
-    private int lastItem;
-    private OktHttpUtil okHttpUtil;
-    private boolean isfirst=true;
+    private CaogaoAdapter mAdapter;
 
     @Override
     protected int getLayout() {
@@ -70,37 +53,25 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
 
     @Override
     protected void initEventAndData() {
-        okHttpUtil = OktHttpUtil.getInstance();
         addData();
         initView();
         setLinstenr();
-        pagerSnapHelper = new PagerSnapHelper();
-        pagerSnapHelper.attachToRecyclerView(rl_view);
-        CaogaoAdapter shortvideoadapter = new CaogaoAdapter(datas, this);
+        mSnapHelper = new PagerSnapHelper();
+        mSnapHelper.attachToRecyclerView(mRvList);
+        mAdapter = new CaogaoAdapter(datas);
+        mAdapter.setEnableLoadMore(false);
         layoutManger = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        rl_view.setLayoutManager(layoutManger);
-        rl_view.setAdapter(shortvideoadapter);
-        rl_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRvList.setLayoutManager(layoutManger);
+        mRvList.setAdapter(mAdapter);
+        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == SCROLL_STATE_DRAGGING || newState == SCROLL_STATE_SETTLING) {
-                    isScolled = true;
-                } else {
-                    isScolled = false;
-                }
                 switch (newState) {
                     case RecyclerView.SCROLL_STATE_IDLE://停止滑动
-                        View view = pagerSnapHelper.findSnapView(layoutManger);
-                        JCVideoPlayer.releaseAllVideos();
-                        if (view != null) {
-                            RecyclerView.ViewHolder holder = rl_view.getChildViewHolder(view);
-                            if (holder != null && holder instanceof CaogaoAdapter.CaogaoViewHolder) {
-                                ((CaogaoAdapter.CaogaoViewHolder) holder).showLoopVideo.resetProgressAndTime();
-                                ((CaogaoAdapter.CaogaoViewHolder) holder).showLoopVideo.startVideo();
-
-                            }
-                        }
+                        View view = mSnapHelper.findSnapView(layoutManger);
+                        int position = layoutManger.getPosition(view);
+                        startPlay(position);
                         break;
                     case RecyclerView.SCROLL_STATE_DRAGGING://拖动
                         break;
@@ -113,22 +84,38 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-                    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                    countItem = layoutManager.getItemCount();
-                    lastItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-                }
-                Log.d(TAG, "countItem: "+countItem+"lastItem:"+lastItem);
-                if (isScolled && countItem != lastItem && lastItem == countItem - 2) {
-                    Log.d(TAG, "onScrolled:caogao111 ");
-                    if(isfirst){
-                        Log.d(TAG, "onScrolled:caogao ");
-                        isfirst=false;
-                        getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
-                    }
-                }
             }
         });
+        getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
+    }
+
+    private int mCurPosition = -1;
+    public ShortVideoPlayer mCurPlayer;
+
+    private void startPlay(final int position) {
+        if (position != mCurPosition) {
+            if (mCurPlayer != null) {
+                //先释放之前的播放器
+                mCurPlayer.getCurrentPlayer().release();
+            }
+
+            //当前是视频则开始播放
+            mRvList.post(new Runnable() {
+                @Override
+                public void run() {
+                    BaseViewHolder viewHolder = (BaseViewHolder) mRvList.findViewHolderForLayoutPosition(position);
+                    if (viewHolder != null) {
+                        mCurPlayer = viewHolder.getView(R.id.video_player);
+                        //开始播放
+                        if (mCurPlayer != null) {
+                            mCurPlayer.getCurrentPlayer().startPlayLogic();
+                        }
+                    }
+                }
+            });
+            mCurPosition = position;
+        }
+
     }
 
     private void setLinstenr() {
@@ -144,7 +131,7 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
     }
     private void initView() {
         iv_back=(ImageView)findViewById(R.id.iv_back);
-        rl_view=(RecyclerView)findViewById(R.id.recyle_view);
+        mRvList =(RecyclerView)findViewById(R.id.recyle_view);
 //        drawLayout=(DrawerLayout)findViewById(R.id.ac_drawlayout);
 //          rl_menu=(RelativeLayout)findViewById(R.id.rl);
 //          bt_menu=(Button)findViewById(R.id.bt_menu);
@@ -164,6 +151,15 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
             systemmessage.setText("草稿");
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCurPlayer != null) {
+            mCurPlayer.getCurrentPlayer().release();
+        }
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -210,7 +206,6 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
             Toast.makeText(CaogaoPlayingActivity.this,"没有相关文件",Toast.LENGTH_SHORT).show();
             return;
         }
-        CaogaoAdapter shortvideoadapter = new CaogaoAdapter(datas, this);
-        rl_view.setAdapter(shortvideoadapter);
+        mAdapter.replaceData(datas);
     }
 }

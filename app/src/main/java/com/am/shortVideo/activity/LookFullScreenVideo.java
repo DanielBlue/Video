@@ -1,26 +1,23 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.am.shortVideo.R;
+import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
+import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack;
+import com.shuyu.gsyvideoplayer.listener.GSYVideoProgressListener;
 
-import customeview.FullScreenLoopVideo;
-import customeview.ShowLoopVideo;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
+import customeview.ShortVideoPlayer;
 
 /**
  * Created by JC on 2019/9/9.
  */
 
-public class LookFullScreenVideo extends AppCompatActivity implements View.OnClickListener, FullScreenLoopVideo.VideoBackCallBack {
-    private FullScreenLoopVideo fullscreen_videoplayer;
+public class LookFullScreenVideo extends AppCompatActivity{
+    private ShortVideoPlayer fullscreen_videoplayer;
     private String url_video;
 
     @Override
@@ -29,41 +26,70 @@ public class LookFullScreenVideo extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.lookfullscreenvideo_layout);
         getVideoData();
         initView();
-        setOnClickListener();
         startPlayVideo();
     }
 
     private void startPlayVideo() {
-        fullscreen_videoplayer.setUp(url_video, JCVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN);
-        fullscreen_videoplayer.startVideo();
+        GSYVideoOptionBuilder videoBuilder = new GSYVideoOptionBuilder();
+        videoBuilder
+                .setRotateViewAuto(true)
+                .setIsTouchWiget(false)
+                .setLooping(true)
+                .setAutoFullWithSize(true)
+                .setIsTouchWiget(false)
+                .setIsTouchWigetFull(false)
+                .setShowFullAnimation(true)
+                .setUrl(url_video)
+                .setCacheWithPlay(true)
+                .setGSYVideoProgressListener(new GSYVideoProgressListener() {
+                    @Override
+                    public void onProgress(int progress, int secProgress, int currentPosition, int duration) {
 
-    }
+                    }
+                })
+                .setVideoAllCallBack(new GSYSampleCallBack() {
 
-    private void setOnClickListener() {
-        fullscreen_videoplayer.setOnFininshLinstener(this);
+                    @Override
+                    public void onStartPrepared(String url, Object... objects) {
+                        super.onStartPrepared(url, objects);
+                    }
+
+                    @Override
+                    public void onPrepared(String url, Object... objects) {
+                        super.onPrepared(url, objects);
+                    }
+
+                    @Override
+                    public void onClickStop(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickResume(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onPlayError(String url, Object... objects) {
+                        super.onPlayError(url, objects);
+                    }
+                })
+                .build(fullscreen_videoplayer);
+        fullscreen_videoplayer.getCurrentPlayer().startPlayLogic();
     }
 
     private void initView() {
-        fullscreen_videoplayer=(FullScreenLoopVideo) findViewById(R.id.fullscreen_videoplayer);
-
-    }
-    private void  getVideoData(){
-            Intent intent=getIntent();
-         url_video=intent.getStringExtra("videopalyer_url");
+        fullscreen_videoplayer = findViewById(R.id.fullscreen_videoplayer);
     }
 
+    private void getVideoData() {
+        Intent intent = getIntent();
+        url_video = intent.getStringExtra("videopalyer_url");
+    }
 
     @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-
-        }
-    }
-
-
-    @Override
-    public void backfinish() {
-        JCVideoPlayer.releaseAllVideos();
-        finish();
+    protected void onDestroy() {
+        super.onDestroy();
+        fullscreen_videoplayer.getCurrentPlayer().release();
     }
 }

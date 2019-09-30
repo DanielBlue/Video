@@ -1,14 +1,10 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,7 +25,6 @@ import adapter.MessaageCommentAdapter;
 import application.MyApplication;
 import base.BaseActivity;
 import bean.CommentAtBean;
-import bean.MessageCommentShow;
 import bean.MessageWrap;
 import customeview.LoginPopupwindow;
 import http.OktHttpUtil;
@@ -59,7 +54,7 @@ public class CommentAndActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void initEventAndData() {
-        okHttpUtil=((MyApplication)getApplication()).getOkHttpUtil();
+        okHttpUtil=MyApplication.getOkHttpUtil();
         EventBus.getDefault().register(this);
         circleprogress=new CircleProgressDialog(this);
         initView();

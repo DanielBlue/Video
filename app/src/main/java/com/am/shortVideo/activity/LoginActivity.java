@@ -1,17 +1,10 @@
 package com.am.shortVideo.activity;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +12,8 @@ import android.widget.Toast;
 
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -166,25 +161,30 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_login:
-                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                HashMap<String, String> maps = new HashMap<>();
-                maps.put("phone", et_inputpassphone.getText().toString().trim());
-                maps.put("password", et_inputpassword.getText().toString().trim());
-                maps.put("type", "2");
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                maps.put("deviceId", tm.getDeviceId());
-                maps.put("deviceType", "1");
-                okHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.LoginOrRegister.REQUEST_HEADER_LOGIN
-                        , maps, loginCallBack);
+                AndPermission.with(this)
+                        .runtime()
+                        .permission(android.Manifest.permission.READ_PHONE_STATE)
+                        .onGranted(new Action<List<String>>() {
+                            @Override
+                            public void onAction(List<String> data) {
+                                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                                HashMap<String, String> maps = new HashMap<>();
+                                maps.put("phone", et_inputpassphone.getText().toString().trim());
+                                maps.put("password", et_inputpassword.getText().toString().trim());
+                                maps.put("type", "2");
+                                maps.put("deviceId", tm.getDeviceId());
+                                maps.put("deviceType", "1");
+                                okHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.LoginOrRegister.REQUEST_HEADER_LOGIN
+                                        , maps, loginCallBack);
+                            }
+                        })
+                        .onDenied(new Action<List<String>>() {
+                            @Override
+                            public void onAction(List<String> data) {
+
+                            }
+                        })
+                        .start();
                 break;
             case R.id.tv_register:
                 Intent intent = new Intent(this, RegisterActivity.class);

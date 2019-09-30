@@ -1,72 +1,76 @@
 package adapter;
 
-import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.annotation.Nullable;
 
 import com.am.shortVideo.R;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
+import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack;
+import com.shuyu.gsyvideoplayer.listener.GSYVideoProgressListener;
 
-import java.net.URI;
 import java.util.List;
 
-import base.MyAllBaseAdapter;
-import base.MyBaseAdapter;
-import base.MyBaseViewHolder;
-import bean.PublishVideoInfo;
-import customeview.ShowLoopVideo;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
-import util.FootViewHolder;
-import util.HttpUri;
+import customeview.ShortVideoPlayer;
 
 /**
  * Created by 李杰 on 2019/9/17.
  */
 
-public class CaogaoAdapter extends MyBaseAdapter<String,MyBaseViewHolder> {
-    private static final String TAG = "CaogaoAdapter";
-    private Context context;
-    private List<String> dates;
-    public CaogaoAdapter(List<String> dates, Context context) {
-        super(dates, context);
-        this.context=context;
-        this.dates=dates;
+public class CaogaoAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+
+    public CaogaoAdapter(@Nullable List<String> data) {
+        super(R.layout.caogao_item,data);
     }
 
     @Override
-    public MyBaseViewHolder onCreateHolder(ViewGroup viewGroup, int viewType) {
-        if(viewType==NORMAL_VIEW) {
-            View view = LayoutInflater.from(context).inflate(R.layout.caogao_item, viewGroup, false);
-            return new CaogaoViewHolder(view);
-        }else if(viewType==FOOT_VIEW){
-            View view = LayoutInflater.from(context).inflate(R.layout.foot_item, viewGroup, false);
-            return  new FootViewHolder(view);
-        }
-        return  null;
-    }
+    protected void convert(BaseViewHolder helper, String item) {
 
-    @Override
-    public void onHolder(MyBaseViewHolder viewHolder, int position) {
-        if(getItemViewType(position)==NORMAL_VIEW){
-         CaogaoViewHolder caogaoViewHolder= (CaogaoViewHolder)viewHolder;
-            Log.d(TAG, "getBindViewHolder: "+dates.get(position));
-            caogaoViewHolder.showLoopVideo.setUp(dates.get(position), JCVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN,"");
-            if (position == 0) {
-                caogaoViewHolder.showLoopVideo.startVideo();
-            }
-        }else if(getItemViewType(position)==FOOT_VIEW){
-         FootViewHolder holder=  (FootViewHolder)viewHolder;
-         holder.text_foot.setVisibility(View.GONE);
-        }
-    }
+        ShortVideoPlayer videoPlayer = helper.getView(R.id.video_player);
+        GSYVideoOptionBuilder videoBuilder = new GSYVideoOptionBuilder();
+        videoBuilder
+                .setRotateViewAuto(false)
+                .setIsTouchWiget(false)
+                .setLooping(true)
+                .setAutoFullWithSize(false)
+                .setIsTouchWiget(false)
+                .setIsTouchWigetFull(false)
+                .setShowFullAnimation(false)
+                .setUrl(item)
+                .setCacheWithPlay(true)
+                .setGSYVideoProgressListener(new GSYVideoProgressListener() {
+                    @Override
+                    public void onProgress(int progress, int secProgress, int currentPosition, int duration) {
 
+                    }
+                })
+                .setVideoAllCallBack(new GSYSampleCallBack() {
 
-    public class CaogaoViewHolder extends MyBaseViewHolder{
-        public ShowLoopVideo showLoopVideo;
-        public CaogaoViewHolder(View itemView) {
-            super(itemView);
-            showLoopVideo=(ShowLoopVideo)itemView.findViewById(R.id.videoplayer);
-        }
+                    @Override
+                    public void onStartPrepared(String url, Object... objects) {
+                        super.onStartPrepared(url, objects);
+                    }
+
+                    @Override
+                    public void onPrepared(String url, Object... objects) {
+                        super.onPrepared(url, objects);
+                    }
+
+                    @Override
+                    public void onClickStop(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickResume(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onPlayError(String url, Object... objects) {
+                        super.onPlayError(url, objects);
+                    }
+                })
+                .build(videoPlayer);
     }
 }

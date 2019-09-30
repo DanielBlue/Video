@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
@@ -33,16 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import adapter.AttentionAdapter;
-import adapter.AttentionSearchPersonAdapter;
-import adapter.ShorVideoAdapter;
 import application.MyApplication;
 import bean.AttentionPerson;
-import bean.AttentionPersonVideo;
-import bean.FansShow;
 import bean.MessageWrap;
 import customeview.LoginPopupwindow;
 import customeview.SliderView;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -50,9 +44,6 @@ import okhttp3.Response;
 import util.HttpUri;
 import util.PinYinUtil;
 import util.RecycleViewDivider;
-
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 
 
 /**
@@ -142,7 +133,7 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
         view = inflater.inflate(R.layout.second_attentionfragment, container, false);
-        okHttpUtil = ((MyApplication) getActivity().getApplication()).getOkHttpUtil();
+        okHttpUtil = MyApplication.getOkHttpUtil();
         pinYinUtil = new PinYinUtil();
         EventBus.getDefault().register(this);
         circleprogressDialog = new CircleProgressDialog(getActivity());

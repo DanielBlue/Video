@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.umeng.commonsdk.BuildConfig;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 
@@ -14,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bean.UserInfoBean;
-import bean.UserLogin;
 import cn.jpush.android.api.JPushInterface;
 import http.OktHttpUtil;
 import util.PreferencesUtil;
@@ -26,11 +26,12 @@ import util.PreferencesUtil;
 public class MyApplication extends Application {
     public static MyApplication myApp;
     private static final String TAG = "MyApplication";
-    private OktHttpUtil okHttpUtil;
+    private static OktHttpUtil okHttpUtil;
     public static Context mContext;
     private HashMap<String, String> sessionMaps = new HashMap<>();
     private String userinfo_uid;
     private UserInfoBean userInfo;
+    public static boolean isDebug = BuildConfig.DEBUG;
 
     public static MyApplication getInstance() {
 //        if (myApp == null) {
@@ -66,7 +67,7 @@ public class MyApplication extends Application {
         //测试登录
     }
 
-    public OktHttpUtil getOkHttpUtil() {
+    public static OktHttpUtil getOkHttpUtil() {
         return okHttpUtil;
     }
     //登录账号

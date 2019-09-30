@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.am.shortVideo.R;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.umeng.socialize.UMShareAPI;
 
@@ -27,22 +27,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import adapter.ShorVideoAdapter;
-import adapter.UserVideoAdapter;
+import adapter.ZuopinAdapter;
 import application.MyApplication;
 import base.BaseActivity;
-import bean.HomeVideoImg;
-import bean.PublishVideo;
 import bean.SerachPublishVideo;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
+import customeview.ShortVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import util.HttpUri;
-
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 
 /**
  * Created by 李杰 on 2019/9/17.
@@ -50,9 +44,9 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 
 public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "ShortVideoPlayingActivi";
-    private RecyclerView rl_view;
+    private RecyclerView mRvList;
     private List<SerachPublishVideo.DataBean.IndexListBean> datas = new ArrayList<>();
-    private PagerSnapHelper pagerSnapHelper;
+    private PagerSnapHelper mSnapHelper;
     private LinearLayoutManager layoutManger;
     private DrawerLayout drawLayout;
     private RelativeLayout rl_menu;
@@ -61,9 +55,6 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
     private TextView systemmessage;
     private ImageView iv_back;
     private int curChannel;
-    private boolean isScolled;
-    private int countItem;
-    private int lastItem;
     private OktHttpUtil okHttpUtil;
     private Handler handler = new Handler() {
         @Override
@@ -77,44 +68,47 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
                         currentPage++;
                         Log.d(TAG, "handleMessage: 请求数据成功");
                         if (serachPublishVideo.getData() != null) {
-                            datas.addAll(serachPublishVideo.getData().getIndexList());
+                            if (serachPublishVideo.getData().getIndexList().size() > 0) {
+                                mAdapter.addData(serachPublishVideo.getData().getIndexList());
+                                mAdapter.loadMoreComplete();
+                            } else {
+                                mAdapter.loadMoreEnd();
+                            }
                         }
-                        shortvideoadapter.notifyDataSetChanged();
                     } else {
                         Toast.makeText(ZuopinPlayingActivity.this, "请求数据失败", Toast.LENGTH_SHORT).show();
+                        mAdapter.loadMoreFail();
                     }
-
                     break;
                 case 2:
                     break;
                 default:
             }
-
         }
     };
-    Callback homevideoCallback = new Callback() {
-        @Override
-        public void onFailure(Call call, IOException e) {
-
-        }
-
-        @Override
-        public void onResponse(Call call, Response response) throws IOException {
-            String dataes = response.body().string();
-            Gson gson = new Gson();
-            HomeVideoImg hovideImg = gson.fromJson(dataes, HomeVideoImg.class);
-            Log.d(TAG, "onResponse:\n " + dataes.toString());
-            Message video_message = new Message();
-            video_message.what = 1;
-            video_message.obj = hovideImg;
-            handler.sendMessage(video_message);
-        }
-
-    };
+//    Callback homevideoCallback = new Callback() {
+//        @Override
+//        public void onFailure(Call call, IOException e) {
+//
+//        }
+//
+//        @Override
+//        public void onResponse(Call call, Response response) throws IOException {
+//            String dataes = response.body().string();
+//            Gson gson = new Gson();
+//            HomeVideoImg hovideImg = gson.fromJson(dataes, HomeVideoImg.class);
+//            Log.d(TAG, "onResponse:\n " + dataes.toString());
+//            Message video_message = new Message();
+//            video_message.what = 1;
+//            video_message.obj = hovideImg;
+//            handler.sendMessage(video_message);
+//        }
+//
+//    };
     private Callback video_zuopingCallback = new Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
-            Log.e(TAG, "onFailure: video_zuopingCallback");
+
 
         }
 
@@ -133,26 +127,11 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
     private String curUid;
     private int position;
     private int currentPage;
-    private ZuopinAdapter shortvideoadapter;
+    private ZuopinAdapter mAdapter;
 
     @Override
     protected int getLayout() {
         return R.layout.shortvideo_activity;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        View view = pagerSnapHelper.findSnapView(layoutManger);
-        JCVideoPlayer.releaseAllVideos();
-        if (view != null) {
-            RecyclerView.ViewHolder holder = rl_view.getChildViewHolder(view);
-            if (holder != null && holder instanceof ZuopinAdapter.ShortViewHolder) {
-                ((ZuopinAdapter.ShortViewHolder) holder).videoPlay.resetProgressAndTime();
-                ((ZuopinAdapter.ShortViewHolder) holder).videoPlay.startVideo();
-
-            }
-        }
     }
 
     @Override
@@ -161,34 +140,28 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
         addData();
         initView();
         setLinstenr();
-        pagerSnapHelper = new PagerSnapHelper();
-        pagerSnapHelper.attachToRecyclerView(rl_view);
+        mSnapHelper = new PagerSnapHelper();
+        mSnapHelper.attachToRecyclerView(mRvList);
         layoutManger = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        rl_view.setLayoutManager(layoutManger);
-        shortvideoadapter = new ZuopinAdapter(datas, this);
-        rl_view.setAdapter(shortvideoadapter);
-        rl_view.scrollToPosition(position);
-        rl_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRvList.setLayoutManager(layoutManger);
+        mAdapter = new ZuopinAdapter(datas);
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                requsetVideo();
+            }
+        }, mRvList);
+        mRvList.setAdapter(mAdapter);
+        mRvList.scrollToPosition(position);
+        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == SCROLL_STATE_DRAGGING || newState == SCROLL_STATE_SETTLING) {
-                    isScolled = true;
-                } else {
-                    isScolled = false;
-                }
                 switch (newState) {
                     case RecyclerView.SCROLL_STATE_IDLE://停止滑动
-                        View view = pagerSnapHelper.findSnapView(layoutManger);
-                        JCVideoPlayer.releaseAllVideos();
-                        if (view != null) {
-                            RecyclerView.ViewHolder holder = rl_view.getChildViewHolder(view);
-                            if (holder != null && holder instanceof ZuopinAdapter.ShortViewHolder) {
-                                ((ZuopinAdapter.ShortViewHolder) holder).videoPlay.resetProgressAndTime();
-                                ((ZuopinAdapter.ShortViewHolder) holder).videoPlay.startVideo();
-
-                            }
-                        }
+                        View view = mSnapHelper.findSnapView(layoutManger);
+                        int position = layoutManger.getPosition(view);
+                        startPlay(position);
                         break;
                     case RecyclerView.SCROLL_STATE_DRAGGING://拖动
                         break;
@@ -201,14 +174,6 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-                    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                    countItem = layoutManager.getItemCount();
-                    lastItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-                }
-                if (isScolled && countItem != lastItem && lastItem == countItem - 1) {
-
-                    requsetVideo();
 //                    switch (curChannel) {
 //                        case 0:
 //                            HashMap<String, String> maps0 = new HashMap<>();
@@ -245,9 +210,37 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
 //
 //                            break;
 //                    }
-                }
             }
         });
+    }
+
+    private int mCurPosition = -1;
+    private ShortVideoPlayer mCurPlayer;
+
+    private void startPlay(final int position) {
+        if (position != mCurPosition) {
+            if (mCurPlayer != null) {
+                //先释放之前的播放器
+                mCurPlayer.getCurrentPlayer().release();
+            }
+
+            //当前是视频则开始播放
+            mRvList.post(new Runnable() {
+                @Override
+                public void run() {
+                    BaseViewHolder viewHolder = (BaseViewHolder) mRvList.findViewHolderForLayoutPosition(position);
+                    if (viewHolder != null) {
+                        mCurPlayer = viewHolder.getView(R.id.video_player);
+                        //开始播放
+                        if (mCurPlayer != null) {
+                            mCurPlayer.getCurrentPlayer().startPlayLogic();
+                        }
+                    }
+                }
+            });
+            mCurPosition = position;
+        }
+
     }
 
     private void requsetVideo() {
@@ -264,12 +257,6 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
         iv_back.setOnClickListener(this);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        JCVideoPlayer.releaseAllVideos();
-    }
-
     private void addData() {
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("homeVideoImg");
@@ -284,7 +271,7 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
 
     private void initView() {
         iv_back = (ImageView) findViewById(R.id.iv_back);
-        rl_view = (RecyclerView) findViewById(R.id.recyle_view);
+        mRvList = (RecyclerView) findViewById(R.id.recyle_view);
 //        drawLayout=(DrawerLayout)findViewById(R.id.ac_drawlayout);
 //          rl_menu=(RelativeLayout)findViewById(R.id.rl);
 //          bt_menu=(Button)findViewById(R.id.bt_menu);
@@ -301,6 +288,14 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
 //        } else if (curChannel == 4) {
         systemmessage.setText("作品");
 //        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCurPlayer != null) {
+            mCurPlayer.getCurrentPlayer().release();
+        }
     }
 
     @Override

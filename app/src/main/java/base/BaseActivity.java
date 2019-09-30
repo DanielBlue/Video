@@ -3,18 +3,16 @@ package base;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import util.StatusBarUtil;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
     private SensorManager sensorManager;
-    private JCVideoPlayer.JCAutoFullscreenListener sensorEventListener;
+//    private JCVideoPlayer.JCAutoFullscreenListener sensorEventListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,7 +20,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayout());
         ButterKnife.bind(this);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        sensorEventListener = new JCVideoPlayer.JCAutoFullscreenListener();
+//        sensorEventListener = new JCVideoPlayer.JCAutoFullscreenListener();
         setStatusBar();
         initEventAndData();
         initEventAndData(savedInstanceState);
@@ -45,14 +43,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(sensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+//        sensorManager.registerListener(sensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(sensorEventListener);
-        JCVideoPlayer.releaseAllVideos();
+//        sensorManager.unregisterListener(sensorEventListener);
+//        JCVideoPlayer.releaseAllVideos();
     }
 
 

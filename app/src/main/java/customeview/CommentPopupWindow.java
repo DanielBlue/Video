@@ -84,7 +84,7 @@ public class CommentPopupWindow extends PopupWindow implements View.OnClickListe
         this.context = context;
         this.homevideodatas = homevideodatas;
         this.curposition = curposition;
-        oktHttpUtil = ((MyApplication) context.getApplicationContext()).getOkHttpUtil();
+        oktHttpUtil = MyApplication.getOkHttpUtil();
         initView();
     }
 

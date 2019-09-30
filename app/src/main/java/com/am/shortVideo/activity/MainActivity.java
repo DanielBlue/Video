@@ -4,69 +4,50 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.am.shortVideo.R;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.tiktokdemo.lky.tiktokdemo.record.RecordVideoActivity;
 import com.umeng.socialize.UMShareAPI;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import adapter.UserVideoAdapter;
 import application.MyApplication;
 import base.BaseActivity;
 import bean.MessageWrap;
-import bean.SerachPublishVideo;
 import bean.UserInfo;
 import customeview.LoginPopupwindow;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import util.HttpUri;
 import util.PreferencesUtil;
-import util.StatusBarUtil;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
     private OktHttpUtil oktHttpUtil;
-    private String[] strings = new String[]{
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_PHONE_STATE
-    };
-    private List<String> mPermission = new ArrayList<>();
     private boolean noPermission;
     private AlertDialog.Builder alterDialog;
     private ImageView iv_home;
@@ -187,18 +168,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initPermission() {
-        if (Build.VERSION.SDK_INT > 23) {
-            for (int i = 0; i < strings.length; i++) {
-                if (ContextCompat.checkSelfPermission(this, strings[i]) != PackageManager.PERMISSION_GRANTED) {
-                    mPermission.add(strings[i]);
-                }
-            }
-        }
-        if (mPermission.size() > 0) {
-            ActivityCompat.requestPermissions(this, strings, 1);
-        } else {
-            Log.d(TAG, "pass ");
-        }
+        AndPermission.with(this)
+                .runtime()
+                .permission(android.Manifest.permission.CAMERA,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.READ_PHONE_STATE)
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+
+                    }
+                })
+                .start();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -301,7 +290,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         hideFragment(fragmentTran);
         switchBottomButton(switchType);
         if (switchType != 0) {
-            JCVideoPlayer.releaseAllVideos();
+            if (homeFragment != null && homeFragment.getCurPlayer() != null) {
+                homeFragment.getCurPlayer().release();
+            }
+        }else {
+            if (homeFragment != null && homeFragment.getCurPlayer() != null) {
+                homeFragment.getCurPlayer().startPlayLogic();
+            }
         }
         switch (switchType) {
             case 0:

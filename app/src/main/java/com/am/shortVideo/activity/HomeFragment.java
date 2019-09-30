@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
@@ -35,16 +37,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import adapter.ShorVideoAdapter;
+import adapter.ShortVideoAdapter;
 import application.MyApplication;
 import bean.HomeVideoImg;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
+import customeview.ShortVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import util.HttpUri;
-
 
 
 /**
@@ -54,7 +55,7 @@ import util.HttpUri;
 public class HomeFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "HomeFragment";
     View view;
-    private RecyclerView home_recycle;
+    private RecyclerView mRvList;
     private SwipeRefreshLayout home_swipeRefresh;
     private OktHttpUtil okHttpUtil;
     private List<HomeVideoImg.DataBean.IndexListBean> datas = new ArrayList<>();
@@ -76,10 +77,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         if (home_swipeRefresh.isRefreshing()) {
                             home_swipeRefresh.setRefreshing(false);
                         }
-                        datas.addAll(homevideImg.getData().getIndexList());
-                        shortvideoadapter.notifyDataSetChanged();
+                        if (homevideImg.getData().getIndexList().size() > 0) {
+                            mAdapter.addData(homevideImg.getData().getIndexList());
+                            mAdapter.loadMoreComplete();
+                        } else {
+                            mAdapter.loadMoreEnd();
+                        }
                     } else {
                         circleDialog.dismiss();
+                        mAdapter.loadMoreFail();
                         Toast.makeText(getActivity(), "请求数据失败，检查网络是否正常", Toast.LENGTH_SHORT).show();
                     }
                     break;
@@ -99,6 +105,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
                     circleDialog.dismiss();
+                    home_swipeRefresh.setRefreshing(false);
                 }
             });
         }
@@ -120,18 +127,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private PagerSnapHelper pagerSnapHelper;
     private Button bt_menu;
     private ImageView iv_serach;
-    private int countItem;
-    private int lastItem;
-    private boolean isScolled;
-    private boolean isCanPlay;
     private TextView home_all;
     private TextView home_samecity;
     private TextView home_recommend;
     private TextView home_superman;
     private CircleProgressDialog circleDialog;
-    private boolean isResume = false;
     private int currentPage = 1;
-    private ShorVideoAdapter shortvideoadapter;
+    private ShortVideoAdapter mAdapter;
+
+    public ShortVideoPlayer mCurPlayer;
 
     @Nullable
     @Override
@@ -144,29 +148,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (isResume) {
-            View view = pagerSnapHelper.findSnapView(layoutManger);
-            JCVideoPlayer.releaseAllVideos();
-            if (view != null) {
-                RecyclerView.ViewHolder holder = home_recycle.getChildViewHolder(view);
-                if (holder != null && holder instanceof ShorVideoAdapter.ShortViewHolder) {
-                    ((ShorVideoAdapter.ShortViewHolder) holder).videoPlay.resetProgressAndTime();
-                    ((ShorVideoAdapter.ShortViewHolder) holder).videoPlay.startVideo();
-
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        isResume = true;
-    }
-
     private void setButtonOnClickListener() {
         //bt_menu.setOnClickListener(this);
         iv_serach.setOnClickListener(this);
@@ -177,7 +158,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView() {
-        home_recycle = (RecyclerView) view.findViewById(R.id.home_recycle);
+        mRvList = (RecyclerView) view.findViewById(R.id.home_recycle);
         home_swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.home_swipeRefresh);
         //bt_menu=(Button)view.findViewById(R.id.bt_menu);
         iv_serach = (ImageView) view.findViewById(R.id.iv_serach);
@@ -187,22 +168,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         home_superman = (TextView) view.findViewById(R.id.tv_channelsuperman);
         okHttpUtil = ((MyApplication) getActivity().getApplication()).getOkHttpUtil();
         pagerSnapHelper = new PagerSnapHelper();
-        pagerSnapHelper.attachToRecyclerView(home_recycle);
+        pagerSnapHelper.attachToRecyclerView(mRvList);
         layoutManger = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        home_recycle.setLayoutManager(layoutManger);
+        mRvList.setLayoutManager(layoutManger);
 
-        shortvideoadapter = new ShorVideoAdapter(datas, getActivity());
-        home_recycle.setAdapter(shortvideoadapter);
+        mAdapter = new ShortVideoAdapter(datas);
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                requestVideo();
+            }
+        }, mRvList);
+        mRvList.setAdapter(mAdapter);
         circleDialog = new CircleProgressDialog(getActivity());
-        home_recycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING || newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    isScolled = true;
-                } else {
-                    isScolled = false;
-                }
                 switch (newState) {
                     case RecyclerView.SCROLL_STATE_IDLE://停止滑动
 //                        if(isCanPlay){
@@ -211,14 +193,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //                            break;
 //                        }
                         View view = pagerSnapHelper.findSnapView(layoutManger);
-                        JCVideoPlayer.releaseAllVideos();
-                        if (view != null) {
-                            RecyclerView.ViewHolder holder = home_recycle.getChildViewHolder(view);
-                            if (holder != null && holder instanceof ShorVideoAdapter.ShortViewHolder) {
-                                ((ShorVideoAdapter.ShortViewHolder) holder).videoPlay.resetProgressAndTime();
-                                ((ShorVideoAdapter.ShortViewHolder) holder).videoPlay.startVideo();
-
-                            }
+                        int position = layoutManger.getPosition(view);
+                        if (position != mCurPosition) {
+                            startPlay(position);
                         }
                         break;
                     case RecyclerView.SCROLL_STATE_DRAGGING://拖动
@@ -231,15 +208,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-                    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                    countItem = layoutManager.getItemCount();
-                    lastItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-                }
-                if (isScolled && countItem != lastItem && lastItem == countItem - 1) {
-                    Log.d(TAG, "onScrolled: ");
-                    requestVideo();
-                }
+
             }
         });
 
@@ -253,6 +222,43 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 requestVideo();
             }
         });
+    }
+
+    public ShortVideoPlayer getCurPlayer() {
+        return mCurPlayer;
+    }
+
+    private int mCurPosition = -1;
+
+    private void startPlay(final int position) {
+        if (mCurPlayer != null) {
+            //先释放之前的播放器
+            mCurPlayer.getCurrentPlayer().release();
+        }
+
+        //当前是视频则开始播放
+        mRvList.post(new Runnable() {
+            @Override
+            public void run() {
+                BaseViewHolder viewHolder = (BaseViewHolder) mRvList.findViewHolderForLayoutPosition(position);
+                if (viewHolder != null) {
+                    mCurPlayer = viewHolder.getView(R.id.video_player);
+                    //开始播放
+                    if (mCurPlayer != null) {
+                        mCurPlayer.getCurrentPlayer().startPlayLogic();
+                        mCurPosition = position;
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mCurPosition != -1) {
+            startPlay(mCurPosition);
+        }
     }
 
     private void requestVideo() {
@@ -298,32 +304,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Subscribe()
     public void changeCommentCount(CommentCountEvent commentCountEvent) {
-      if (commentCountEvent != null){
-          View view = pagerSnapHelper.findSnapView(layoutManger);
-          if (view != null) {
-              RecyclerView.ViewHolder holder = home_recycle.getChildViewHolder(view);
-              if (holder != null && holder instanceof ShorVideoAdapter.ShortViewHolder) {
-                  ((ShorVideoAdapter.ShortViewHolder) holder).tv_commentcount.setText(commentCountEvent.count + "");
-              }
-          }
-      }
+        if (commentCountEvent != null) {
+            View view = pagerSnapHelper.findSnapView(layoutManger);
+            if (view != null) {
+                BaseViewHolder holder = (BaseViewHolder) mRvList.getChildViewHolder(view);
+                holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");
+            }
+        }
     }
 
     @Subscribe()
     public void changeAttention(AttentionEvent attentionEvent) {
-      if (attentionEvent != null){
-          for (int i = 0; i < datas.size(); i++) {
-              if (TextUtils.equals(datas.get(i).getUid(), attentionEvent.uid)){
-                  datas.get(i).setFollowStatus(attentionEvent.isAttent);
-              }
-          }
-        shortvideoadapter.notifyDataSetChanged();
-      }
+        if (attentionEvent != null) {
+            for (int i = 0; i < datas.size(); i++) {
+                if (TextUtils.equals(datas.get(i).getUid(), attentionEvent.uid)) {
+                    datas.get(i).setFollowStatus(attentionEvent.isAttent);
+                }
+            }
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mCurPlayer != null) {
+            mCurPlayer.getCurrentPlayer().release();
+        }
         EventBus.getDefault().unregister(this);
     }
 }
