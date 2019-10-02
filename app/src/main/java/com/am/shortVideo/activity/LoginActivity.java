@@ -181,7 +181,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         .onDenied(new Action<List<String>>() {
                             @Override
                             public void onAction(List<String> data) {
-
+                                Toast.makeText(LoginActivity.this,"权限被拒绝",Toast.LENGTH_SHORT);
                             }
                         })
                         .start();
