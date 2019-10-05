@@ -3,6 +3,8 @@ package application;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -32,6 +34,7 @@ public class MyApplication extends Application {
     private String userinfo_uid;
     private UserInfoBean userInfo;
     public static boolean isDebug = BuildConfig.DEBUG;
+    public static Handler mHandler;
 
     public static MyApplication getInstance() {
 //        if (myApp == null) {
@@ -64,6 +67,7 @@ public class MyApplication extends Application {
         PlatformConfig.setQQZone("101783528", "96f5d0c26679ba9e2092bac66af0bbe0");//QQAPPID和AppSecret
         okHttpUtil = OktHttpUtil.getInstance();
         mContext = this;
+        mHandler = new Handler(Looper.getMainLooper());
         //测试登录
     }
 

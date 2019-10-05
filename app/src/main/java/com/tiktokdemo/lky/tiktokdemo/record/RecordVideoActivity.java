@@ -137,8 +137,23 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
         }
         UserInfoBean userInfo = MyApplication.getInstance().getUserInfo();
         if (userInfo != null) {
-            mPresenter.setAUDIO_PLAY_DURATION((userInfo.level + 1) * 15);
-            ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText(userInfo.level * 15 + "秒");
+            if (userInfo.level == 1) {
+                mPresenter.setAUDIO_PLAY_DURATION(20);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("20秒");
+            } else if (userInfo.level == 2) {
+                mPresenter.setAUDIO_PLAY_DURATION(30);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("30秒");
+            } else if (userInfo.level == 3) {
+                mPresenter.setAUDIO_PLAY_DURATION(45);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("45秒");
+            } else if (userInfo.level == 4) {
+                mPresenter.setAUDIO_PLAY_DURATION(60);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("60秒");
+            } else {
+                mPresenter.setAUDIO_PLAY_DURATION(15);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("15秒");
+            }
+
         }
     }
 
@@ -945,22 +960,22 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
         mSpeedLevelControllerView.setSpeedLevel(mVideoTimeType);
         notifyRecordTime();
 //        resetRecord();
-        switch (recordTimeType) {
-            case RECORD_TIME_15:
-                mPresenter.setMaxRecordTime(mPresenter.VIDEO_RECORD_MAX_TIME);
-                mSpeedLevelControllerView.setVisibility(View.VISIBLE);
-                mBreakProgressView.setMax(mPresenter.getMaxRecordTime());
-                break;
-            case RECORD_TIME_120:
-                mPresenter.setMaxRecordTime(mPresenter.VIDEO_RECORD_MAX_TIME_120);
-                mSpeedLevelControllerView.setVisibility(View.GONE);
-                mCutMusicImg.setImageResource(R.mipmap.btn_cut_dis);
-                mBreakProgressView.setMax(mPresenter.getMaxRecordTime());
-                if (mMusicBean != null && !TextUtils.isEmpty(mMusicBean.getUrl())) {
-                    ToastTool.showShort(AppUtil.getApplicationContext(), R.string.tidal_pat_record_time_120_not_background_music);
-                }
-                break;
+        UserInfoBean userInfo = MyApplication.getInstance().getUserInfo();
+        if (userInfo.level == 0) {
+            mPresenter.setMaxRecordTime(15000);
+        } else if (userInfo.level == 1) {
+            mPresenter.setMaxRecordTime(20000);
+        } else if (userInfo.level == 2) {
+            mPresenter.setMaxRecordTime(30000);
+        } else if (userInfo.level == 3) {
+            mPresenter.setMaxRecordTime(45000);
+        } else if (userInfo.level == 4) {
+            mPresenter.setMaxRecordTime(60000);
+        } else {
+            mPresenter.setMaxRecordTime(15000);
         }
+        mSpeedLevelControllerView.setVisibility(View.VISIBLE);
+        mBreakProgressView.setMax(mPresenter.getMaxRecordTime());
     }
 
 
