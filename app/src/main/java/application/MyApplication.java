@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -17,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bean.UserInfoBean;
-import cn.jpush.android.api.JPushInterface;
 import http.OktHttpUtil;
+import util.JPushUtils;
 import util.PreferencesUtil;
 
 /**
@@ -54,9 +55,7 @@ public class MyApplication extends Application {
         if (!sessionId.equals("")) {
             sessionMaps.put("cookie", sessionId);
         }
-        //极光推送
-        //JPushInterface.setDebugMode(true); //正式环境时去掉此行代码
-        JPushInterface.init(this);
+        JPushUtils.initJPush(this, false);
 
         //友盟初始化
         UMConfigure.init(this, "5d566c434ca357a3a60006c1", "umeng", UMConfigure.DEVICE_TYPE_PHONE, "");
@@ -69,6 +68,13 @@ public class MyApplication extends Application {
         mContext = this;
         mHandler = new Handler(Looper.getMainLooper());
         //测试登录
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        //多dex
+        MultiDex.install(base);
     }
 
     public static OktHttpUtil getOkHttpUtil() {

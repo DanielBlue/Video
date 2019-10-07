@@ -1,4 +1,4 @@
-package util;
+package jpush;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.util.Log;
 import com.am.shortVideo.activity.MainActivity;
 
 import cn.jpush.android.api.JPushInterface;
-import cn.jpush.android.service.JPushMessageReceiver;
 
 /**
  * Created by JC on 2019/9/10.

@@ -176,7 +176,26 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
-        <receiver android:name="util.JPushReceiver"
+        <receiver
+            android:name="jpush.JPushLocalReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
+
+                <category android:name="com.kuaixun.danpian" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="jpush.JPushService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":pushdanpian">
+            <intent-filter>
+                <action android:name="cn.jiguang.user.service.action" />
+            </intent-filter>
+        </service>
+        <receiver android:name="jpush.JPushReceiver"
             android:enabled="true">
             <intent-filter>
                 <!--Required 用户注册SDK的intent-->

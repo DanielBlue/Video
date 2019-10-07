@@ -31,6 +31,7 @@ import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.Response;
 import util.HttpUri;
+import util.JPushUtils;
 import util.PreferencesUtil;
 
 /**
@@ -52,7 +53,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(LoginActivity.this, "请求失败："+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "请求失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -80,6 +81,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 //Log.d(TAG, "onResponse1: "+s1);
                 sessionMaps.put("cookie", s);
                 ((MyApplication) getApplication()).setMaps(sessionMaps, "save");
+                JPushUtils.setAlias(LoginActivity.this, login.getData().user.phone);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -186,7 +188,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         .onDenied(new Action<List<String>>() {
                             @Override
                             public void onAction(List<String> data) {
-                                Toast.makeText(LoginActivity.this,"权限被拒绝",Toast.LENGTH_SHORT);
+                                Toast.makeText(LoginActivity.this, "权限被拒绝", Toast.LENGTH_SHORT);
                             }
                         })
                         .start();
