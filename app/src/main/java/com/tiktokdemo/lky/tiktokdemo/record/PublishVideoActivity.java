@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,9 +17,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -268,8 +272,6 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                     openAlertDialog(this);
                     return;
                 }
-                Log.d(TAG, "onClick: " + Constant.RECORD_VIDEO_PATH_TEMP1 + File.separator + "shibo" + ".mp4");
-                Log.d(TAG, "publishVideoInfo:\n " + publishVideoInfo.toString());
                 if (publishVideo()) {
                     HashMap<String, String> maps1 = new HashMap<>();
                     if (isSelectMusic) {
@@ -277,14 +279,14 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                     } else {
                         maps1.put("audioId", "null");
                     }
-                    maps1.put("coverFile", Constant.DOWNBGM + File.separator + "audio.jpg");
+                    maps1.put("coverFile",Constant.DOWNBGM + File.separator + "audio.jpg");
                     maps1.put("location", publishVideoInfo.getLocation());
                     if (ed_publishfoodid.getText().toString().trim().isEmpty()) {
                         maps1.put("shopId", "null");
                     } else if (!ed_publishfoodid.getText().toString().trim().isEmpty()) {
                         maps1.put("shopId", ed_publishfoodid.getText().toString().trim());
                     }
-                    maps1.put("uploadFile", Constant.RECORD_VIDEO_PATH_TEMP1 + File.separator + "shibo" + ".mp4");
+                    maps1.put("uploadFile", Constant.RECORD_VIDEO_PATH_TEMP1 + File.separator + "shibo.mp4");
                     if (ed_publishmessage.getText().toString().trim().isEmpty()) {
                         maps1.put("videoDesc", "null");
                     } else {
@@ -299,7 +301,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                             , ((MyApplication) getApplication()).getMaps(), maps1, 1, new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
-                                    Log.d(TAG, "onFailure: ");
+                                    Log.d(TAG, "onFailure: "+e.getMessage());
                                     e.printStackTrace();
                                     handler.sendEmptyMessage(2);
                                     progressDialog.dismiss();
@@ -365,7 +367,10 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
      */
     public void saveBitmap(PublishVideoInfo publishVideoInfo) {
         Log.e(TAG, "保存图片");
-        File f = new File(Constant.DOWNBGM, "audio.jpg");
+        File f = new File(Constant.DOWNBGM + File.separator + "audio.jpg");
+        if (!f.getParentFile().exists()){
+            f.getParentFile().mkdirs();
+        }
         if (f.exists()) {
             f.delete();
         }
@@ -398,9 +403,27 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
     //保存视频
     public void saveVideo(final TidalPatRecordDraftBean tidalPatRecordDraftBean) {
         if (TextUtils.isEmpty(tidalPatRecordDraftBean.getVideoName())) {
-            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH, System.currentTimeMillis() + ".mp4");
+//            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH, System.currentTimeMillis() + ".mp4");
+
             ToastTool.showShort(this, "保存成功！");
+            ContentResolver localContentResolver = getContentResolver();
+            ContentValues localContentValues = getVideoContentValues(new File(mTidalPatRecordDraftBean.getVideoLocalUrl()), System.currentTimeMillis());
+            Uri localUri = localContentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, localContentValues);
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri));
         }
+    }
+
+    public static ContentValues getVideoContentValues(File paramFile, long paramLong) {
+        ContentValues localContentValues = new ContentValues();
+        localContentValues.put("title", paramFile.getName());
+        localContentValues.put("_display_name", paramFile.getName());
+        localContentValues.put("mime_type", "video/mp4");
+        localContentValues.put("datetaken", Long.valueOf(paramLong));
+        localContentValues.put("date_modified", Long.valueOf(paramLong));
+        localContentValues.put("date_added", Long.valueOf(paramLong));
+        localContentValues.put("_data", paramFile.getAbsolutePath());
+        localContentValues.put("_size", Long.valueOf(paramFile.length()));
+        return localContentValues;
     }
 
     public boolean publishVideo() {

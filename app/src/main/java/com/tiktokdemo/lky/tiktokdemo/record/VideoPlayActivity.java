@@ -575,6 +575,8 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         mSETimeTxt.setOnClickListener(specialEffectsViewClickListener);
         findViewById(R.id.tidal_pat_upload_se_save_txt).setOnClickListener(specialEffectsViewClickListener);
         findViewById(R.id.tidal_pat_upload_se_cancel_txt).setOnClickListener(specialEffectsViewClickListener);
+        ((TextView)findViewById(R.id.tv_title)).setText("");
+
         mSEPlayEndTxt = (TextView) findViewById(R.id.tidal_pat_upload_se_time_current_txt);
         mSERemoveTxt = (TextView) findViewById(R.id.tidal_pat_upload_se_remove_txt);
 

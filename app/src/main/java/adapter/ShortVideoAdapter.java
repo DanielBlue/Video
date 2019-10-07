@@ -519,7 +519,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                             ComponentName componentName = new ComponentName("com.android.healthapp",
                                                     "com.android.healthapp.ui.activity.GoodConventionActivity");
                                             intent.setComponent(componentName);
-                                            intent.putExtra("good_common_id", item.getGoodsId());//id
+                                            intent.putExtra("good_common_id", Integer.parseInt(item.getGoodsId()));//id
 //                    intent = context.getPackageManager().getLaunchIntentForPackage("com.android.healthapp");
 //                    intent.putExtra("good_common_id", "123456");//id
                                             mContext.startActivity(intent);

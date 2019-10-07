@@ -48,8 +48,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private HashMap<String, String> sessionMaps = new HashMap<>();
     private Callback loginCallBack = new Callback() {
         @Override
-        public void onFailure(Call call, IOException e) {
-
+        public void onFailure(Call call, final IOException e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(LoginActivity.this, "请求失败："+e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override

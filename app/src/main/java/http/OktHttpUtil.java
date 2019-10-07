@@ -3,7 +3,7 @@ package http;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -24,7 +24,11 @@ public class OktHttpUtil {
     static OktHttpUtil oktHttpUtil;
 
     public OktHttpUtil() {
-        okHttpClient = new OkHttpClient();
+        okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
 
     }
 

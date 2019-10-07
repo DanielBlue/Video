@@ -102,11 +102,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     Callback homevideoCallback = new Callback() {
         @Override
-        public void onFailure(Call call, IOException e) {
+        public void onFailure(Call call, final IOException e) {
             e.printStackTrace();
             ((Activity) getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Toast.makeText(getActivity(), "请求失败："+e.getMessage(), Toast.LENGTH_SHORT).show();
                     circleDialog.dismiss();
                     home_swipeRefresh.setRefreshing(false);
                 }
