@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
+import com.facebook.stetho.Stetho;
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.umeng.commonsdk.BuildConfig;
@@ -50,6 +51,7 @@ public class MyApplication extends Application {
         Log.d(TAG, "onCreate: ");
         myApp = this;
         FlowManager.init(this);
+        Stetho.initializeWithDefaults(this);
         SharedPreferences sharedPreferences = getSharedPreferences("user_cookie", MODE_PRIVATE);
         String sessionId = sharedPreferences.getString("cookie", "");
         if (!sessionId.equals("")) {

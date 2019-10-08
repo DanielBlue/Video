@@ -1,5 +1,7 @@
 package http;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +30,7 @@ public class OktHttpUtil {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
+                .addNetworkInterceptor(new StethoInterceptor())
                 .build();
 
     }

@@ -23,4 +23,9 @@
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowIsFloating">true</item>
     </style>
+
+    <style name="comment_detail_anim">
+        <item name="android:windowEnterAnimation">@anim/comment_detail_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/comment_detail_exit_anim</item>
+    </style>
 </resources>

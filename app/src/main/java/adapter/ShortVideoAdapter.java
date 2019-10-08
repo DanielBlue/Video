@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,7 +37,7 @@ import bean.HomeVideoImg;
 import bean.ShareVideo;
 import bean.UserInfo;
 import bean.VideoSupportOrUn;
-import customeview.CommentPopupWindow;
+import customeview.CommentDialog;
 import customeview.ShortVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
@@ -197,7 +198,9 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
             @Override
             public void onClick(View v) {
                 if (MyApplication.getInstance().getUserInfo() != null) {
-                    new CommentPopupWindow(mContext, getData(), helper.getAdapterPosition());
+                    if (mContext instanceof AppCompatActivity) {
+                        ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction().add(CommentDialog.newInstance(getData(), helper.getAdapterPosition()), "CommentDialog").commitAllowingStateLoss();
+                    }
                 } else {
                     Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(mContext, LoginActivity.class);

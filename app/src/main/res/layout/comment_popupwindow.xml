@@ -2,119 +2,113 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="400dp"
+    android:background="@drawable/shape_radis">
 
     <RelativeLayout
+        android:id="@+id/rl_sendcomment"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:background="@drawable/shape_radis">
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorlowgray">
 
-        <RelativeLayout
-            android:id="@+id/rl_sendcomment"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorlowgray">
-
-            <Button
-                android:id="@+id/bt_sendcomment"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@null"
-                android:gravity="center_vertical"
-                android:text="@string/bt_sendcomment"
-                android:textColor="@color/red"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/bt_at"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/bt_sendcomment"
-                android:background="@null"
-                android:gravity="center"
-                android:text="@string/bt_at"
-                android:textColor="@color/red"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/et_comment"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@id/bt_at"
-                android:background="@drawable/shapa_linearlayout"
-                android:gravity="center_vertical"
-                android:hint="@string/et_changecomment"
-                android:paddingStart="10dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/colorlowgray"
-                android:textSize="18sp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_allcomment"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_alignParentTop="true">
-
-            <TextView
-                android:id="@+id/tv_allcommentaccount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/tv_allcomment"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/bt_commentcancel"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                android:background="@mipmap/off" />
-        </RelativeLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/comment_recyleview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/rl_sendcomment"
-            android:layout_below="@id/rl_allcomment" />
-
-        <com.am.shortVideo.view.BubbleLayout
-            android:id="@+id/bl_at"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/bt_sendcomment"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="60dp"
-            android:padding="16dp"
-            android:visibility="gone"
-            app:background_color="@color/bg_da6464"
-            app:radius="4dp">
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:text="@string/bt_sendcomment"
+            android:textColor="@color/red"
+            android:textSize="18sp" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/comment_recyleview1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/bt_at"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/bt_sendcomment"
+            android:background="@null"
+            android:gravity="center"
+            android:text="@string/bt_at"
+            android:textColor="@color/red"
+            android:textSize="18sp" />
 
-        </com.am.shortVideo.view.BubbleLayout>
+        <EditText
+            android:id="@+id/et_comment"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/bt_at"
+            android:background="@drawable/shapa_linearlayout"
+            android:gravity="center_vertical"
+            android:hint="@string/et_changecomment"
+            android:paddingStart="10dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/colorlowgray"
+            android:textSize="18sp" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_allcomment"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/tv_allcommentaccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/tv_allcomment"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/bt_commentcancel"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:background="@mipmap/off" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/comment_recyleview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_sendcomment"
+        android:layout_below="@id/rl_allcomment" />
+
+    <com.am.shortVideo.view.BubbleLayout
+        android:id="@+id/bl_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="60dp"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:background_color="@color/bg_da6464"
+        app:radius="4dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/comment_recyleview1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </com.am.shortVideo.view.BubbleLayout>
 
 </RelativeLayout>
