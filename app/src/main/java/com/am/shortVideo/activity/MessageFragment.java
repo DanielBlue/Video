@@ -182,12 +182,13 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
         if (event != null) {
             if (event instanceof RedDotEvent) {
                 int pushType = ((RedDotEvent) event).getPushType();
+                boolean isShow = ((RedDotEvent) event).isShow();
                 if (pushType == 1) {
-                    mViewDotSupport.setVisibility(View.VISIBLE);
+                    mViewDotSupport.setVisibility(isShow?View.VISIBLE:View.INVISIBLE);
                 } else if (pushType == 2) {
-                    mViewDotFans.setVisibility(View.VISIBLE);
+                    mViewDotFans.setVisibility(isShow?View.VISIBLE:View.INVISIBLE);
                 } else if (pushType == 3) {
-                    mViewDotComment.setVisibility(View.VISIBLE);
+                    mViewDotComment.setVisibility(isShow?View.VISIBLE:View.INVISIBLE);
                 }
 
                 updateHomeRedDotState();
