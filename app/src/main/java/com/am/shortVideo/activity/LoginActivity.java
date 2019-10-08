@@ -173,7 +173,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 maps.put("password", et_inputpassword.getText().toString().trim());
                                 maps.put("type", "2");
                                 maps.put("deviceId", tm.getDeviceId());
-                                maps.put("deviceType", "1");
+                                maps.put("deviceType", "android");
                                 okHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.LoginOrRegister.REQUEST_HEADER_LOGIN
                                         , maps, loginCallBack);
                             }

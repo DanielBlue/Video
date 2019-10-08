@@ -212,7 +212,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_below="@id/ll_linearlayout"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="7dp"
             android:background="@mipmap/xiepinglun" />
 

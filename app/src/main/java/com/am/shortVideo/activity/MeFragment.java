@@ -98,7 +98,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         me_swiprefreshlayout.setRefreshing(false);
                         islogin = false;
                         bt_changpersoninfo.setText(getActivity().getResources().getString(R.string.me_editorinfo));
-                        bt_changpersoninfo.setBackground(getActivity().getResources().getDrawable(R.drawable.bg_round_999999));
                         if (!userInfo.getData().getUserInfo().getAvatar().isEmpty()) {
                             Glide.with(getActivity()).load(HttpUri.BASE_DOMAIN + userInfo.getData().getUserInfo().getAvatar())
                                     .into(me_circleImageView);
