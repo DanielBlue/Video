@@ -3,6 +3,8 @@ package com.tiktokdemo.lky.tiktokdemo.utils;
 import android.content.Context;
 import android.widget.Toast;
 
+import application.MyApplication;
+
 public class ToastTool {
 
     private static Toast mToast;
@@ -19,14 +21,19 @@ public class ToastTool {
      * @param context 上下文对象
      * @param message 需要显示的字符串信息
      */
-    public static void showShort(Context context, CharSequence message) {
+    public static void showShort(final Context context, final CharSequence message) {
         if (isShow){
-            if(mToast == null){
-                mToast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-            }else{
-                mToast.setText(message);
-            }
-            mToast.show();
+            MyApplication.mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(mToast == null){
+                        mToast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+                    }else{
+                        mToast.setText(message);
+                    }
+                    mToast.show();
+                }
+            });
         }
     }
 

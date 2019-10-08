@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#000"
+                android:orientation="vertical">
 
     <customeview.ShortVideoPlayer
         android:id="@+id/video_player"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
@@ -28,7 +29,7 @@
                 android:id="@+id/user_circleImage"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:src="@mipmap/app_icon" />
+                android:src="@mipmap/app_icon"/>
 
             <Button
                 android:id="@+id/user_attention"
@@ -37,7 +38,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="-10dp"
-                android:background="@mipmap/add" />
+                android:background="@mipmap/add"/>
 
         </RelativeLayout>
 
@@ -48,34 +49,34 @@
             android:layout_height="30dp"
             android:layout_marginTop="40dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/dianzan" />
+            android:src="@mipmap/dianzan"/>
 
         <TextView
             android:id="@+id/tv_likecount"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginTop="10dp"
-            android:textColor="@color/white"
             android:gravity="center"
             android:text="1"
-            android:textSize="12sp" />
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
 
         <ImageView
             android:id="@+id/iv_usercomment"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="10dp"
-            android:src="@mipmap/pinglun" />
+            android:src="@mipmap/pinglun"/>
 
         <TextView
             android:id="@+id/tv_commentcount"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:textColor="@color/white"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="1"
-            android:textSize="12sp" />
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
 
 
         <ImageView
@@ -83,18 +84,18 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="10dp"
-            android:src="@mipmap/fenxiang" />
+            android:src="@mipmap/fenxiang"/>
 
 
         <TextView
             android:id="@+id/tv_sharecount"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:textColor="@color/white"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="1"
-            android:textSize="12sp" />
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
 
     </LinearLayout>
 
@@ -111,7 +112,7 @@
         android:gravity="center_vertical"
         android:maxLines="3"
         android:textColor="@color/colorWhite"
-        android:textSize="18sp" />
+        android:textSize="18sp"/>
 
     <RelativeLayout
         android:id="@+id/rl_location"
@@ -128,7 +129,7 @@
             android:layout_height="24dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:background="@mipmap/dingwei" />
+            android:background="@mipmap/dingwei"/>
 
         <TextView
             android:id="@+id/tv_authoritycity"
@@ -140,7 +141,7 @@
             android:layout_toEndOf="@id/dingwei"
             android:gravity="center_vertical"
             android:textColor="@color/colorWhite"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -159,7 +160,7 @@
             android:layout_height="20dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:background="@mipmap/gouwuche" />
+            android:background="@mipmap/gouwuche"/>
 
         <TextView
             android:id="@+id/tv_recommendfood"
@@ -171,7 +172,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/colorWhite"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
     </RelativeLayout>
 
 </RelativeLayout>

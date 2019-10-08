@@ -14,7 +14,6 @@ import com.am.shortVideo.activity.LoginActivity;
 public class BaseUtils {
     public static AlertDialog getLoginDialog(final Context context) {
         return new AlertDialog.Builder(context, R.style.Theme_AppCompat_Light_Dialog_Alert)
-                .setTitle("警告")
                 .setMessage(R.string.tv_logincontent)
                 .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
                     @Override

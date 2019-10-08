@@ -31,6 +31,7 @@ import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.Response;
 import util.HttpUri;
+import util.JPushUtils;
 import util.PreferencesUtil;
 
 /**
@@ -48,8 +49,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private HashMap<String, String> sessionMaps = new HashMap<>();
     private Callback loginCallBack = new Callback() {
         @Override
-        public void onFailure(Call call, IOException e) {
-
+        public void onFailure(Call call, final IOException e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(LoginActivity.this, "请求失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override
@@ -75,6 +81,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 //Log.d(TAG, "onResponse1: "+s1);
                 sessionMaps.put("cookie", s);
                 ((MyApplication) getApplication()).setMaps(sessionMaps, "save");
+                JPushUtils.setAlias(LoginActivity.this, login.getData().user.phone);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -172,7 +179,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 maps.put("phone", et_inputpassphone.getText().toString().trim());
                                 maps.put("password", et_inputpassword.getText().toString().trim());
                                 maps.put("type", "2");
-                                maps.put("deviceId", tm.getDeviceId());
+                                maps.put("deviceId", et_inputpassphone.getText().toString().trim());
                                 maps.put("deviceType", "android");
                                 okHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.LoginOrRegister.REQUEST_HEADER_LOGIN
                                         , maps, loginCallBack);
@@ -181,7 +188,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         .onDenied(new Action<List<String>>() {
                             @Override
                             public void onAction(List<String> data) {
-
+                                Toast.makeText(LoginActivity.this, "权限被拒绝", Toast.LENGTH_SHORT);
                             }
                         })
                         .start();

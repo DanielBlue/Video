@@ -1,6 +1,5 @@
 package com.am.shortVideo.activity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,15 +21,12 @@ import com.am.shortVideo.R;
 import com.google.gson.Gson;
 import com.tiktokdemo.lky.tiktokdemo.record.RecordVideoActivity;
 import com.umeng.socialize.UMShareAPI;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
-import java.util.List;
 
 import application.MyApplication;
 import base.BaseActivity;
@@ -114,7 +110,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void initEventAndData() {
         oktHttpUtil = ((MyApplication) getApplicationContext()).getOkHttpUtil();
-        initPermission();
         EventBus.getDefault().register(this);
         initView();
         setLinstener();
@@ -174,29 +169,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         iv_me = (ImageView) findViewById(R.id.iv_me);
         fragmentManger = getSupportFragmentManager();
         switchFragment(0);
-    }
-
-    private void initPermission() {
-        AndPermission.with(this)
-                .runtime()
-                .permission(android.Manifest.permission.CAMERA,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.READ_PHONE_STATE)
-                .onGranted(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> data) {
-
-                    }
-                })
-                .onDenied(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> data) {
-
-                    }
-                })
-                .start();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

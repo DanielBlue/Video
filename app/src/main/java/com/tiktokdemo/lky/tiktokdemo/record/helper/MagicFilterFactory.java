@@ -1,12 +1,11 @@
 package com.tiktokdemo.lky.tiktokdemo.record.helper;
 
-import java.util.ArrayList;
-
 import android.graphics.BitmapFactory;
 
-import com.tiktokdemo.lky.tiktokdemo.BaseApplication;
 import com.tiktokdemo.lky.tiktokdemo.record.camera.filter.base.gpuimage.GPUImageFilterGroup;
 import com.tiktokdemo.lky.tiktokdemo.record.camera.filter.base.gpuimage.GPUImageLookupFilter;
+
+import java.util.ArrayList;
 
 import application.MyApplication;
 
@@ -113,12 +112,12 @@ public class MagicFilterFactory{
     }
 
     public GPUImageFilterGroup getGPUImageFilterGroup() {
-//        mGPUImageFilterGroup = new GPUImageFilterGroup();
+        mGPUImageFilterGroup = new GPUImageFilterGroup();
 //        if(mCurrentFilterType != TidalPatFilterType.original){
-//            mGPUImageLookupFilter = new GPUImageLookupFilter();
-//            mGPUImageLookupFilter.setBitmap(BitmapFactory
-//                    .decodeResource(MyApplication.mContext.getResources(), mCurrentFilterType.getFilterRes()));
-//            mGPUImageFilterGroup.addFilter(mGPUImageLookupFilter);
+            mGPUImageLookupFilter = new GPUImageLookupFilter();
+            mGPUImageLookupFilter.setBitmap(BitmapFactory
+                    .decodeResource(MyApplication.mContext.getResources(), mCurrentFilterType.getFilterRes()));
+            mGPUImageFilterGroup.addFilter(mGPUImageLookupFilter);
 //        }
 
 

@@ -46,10 +46,10 @@ public class RecordVideoPresenter implements RecordVideoContract.Presenter {
     private RecordTimeType mRecordTimeType = RecordTimeType.RECORD_TIME_15;
     private final String SPEED_AUDIO_FILE_NAME = "SpeedAudioFile";
     private final int VIDEO_RECORD_MIN_TIME = 3000;
-    public final int VIDEO_RECORD_MAX_TIME = 60000;
+//    public final int VIDEO_RECORD_MAX_TIME = 15000;
     public final int VIDEO_RECORD_MAX_TIME_120 = 120000;
 
-    private int mMaxRecordTime = VIDEO_RECORD_MAX_TIME;
+    private int mMaxRecordTime = 15000;
 
     private RecordVideoContract.View mView;
     private MusicBean mMusicBean;
