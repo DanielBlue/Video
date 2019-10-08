@@ -66,13 +66,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
-
+            <View
+                android:id="@+id/view_dot_message"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:background="@drawable/oval_bg_e53838"
+                />
             <ImageView
                 android:id="@+id/iv_message"
                 android:layout_width="wrap_content"
@@ -80,7 +89,7 @@
                 android:layout_gravity="center"
                 android:src="@mipmap/xiaoxi_1" />
 
-        </LinearLayout>
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="0dp"

@@ -9,10 +9,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,21 +24,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.am.shortVideo.R;
-import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PushHistoryMessageAdapter;
-import application.MyApplication;
 import bean.HistoryMessageBean;
-import customeview.LoginPopupwindow;
+import event.MessageEvent;
+import event.RedDotEvent;
 import http.OktHttpUtil;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import util.HttpUri;
 
 /**
  * Created by 李杰 on 2019/8/12.
@@ -59,7 +57,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
     private RecyclerView message_recylce;
     private OktHttpUtil okHttpUtil;
     private List<HistoryMessageBean.DataBean.PushHistoryBean> datas = new ArrayList<>();
-//    private Handler handler = new Handler() {
+    //    private Handler handler = new Handler() {
 //        @Override
 //        public void handleMessage(Message msg) {
 //            super.handleMessage(msg);
@@ -103,17 +101,28 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
 //    };
     private PushHistoryMessageAdapter pushhistoryAdapter;
     private HistoryMessageBean.DataBean.PushHistoryBean messageHelp;
+    private View mViewDotFans;
+    private View mViewDotSupport;
+    private View mViewDotComment;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.message_fragment, container, false);
+        EventBus.getDefault().register(this);
         okHttpUtil = OktHttpUtil.getInstance();
         initView();
 //        initData();
         setOnclickLinstenr();
         return view;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
 
     private void setOnclickLinstenr() {
         bt_location.setOnClickListener(this);
@@ -152,6 +161,10 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
         datas.add(messageHelp);
         pushhistoryAdapter = new PushHistoryMessageAdapter(datas, getActivity());
         message_recylce.setAdapter(pushhistoryAdapter);
+
+        mViewDotFans = view.findViewById(R.id.view_dot_fans);
+        mViewDotSupport = view.findViewById(R.id.view_dot_support);
+        mViewDotComment = view.findViewById(R.id.view_dot_comment);
     }
 
     public void getLocationAddress() {
@@ -164,6 +177,36 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
         //locationManger.requestLocationUpdates("networks",0,0,locationListenr);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent event) {
+        if (event != null) {
+            if (event instanceof RedDotEvent) {
+                int pushType = ((RedDotEvent) event).getPushType();
+                if (pushType == 1) {
+                    mViewDotSupport.setVisibility(View.VISIBLE);
+                } else if (pushType == 2) {
+                    mViewDotFans.setVisibility(View.VISIBLE);
+                } else if (pushType == 3) {
+                    mViewDotComment.setVisibility(View.VISIBLE);
+                }
+
+                updateHomeRedDotState();
+            }
+        }
+    }
+
+    /**
+     * 更新首页红点
+     */
+    private void updateHomeRedDotState() {
+        FragmentActivity activity = getActivity();
+        if (activity instanceof MainActivity) {
+            ((MainActivity) activity).updateHomeRedDotState(mViewDotSupport.getVisibility() == View.VISIBLE ||
+                    mViewDotFans.getVisibility() == View.VISIBLE ||
+                    mViewDotComment.getVisibility() == View.VISIBLE);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -172,14 +215,20 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
             case R.id.ll_fans:
                 Intent intent = new Intent(getActivity(), FansActivity.class);
                 startActivity(intent);
+                mViewDotFans.setVisibility(View.INVISIBLE);
+                updateHomeRedDotState();
                 break;
             case R.id.ll_messagecommentand:
                 Intent intent1 = new Intent(getActivity(), CommentAndActivity.class);
                 startActivity(intent1);
+                mViewDotComment.setVisibility(View.INVISIBLE);
+                updateHomeRedDotState();
                 break;
             case R.id.ll_support:
                 Intent intent2 = new Intent(getActivity(), LikeListActivity.class);
                 startActivity(intent2);
+                mViewDotSupport.setVisibility(View.INVISIBLE);
+                updateHomeRedDotState();
                 break;
             default:
         }

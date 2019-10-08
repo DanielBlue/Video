@@ -50,6 +50,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Button bt_capture;
     private ImageView iv_message;
     private ImageView iv_me;
+    private View mViewDotMessage;
     private FragmentManager fragmentManger;
     private int curFragment = -1;
     private HomeFragment homeFragment;
@@ -167,8 +168,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         bt_capture = (Button) findViewById(R.id.bt_capture);
         iv_message = (ImageView) findViewById(R.id.iv_message);
         iv_me = (ImageView) findViewById(R.id.iv_me);
+        mViewDotMessage = findViewById(R.id.view_dot_message);
         fragmentManger = getSupportFragmentManager();
         switchFragment(0);
+    }
+
+    public void updateHomeRedDotState(boolean isShow) {
+        mViewDotMessage.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

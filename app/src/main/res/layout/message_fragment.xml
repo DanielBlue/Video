@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
         android:id="@+id/toolbar"
@@ -17,7 +18,7 @@
             android:orientation="vertical"
             app:use_type="use_padding_top">
 
-            <include layout="@layout/message_title" />
+            <include layout="@layout/message_title"/>
 
         </com.am.shortVideo.view.StatusBarHeightView>
 
@@ -39,86 +40,132 @@
             android:layout_weight="1"
             android:text="@string/bt_location"
             android:textSize="20sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
-        <LinearLayout
-            android:id="@+id/ll_fans"
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@mipmap/fensi" />
-
-            <TextView
-                android:id="@+id/tv_fans"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
+            <LinearLayout
+                android:id="@+id/ll_fans"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/title_fans"
-                android:textColor="@color/colorWhite"
-                android:textSize="16dp" />
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@mipmap/fensi"/>
 
-        <LinearLayout
-            android:id="@+id/ll_support"
+                <TextView
+                    android:id="@+id/tv_fans"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="@string/title_fans"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16dp"/>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_dot_fans"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="30dp"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:background="@drawable/oval_bg_e53838"
+                />
+        </FrameLayout>
+
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@mipmap/zan" />
-
-            <TextView
-                android:id="@+id/tv_messagesupport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <View
+                android:id="@+id/view_dot_support"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="30dp"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:background="@drawable/oval_bg_e53838"
+                />
+            <LinearLayout
+                android:id="@+id/ll_support"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/title_support"
-                android:textColor="@color/colorWhite"
-                android:textSize="16dp" />
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@mipmap/zan"/>
 
-        <LinearLayout
-            android:id="@+id/ll_messagecommentand"
+                <TextView
+                    android:id="@+id/tv_messagesupport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="@string/title_support"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16dp"/>
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@mipmap/ping_lun" />
-
-            <TextView
-                android:id="@+id/tv_messagecomment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <View
+                android:id="@+id/view_dot_comment"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="30dp"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:background="@drawable/oval_bg_e53838"
+                />
+            <LinearLayout
+                android:id="@+id/ll_messagecommentand"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/message_comment"
-                android:textColor="@color/colorWhite"
-                android:textSize="16dp" />
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@mipmap/ping_lun"/>
 
+                <TextView
+                    android:id="@+id/tv_messagecomment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="@string/message_comment"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16dp"/>
+
+            </LinearLayout>
+        </FrameLayout>
     </LinearLayout>
 
     <View
@@ -126,7 +173,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/ll_messageselect"
-        android:background="@color/colorGray" />
+        android:background="@color/colorGray"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/message_recycle"

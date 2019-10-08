@@ -10,9 +10,11 @@ import com.am.shortVideo.activity.CommentAndActivity;
 import com.am.shortVideo.activity.FansActivity;
 import com.am.shortVideo.activity.LikeListActivity;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import cn.jpush.android.api.JPushInterface;
+import event.RedDotEvent;
 
 /**
  * Created by JC on 2019/9/10.
@@ -39,8 +41,10 @@ public class JPushReceiver extends BroadcastReceiver {
                 Log.d(TAG, "onReceive: ACTION_NOTIFICATION_OPENED");
                 //当用户点击通知时的操作,打开自定义的Activity
                 String extraJson = bundle.getString(JPushInterface.EXTRA_EXTRA);
+                Log.d(TAG, "收到的内容: "+extraJson);
                 JSONObject jsonObject = new JSONObject(extraJson);
                 int pushType = jsonObject.getInt("push_type");
+                EventBus.getDefault().post(new RedDotEvent(pushType));
                 if (pushType==1){
                     Intent intent1 = new Intent(context, LikeListActivity.class);
                     intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
