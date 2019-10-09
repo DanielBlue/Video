@@ -72,7 +72,8 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
         Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getAvatar()).into((ImageView) helper.getView(R.id.user_circleImage));
 
         if (item.isFollowStatus() || TextUtils.equals(item.getUid(), ((MyApplication) mContext.getApplicationContext()).getUseruid())) {
-            helper.setVisible(R.id.user_attention, false);
+            helper.setVisible(R.id.user_attention, true)
+                    .setBackgroundRes(R.id.user_attention, R.mipmap.list_follow);
         } else {
             helper.setVisible(R.id.user_attention, true)
                     .setBackgroundRes(R.id.user_attention, R.mipmap.add);
@@ -478,9 +479,10 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                     ((Activity) mContext).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            getData().get(helper.getLayoutPosition()).setFollowStatus(cancelPerson.getData().isFollowStatus());
                                             if (cancelPerson.getData().isFollowStatus()) {
-                                                helper.setVisible(R.id.user_attention, false)
-                                                        .setBackgroundRes(R.id.user_attention, R.mipmap.list_xihuan);
+                                                helper.setVisible(R.id.user_attention, true)
+                                                        .setBackgroundRes(R.id.user_attention, R.mipmap.list_follow);
                                             } else {
                                                 helper.setVisible(R.id.user_attention, true)
                                                         .setBackgroundRes(R.id.user_attention, R.mipmap.add);
