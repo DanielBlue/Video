@@ -142,9 +142,7 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
                                             @Override
                                             public void run() {
                                                 if (!userinfo.getData().getUserInfo().getUid().equals(datas.get(position))) {
-                                                    Intent intent = new Intent(context, OtherUserInfoActivity.class);
-                                                    intent.putExtra("otheruserinfo", datas.get(position).getUid());
-                                                    context.startActivity(intent);
+                                                    OtherUserInfoActivity.start(context,datas.get(position).getUid(),true);
                                                 } else {
                                                     Toast.makeText(context, "请在个人中心查看信息", Toast.LENGTH_SHORT).show();
                                                 }

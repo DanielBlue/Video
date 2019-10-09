@@ -114,7 +114,8 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
         Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getAvatar()).into((ImageView) helper.getView(R.id.user_circleImage));
         if (item.isFollowStatus()) {
-            helper.setVisible(R.id.user_attention, false);
+            helper.setVisible(R.id.user_attention, true)
+                    .setBackgroundRes(R.id.user_attention, R.mipmap.list_follow);
         } else {
             helper.setVisible(R.id.user_attention, true)
                     .setBackgroundRes(R.id.user_attention, R.mipmap.add);
@@ -403,8 +404,8 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                         @Override
                                         public void run() {
                                             if (cancelPerson.getData().isFollowStatus()) {
-                                                helper.setVisible(R.id.user_attention,false)
-                                                        .setBackgroundRes(R.id.user_attention,R.mipmap.list_xihuan);
+                                                helper.setVisible(R.id.user_attention,true)
+                                                        .setBackgroundRes(R.id.user_attention, R.mipmap.list_follow);
                                             } else {
                                                 helper.setVisible(R.id.user_attention,true)
                                                         .setBackgroundRes(R.id.user_attention,R.mipmap.add);

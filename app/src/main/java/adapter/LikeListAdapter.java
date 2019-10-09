@@ -102,9 +102,7 @@ public class LikeListAdapter extends MyAllBaseAdapter<LikeListShow.DataBean.Page
                                             @Override
                                             public void run() {
                                                 if(!userinfo.getData().getUserInfo().getUid().equals(dates.get(position))) {
-                                                    Intent intent = new Intent(context, OtherUserInfoActivity.class);
-                                                    intent.putExtra("otheruserinfo", dates.get(position).getUid());
-                                                    context.startActivity(intent);
+                                                    OtherUserInfoActivity.start(context,dates.get(position).getUid(),true);
                                                 }else{
                                                     Toast.makeText(context,"请在个人中心查看信息",Toast.LENGTH_SHORT).show();
                                                 }

@@ -2,7 +2,6 @@ package adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,9 +120,7 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
                                             @Override
                                             public void run() {
                                                 if (!userinfo.getData().getUserInfo().getUid().equals(datas.get(position))) {
-                                                    Intent intent = new Intent(context, OtherUserInfoActivity.class);
-                                                    intent.putExtra("otheruserinfo", datas.get(position).getCommentUid());
-                                                    context.startActivity(intent);
+                                                    OtherUserInfoActivity.start(context,datas.get(position).getCommentUid(),true);
                                                 } else {
                                                     Toast.makeText(context, "请在个人中心查看信息", Toast.LENGTH_SHORT).show();
                                                 }

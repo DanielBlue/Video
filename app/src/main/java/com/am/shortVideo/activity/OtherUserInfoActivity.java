@@ -1,5 +1,7 @@
 package com.am.shortVideo.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,7 +68,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
     private View me_line2;
     private View me_line3;
     private ArrayList<PublishVideoInfo> bitmaps = new ArrayList<>();
-    private boolean curFoolowStatus;
+    private boolean curFollowStatus;
     private CircleProgressDialog circleprogressDialog;
     private String other_userinfo;
     private TextView fans_title;
@@ -75,6 +77,16 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
     private int countItem;
     private int lastItem;
     private int currentPage = 1;
+
+    public static void start(Context context, String uid, boolean curFollowStatus) {
+        Intent starter = new Intent(context, OtherUserInfoActivity.class);
+        starter.putExtra("otheruserinfo", uid);
+        starter.putExtra("curFollowStatus", curFollowStatus);
+        if (!(context instanceof Activity)) {
+            starter.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        context.startActivity(starter);
+    }
 
     private Handler mHandler = new Handler() {
         @Override
@@ -98,11 +110,9 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                         if (!userInfo.getData().getUserInfo().getUid().isEmpty()) {
                             me_useraccount.setText(userInfo.getData().getUserInfo().getUid());
                         }
-                        if (userInfo.getData().getUserInfo().isFollowState()) {
-                            curFoolowStatus = true;
+                        if (curFollowStatus) {
                             bt_changpersoninfo.setText("取消关注");
                         } else {
-                            curFoolowStatus = false;
                             bt_changpersoninfo.setText("关注");
                         }
                         me_fanscount.setText("" + userInfo.getData().getUserInfo().getFansCount());
@@ -191,6 +201,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
     protected void initEventAndData() {
         circleprogressDialog = new CircleProgressDialog(this);
         other_userinfo = getIntent().getStringExtra("otheruserinfo");
+        curFollowStatus = getIntent().getBooleanExtra("curFollowStatus", false);
         oktHttpUtil = OktHttpUtil.getInstance();
         initView();
     }
@@ -316,7 +327,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                                     attentionEvent.uid = other_userinfo;
                                     if (attentionPersonorcancel.getData().isFollowStatus()) {
                                         attentionEvent.isAttent = true;
-                                        curFoolowStatus = true;
+                                        curFollowStatus = true;
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -325,7 +336,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                                         });
                                     } else {
                                         attentionEvent.isAttent = false;
-                                        curFoolowStatus = false;
+                                        curFollowStatus = false;
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -350,7 +361,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
 
     private void changeAttention() {
         for (int i = 0; i < dates.size(); i++) {
-            dates.get(i).setFollowStatus(curFoolowStatus);
+            dates.get(i).setFollowStatus(curFollowStatus);
         }
     }
 }

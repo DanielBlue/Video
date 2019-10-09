@@ -435,9 +435,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                         @Override
                                         public void run() {
                                             if (!userinfo.getData().getUserInfo().getUid().equals(item)) {
-                                                Intent intent = new Intent(mContext, OtherUserInfoActivity.class);
-                                                intent.putExtra("otheruserinfo", item.getUid());
-                                                mContext.startActivity(intent);
+                                                OtherUserInfoActivity.start(mContext,item.getUid(),item.isFollowStatus());
                                             } else {
                                                 Toast.makeText(mContext, "请在个人中心查看信息", Toast.LENGTH_SHORT).show();
                                             }
