@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.LoginActivity;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
@@ -26,6 +27,8 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMWeb;
 import com.umeng.socialize.shareboard.SnsPlatform;
 import com.umeng.socialize.utils.ShareBoardlistener;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -485,6 +488,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                                 helper.setVisible(R.id.user_attention, true)
                                                         .setBackgroundRes(R.id.user_attention, R.mipmap.add);
                                             }
+                                            EventBus.getDefault().post(new AttentionEvent(item.getUid(), cancelPerson.getData().isFollowStatus()));
                                             item.setFollowStatus(cancelPerson.getData().isFollowStatus());
                                         }
                                     });

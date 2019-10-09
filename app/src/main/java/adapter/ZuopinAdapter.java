@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -22,6 +23,8 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMWeb;
 import com.umeng.socialize.shareboard.SnsPlatform;
 import com.umeng.socialize.utils.ShareBoardlistener;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -113,7 +116,9 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                 .setText(R.id.tv_recommendfood, item.getGoodsName());
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
         Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getAvatar()).into((ImageView) helper.getView(R.id.user_circleImage));
-        if (item.isFollowStatus()) {
+        if (item.getUid().equals(MyApplication.getInstance().getUseruid())) {
+            helper.setVisible(R.id.user_attention, false);
+        } else if (item.isFollowStatus()) {
             helper.setVisible(R.id.user_attention, true)
                     .setBackgroundRes(R.id.user_attention, R.mipmap.list_follow);
         } else {
@@ -147,13 +152,13 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                         @Override
                                         public void run() {
                                             if (videoSupport.getData().isLikeStatus()) {
-                                                helper.setImageResource(R.id.iv_support,R.mipmap.list_xihuan);
+                                                helper.setImageResource(R.id.iv_support, R.mipmap.list_xihuan);
                                             } else {
-                                                helper.setImageResource(R.id.iv_support,R.mipmap.dianzan);
+                                                helper.setImageResource(R.id.iv_support, R.mipmap.dianzan);
                                             }
                                             item.setLikeStatus(videoSupport.getData().isLikeStatus());
                                             item.setLikeCounts(videoSupport.getData().getLikeCounts());
-                                            helper.setText(R.id.tv_likecount,"" + videoSupport.getData().getLikeCounts());
+                                            helper.setText(R.id.tv_likecount, "" + videoSupport.getData().getLikeCounts());
                                         }
                                     });
                                 } else if (videoSupport.getCode() == 1005) {
@@ -216,7 +221,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                                                     Gson gson = new Gson();
                                                                     ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                     if (shareVideo.getCode() == 0) {
-                                                                        helper.setText(R.id.tv_sharecount,"" + shareVideo.getData().getShareCounts());
+                                                                        helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
                                                                     }
                                                                 }
                                                             });
@@ -259,7 +264,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                                                     Gson gson = new Gson();
                                                                     ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                     if (shareVideo.getCode() == 0) {
-                                                                        helper.setText(R.id.tv_sharecount,"" + shareVideo.getData().getShareCounts());
+                                                                        helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
                                                                     }
                                                                 }
                                                             });
@@ -313,7 +318,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                                                                     Gson gson = new Gson();
                                                                                     ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                                     if (shareVideo.getCode() == 0) {
-                                                                                        helper.setText(R.id.tv_sharecount,"" + shareVideo.getData().getShareCounts());
+                                                                                        helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
                                                                                     }
                                                                                 }
                                                                             });
@@ -358,7 +363,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                                                     Gson gson = new Gson();
                                                                     ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                     if (shareVideo.getCode() == 0) {
-                                                                        helper.setText(R.id.tv_sharecount,"" + shareVideo.getData().getShareCounts());
+                                                                        helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
                                                                     }
                                                                 }
                                                             });
@@ -404,13 +409,14 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                                         @Override
                                         public void run() {
                                             if (cancelPerson.getData().isFollowStatus()) {
-                                                helper.setVisible(R.id.user_attention,true)
+                                                helper.setVisible(R.id.user_attention, true)
                                                         .setBackgroundRes(R.id.user_attention, R.mipmap.list_follow);
                                             } else {
-                                                helper.setVisible(R.id.user_attention,true)
-                                                        .setBackgroundRes(R.id.user_attention,R.mipmap.add);
+                                                helper.setVisible(R.id.user_attention, true)
+                                                        .setBackgroundRes(R.id.user_attention, R.mipmap.add);
                                             }
                                             item.setFollowStatus(cancelPerson.getData().isFollowStatus());
+                                            EventBus.getDefault().post(new AttentionEvent(item.getUid(), cancelPerson.getData().isFollowStatus()));
                                         }
                                     });
                                 } else if (cancelPerson.getCode() == 1005) {

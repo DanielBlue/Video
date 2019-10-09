@@ -9,10 +9,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -108,16 +111,16 @@ public class AttentionAdapter extends MyAllBaseAdapter<AttentionPerson.DataBean.
                                     Gson gson = new Gson();
                                     AttentionOrCancelPerson attentionPersonorcancel = gson.fromJson(attentionResult, AttentionOrCancelPerson.class);
                                     if (attentionPersonorcancel.getCode() == 0) {
-                                        if (attentionPersonorcancel.getData().isFollowStatus()) {
+                                        if (!attentionPersonorcancel.getData().isFollowStatus()) {
                                             ((Activity) context).runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     datas.remove(position);
                                                     notifyDataSetChanged();
-
                                                 }
                                             });
                                         }
+                                        EventBus.getDefault().post(new AttentionEvent(datas.get(position).getUid(), attentionPersonorcancel.getData().isFollowStatus()));
                                     } else if (attentionPersonorcancel.getCode() == 1005) {
                                         BaseUtils.getLoginDialog(context).show();
                                     }
