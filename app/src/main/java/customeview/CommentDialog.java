@@ -24,11 +24,14 @@ import android.widget.Toast;
 
 import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
+import com.am.shortVideo.activity.AtPersonActivity;
 import com.am.shortVideo.view.BubbleLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,11 +41,13 @@ import java.util.List;
 import adapter.AtUserNickAdapter;
 import adapter.CommentAdapter;
 import application.MyApplication;
+import bean.AtPersonEvent;
 import bean.AttentionPerson;
 import bean.HomeVideoImg;
 import bean.PublishComment;
 import bean.UserInfo;
 import bean.VideoComment;
+import event.MessageEvent;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -97,6 +102,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.comment_popupwindow, null);
+        EventBus.getDefault().register(this);
         Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(rootView);
@@ -112,6 +118,12 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         this.curposition = getArguments().getInt("curposition");
         initView(rootView);
         return dialog;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -460,19 +472,34 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                 dismiss();
                 break;
             case R.id.bt_at:
-                if (!isAtClick) {
-                    isAtClick = true;
-                    if (!comentdatas.isEmpty()) {
-                        loadAtData();
-
-
-                    }
-                } else {
-                    isAtClick = false;
-                    bl_at.setVisibility(View.GONE);
-                }
+//                if (!isAtClick) {
+//                    isAtClick = true;
+//                    if (!comentdatas.isEmpty()) {
+//                        loadAtData();
+//                    }
+//                } else {
+//                    isAtClick = false;
+//                    bl_at.setVisibility(View.GONE);
+//                }
+                AtPersonActivity.start(getActivity());
                 break;
             default:
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent event) {
+        if (event != null) {
+            if (event instanceof AtPersonEvent) {
+                String nickname = ((AtPersonEvent) event).getNickname();
+                String uid = ((AtPersonEvent) event).getUid();
+                currentStatus = 1;
+                isAtClick = false;
+                At_id = uid;
+                ed_comment.setText("@" + nickname + ":");
+                ed_comment.setSelection(ed_comment.getText().length());
+                openKeybord(ed_comment, context);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.am.shortVideo">
+          package="com.am.shortVideo">
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -9,161 +10,131 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.RECORD_VIDEO" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT" />
-    <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT" />
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-
-    <!-- Required -->
-    <uses-permission android:name="com.am.shortVideo.permission.JPUSH_MESSAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-    <!-- Optional. Required for location feature -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 用于开启 debug 版本的应用在6.0 系统上 层叠窗口权限 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.RECORD_VIDEO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT"/>
+    <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> <!-- Required -->
+    <uses-permission android:name="com.am.shortVideo.permission.JPUSH_MESSAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> <!-- Optional. Required for location feature -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/> <!-- 用于开启 debug 版本的应用在6.0 系统上 层叠窗口权限 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:name="application.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:supportsRtl="true"
         android:theme="@style/Dialog_Fullscreen">
-<!--    android:theme="@style/Theme.AppCompat.Light.NoActionBar">-->
-
-<!--    android:theme="@style/Dialog_Fullscreen">-->
-        <activity android:name=".activity.WelcomActivity"
-            >
+        <activity android:name=".activity.AtPersonActivity">
+        </activity>
+        <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar"> -->
+        <!-- android:theme="@style/Dialog_Fullscreen"> -->
+        <activity android:name=".activity.WelcomActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"
+        <activity
+            android:name=".activity.MainActivity"
             android:launchMode="singleTask">
-
         </activity>
-        <activity android:name=".activity.FansActivity"
-            />
-        <activity android:name=".activity.LikeListActivity"
-            />
-        <activity android:name=".activity.CommentAndActivity"
-            />
-        <activity android:name=".activity.PersonInfoActivity"
+        <activity android:name=".activity.FansActivity"/>
+        <activity android:name=".activity.LikeListActivity"/>
+        <activity android:name=".activity.CommentAndActivity"/>
+        <activity
+            android:name=".activity.PersonInfoActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
-
         </activity>
-        <activity android:name=".activity.OtherUserInfoActivity"
+        <activity
+            android:name=".activity.OtherUserInfoActivity"
             android:launchMode="singleTask">
-
         </activity>
-        <activity android:name=".activity.HomeShowVideoActivity"
-            >
-
+        <activity android:name=".activity.HomeShowVideoActivity">
         </activity>
-        <activity android:name=".activity.ShortVideoPlayingActivity"
-            >
-
+        <activity android:name=".activity.ShortVideoPlayingActivity">
         </activity>
-        <activity android:name=".activity.RegisterActivity"
-            />
-        <activity android:name=".activity.LoginActivity"
-            >
+        <activity android:name=".activity.RegisterActivity"/>
+        <activity android:name=".activity.LoginActivity">
         </activity>
-        <activity android:name=".activity.SearchActivity"
+        <activity
+            android:name=".activity.SearchActivity"
             android:windowSoftInputMode="adjustResize|stateHidden">
-
         </activity>
-        <activity android:name=".activity.SearchResultActivity"
+        <activity
+            android:name=".activity.SearchResultActivity"
             android:windowSoftInputMode="adjustResize|stateHidden">
-
         </activity>
-        <activity android:name=".activity.SwitchChannelActivity"
-            >
+        <activity android:name=".activity.SwitchChannelActivity">
         </activity>
-        <activity android:name=".activity.LookFullScreenVideo"
-            >
-
+        <activity android:name=".activity.LookFullScreenVideo">
         </activity>
-        <activity android:name=".activity.ZuopinPlayingActivity"
-            />
-        <activity android:name=".activity.CaogaoPlayingActivity"
-            />
-        <activity android:name=".activity.UpdateAppActivity"
-            >
-
+        <activity android:name=".activity.ZuopinPlayingActivity"/>
+        <activity android:name=".activity.CaogaoPlayingActivity"/>
+        <activity android:name=".activity.UpdateAppActivity">
         </activity>
-        <activity android:name=".activity.ResetPasswordActivity"
-            >
-
+        <activity android:name=".activity.ResetPasswordActivity">
         </activity>
-        <activity android:name=".activity.ChangePassword"
-            >
-
+        <activity android:name=".activity.ChangePassword">
         </activity>
-        <activity android:name=".activity.SelectOnOrOffMessageActivity"
-            >
-
-        </activity>
-
-
-        <!--微信界面-->
+        <activity android:name=".activity.SelectOnOrOffMessageActivity">
+        </activity> <!-- 微信界面 -->
         <activity
             android:name="wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <!--视频录制相关功能-->
-        <activity android:name="com.tiktokdemo.lky.tiktokdemo.record.VideoCropActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/> <!-- 视频录制相关功能 -->
+        <activity
+            android:name="com.tiktokdemo.lky.tiktokdemo.record.VideoCropActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.tiktokdemo.lky.tiktokdemo.record.RecordVideoActivity"
+        <activity
+            android:name="com.tiktokdemo.lky.tiktokdemo.record.RecordVideoActivity"
             android:screenOrientation="portrait">
-
         </activity>
-        <activity android:name="com.tiktokdemo.lky.tiktokdemo.record.PublishVideoActivity"
+        <activity
+            android:name="com.tiktokdemo.lky.tiktokdemo.record.PublishVideoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Dialog_Fullscreen">
-
         </activity>
-        <activity android:name="com.tiktokdemo.lky.tiktokdemo.record.SelectMusicActivity"
+        <activity
+            android:name="com.tiktokdemo.lky.tiktokdemo.record.SelectMusicActivity"
             android:theme="@style/Dialog_Fullscreen">
-
         </activity>
-        <activity android:name="com.tiktokdemo.lky.tiktokdemo.record.VideoPlayActivity"
+        <activity
+            android:name="com.tiktokdemo.lky.tiktokdemo.record.VideoPlayActivity"
             android:screenOrientation="portrait">
-
         </activity>
-
-        <activity android:name=".activity.AboutUsActivity"
+        <activity
+            android:name=".activity.AboutUsActivity"
             android:screenOrientation="portrait"/>
-
-        <activity android:name=".activity.UserAgreementActivity"
+        <activity
+            android:name=".activity.UserAgreementActivity"
             android:screenOrientation="portrait"/>
-
-        <activity android:name=".activity.MessageHelpActivity"
+        <activity
+            android:name=".activity.MessageHelpActivity"
             android:screenOrientation="portrait"/>
 
         <provider
@@ -176,39 +147,45 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
+
         <receiver
             android:name="jpush.JPushLocalReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
+                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE"/>
 
-                <category android:name="com.kuaixun.danpian" />
+                <category android:name="com.kuaixun.danpian"/>
             </intent-filter>
         </receiver>
+
         <service
             android:name="jpush.JPushService"
             android:enabled="true"
             android:exported="false"
             android:process=":pushdanpian">
             <intent-filter>
-                <action android:name="cn.jiguang.user.service.action" />
+                <action android:name="cn.jiguang.user.service.action"/>
             </intent-filter>
         </service>
-        <receiver android:name="jpush.JPushReceiver"
+
+        <receiver
+            android:name="jpush.JPushReceiver"
             android:enabled="true">
             <intent-filter>
-                <!--Required 用户注册SDK的intent-->
-                <action android:name="cn.jpush.android.intent.REGISTRATION" />
-                <!--Required 用户接收SDK消息的intent-->
-                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
-                <!--Required 用户接收SDK通知栏信息的intent-->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
-                <!--Required 用户打开自定义通知栏的intent-->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+
+                <!-- Required 用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.REGISTRATION"/>
+                <!-- Required 用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED"/>
+                <!-- Required 用户接收SDK通知栏信息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED"/>
+                <!-- Required 用户打开自定义通知栏的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
                 <!-- 接收网络变化 连接/断开 since 1.6.3 -->
-                <action android:name="cn.jpush.android.intent.CONNECTION" />
-                <category android:name="com.am.shortVideo" />
+                <action android:name="cn.jpush.android.intent.CONNECTION"/>
+
+                <category android:name="com.am.shortVideo"/>
             </intent-filter>
         </receiver>
     </application>
