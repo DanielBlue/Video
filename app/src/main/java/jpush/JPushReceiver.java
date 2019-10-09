@@ -22,6 +22,7 @@ import event.RedDotEvent;
 
 public class JPushReceiver extends BroadcastReceiver {
     private static final String TAG = "JIGUANG";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive: ");
@@ -37,27 +38,31 @@ public class JPushReceiver extends BroadcastReceiver {
             } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
                 //推送通知
                 Log.d(TAG, "onReceive:ACTION_NOTIFICATION_RECEIVED ");
+                String extraJson = bundle.getString(JPushInterface.EXTRA_EXTRA);
+                Log.d(TAG, "收到的内容: " + extraJson);
+                JSONObject jsonObject = new JSONObject(extraJson);
+                int pushType = jsonObject.getInt("push_type");
+                EventBus.getDefault().post(new RedDotEvent(pushType, true));
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 Log.d(TAG, "onReceive: ACTION_NOTIFICATION_OPENED");
                 //当用户点击通知时的操作,打开自定义的Activity
                 String extraJson = bundle.getString(JPushInterface.EXTRA_EXTRA);
-                Log.d(TAG, "收到的内容: "+extraJson);
                 JSONObject jsonObject = new JSONObject(extraJson);
                 int pushType = jsonObject.getInt("push_type");
-                EventBus.getDefault().post(new RedDotEvent(pushType));
-                if (pushType==1){
+                if (pushType == 1) {
                     Intent intent1 = new Intent(context, LikeListActivity.class);
                     intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent1);
-                }else if (pushType==2){
+                } else if (pushType == 2) {
                     Intent intent2 = new Intent(context, FansActivity.class);
                     intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent2);
-                }else if (pushType==3){
+                } else if (pushType == 3) {
                     Intent intent3 = new Intent(context, CommentAndActivity.class);
                     intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent3);
                 }
+                EventBus.getDefault().post(new RedDotEvent(pushType, false));
             }
         } catch (Exception e) {
             Log.d(TAG, "onReceive:Exception ");

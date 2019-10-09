@@ -5,9 +5,15 @@ package event;
  */
 public class RedDotEvent extends MessageEvent {
     private int pushType;
+    private boolean isShow;
 
-    public RedDotEvent(int pushType) {
+    public boolean isShow() {
+        return isShow;
+    }
+
+    public RedDotEvent(int pushType,boolean isShow) {
         this.pushType = pushType;
+        this.isShow = isShow;
     }
 
     public int getPushType() {
