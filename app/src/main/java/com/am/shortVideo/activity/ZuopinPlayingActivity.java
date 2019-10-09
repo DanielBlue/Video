@@ -161,7 +161,9 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
                     case RecyclerView.SCROLL_STATE_IDLE://停止滑动
                         View view = mSnapHelper.findSnapView(layoutManger);
                         int position = layoutManger.getPosition(view);
-                        startPlay(position);
+                        if (position != mCurPosition) {
+                            startPlay(position);
+                        }
                         break;
                     case RecyclerView.SCROLL_STATE_DRAGGING://拖动
                         break;
@@ -212,35 +214,40 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
 //                    }
             }
         });
+        MyApplication.mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mCurPlayer == null) {
+                    startPlay(0);
+                }
+            }
+        },500);
     }
 
     private int mCurPosition = -1;
     private ShortVideoPlayer mCurPlayer;
 
     private void startPlay(final int position) {
-        if (position != mCurPosition) {
-            if (mCurPlayer != null) {
-                //先释放之前的播放器
-                mCurPlayer.getCurrentPlayer().release();
-            }
-
-            //当前是视频则开始播放
-            mRvList.post(new Runnable() {
-                @Override
-                public void run() {
-                    BaseViewHolder viewHolder = (BaseViewHolder) mRvList.findViewHolderForLayoutPosition(position);
-                    if (viewHolder != null) {
-                        mCurPlayer = viewHolder.getView(R.id.video_player);
-                        //开始播放
-                        if (mCurPlayer != null) {
-                            mCurPlayer.getCurrentPlayer().startPlayLogic();
-                        }
-                    }
-                }
-            });
-            mCurPosition = position;
+        if (mCurPlayer != null) {
+            //先释放之前的播放器
+            mCurPlayer.getCurrentPlayer().release();
         }
 
+        //当前是视频则开始播放
+        mRvList.post(new Runnable() {
+            @Override
+            public void run() {
+                BaseViewHolder viewHolder = (BaseViewHolder) mRvList.findViewHolderForLayoutPosition(position);
+                if (viewHolder != null) {
+                    mCurPlayer = viewHolder.getView(R.id.video_player);
+                    //开始播放
+                    if (mCurPlayer != null) {
+                        mCurPlayer.getCurrentPlayer().startPlayLogic();
+                        mCurPosition = position;
+                    }
+                }
+            }
+        });
     }
 
     private void requsetVideo() {

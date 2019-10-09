@@ -12,15 +12,15 @@ import android.widget.TextView;
 
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.CaogaoPlayingActivity;
-import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
 import bean.PublishVideoInfo;
 import util.FootViewHolder;
-import util.HttpUri;
 
 /**
  * Created by 李杰 on 2019/9/15.
@@ -59,9 +59,15 @@ public class CaogaoImgAdapter extends MyAllBaseAdapter<PublishVideoInfo,MyBaseVi
             userVideoViewHolder.iv_user_publishvideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    List<String> videoUrlList = new ArrayList<>();
+                    for (PublishVideoInfo bean:dates){
+                        videoUrlList.add(bean.getLocalurl());
+                    }
                     Intent intent = new Intent(context, CaogaoPlayingActivity.class);
-                    intent.putExtra("videourl", dates.get(position).getLocalurl());
-                    intent.putExtra("type",5);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("datas", (Serializable) videoUrlList);
+                    bundle.putInt("type",5);
+                    intent.putExtra("data",bundle);
                     context.startActivity(intent);
                 }
             });

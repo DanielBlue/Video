@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by 李杰 on 2019/9/13.
  */
 
-public class PublishVideoInfo {
+public class PublishVideoInfo implements Serializable{
     String coverFile;
     String videoDuraion;
     String videowidth;

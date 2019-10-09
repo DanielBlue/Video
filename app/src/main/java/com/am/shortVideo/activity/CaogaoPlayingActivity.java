@@ -1,8 +1,7 @@
 package com.am.shortVideo.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
@@ -12,19 +11,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.am.shortVideo.R;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.tiktokdemo.lky.tiktokdemo.Constant;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import adapter.CaogaoAdapter;
+import application.MyApplication;
 import base.BaseActivity;
-import bean.PublishVideoInfo;
 import customeview.ShortVideoPlayer;
 
 /**
@@ -71,7 +67,9 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
                     case RecyclerView.SCROLL_STATE_IDLE://停止滑动
                         View view = mSnapHelper.findSnapView(layoutManger);
                         int position = layoutManger.getPosition(view);
-                        startPlay(position);
+                        if (position != mCurPosition) {
+                            startPlay(position);
+                        }
                         break;
                     case RecyclerView.SCROLL_STATE_DRAGGING://拖动
                         break;
@@ -86,36 +84,41 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
+//        getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
+        MyApplication.mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mCurPlayer == null) {
+                    startPlay(0);
+                }
+            }
+        },500);
     }
 
     private int mCurPosition = -1;
     public ShortVideoPlayer mCurPlayer;
 
     private void startPlay(final int position) {
-        if (position != mCurPosition) {
-            if (mCurPlayer != null) {
-                //先释放之前的播放器
-                mCurPlayer.getCurrentPlayer().release();
-            }
-
-            //当前是视频则开始播放
-            mRvList.post(new Runnable() {
-                @Override
-                public void run() {
-                    BaseViewHolder viewHolder = (BaseViewHolder) mRvList.findViewHolderForLayoutPosition(position);
-                    if (viewHolder != null) {
-                        mCurPlayer = viewHolder.getView(R.id.video_player);
-                        //开始播放
-                        if (mCurPlayer != null) {
-                            mCurPlayer.getCurrentPlayer().startPlayLogic();
-                        }
-                    }
-                }
-            });
-            mCurPosition = position;
+        if (mCurPlayer != null) {
+            //先释放之前的播放器
+            mCurPlayer.getCurrentPlayer().release();
         }
 
+        //当前是视频则开始播放
+        mRvList.post(new Runnable() {
+            @Override
+            public void run() {
+                BaseViewHolder viewHolder = (BaseViewHolder) mRvList.findViewHolderForLayoutPosition(position);
+                if (viewHolder != null) {
+                    mCurPlayer = viewHolder.getView(R.id.video_player);
+                    //开始播放
+                    if (mCurPlayer != null) {
+                        mCurPlayer.getCurrentPlayer().startPlayLogic();
+                        mCurPosition = position;
+                    }
+                }
+            }
+        });
     }
 
     private void setLinstenr() {
@@ -125,9 +128,9 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
     }
     private void addData() {
         Intent intent=getIntent();
-        String data = intent.getStringExtra("videourl");
-        curChannel=intent.getIntExtra("type",5);
-        datas.add(data);
+        Bundle data = intent.getBundleExtra("data");
+        datas = (List<String>) data.getSerializable("datas");
+        curChannel=data.getInt("type",5);
     }
     private void initView() {
         iv_back=(ImageView)findViewById(R.id.iv_back);
@@ -182,30 +185,33 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
             default:
         }
     }
-    public void getCaoGaoImg(String path){
-        File file=new File(path);
-        if(!file.exists()){
-            Toast.makeText(CaogaoPlayingActivity.this,"没有相关文件",Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(!datas.isEmpty()){
-            datas.clear();
-        }
-        File[] files=file.listFiles();
-        for(int i=0;i<files.length;i++){
-            PublishVideoInfo publishVideoInfo = new PublishVideoInfo();
-            MediaMetadataRetriever media = new MediaMetadataRetriever();
-            media.setDataSource(files[i].getPath());// videoPath 本地视频的路径
-            Bitmap bitmap  = media.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC );
-            // mIvBigShow.setImageBitmap(bitmap);
-            publishVideoInfo.setLocalurl(files[i].getAbsolutePath());
-            publishVideoInfo.setBitmap(bitmap);
-            datas.add(publishVideoInfo.getLocalurl());
-        }
-        if(datas.isEmpty()){
-            Toast.makeText(CaogaoPlayingActivity.this,"没有相关文件",Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mAdapter.replaceData(datas);
-    }
+//    public void getCaoGaoImg(String path){
+//        File file=new File(path);
+//        if(!file.exists()){
+//            Toast.makeText(CaogaoPlayingActivity.this,"没有相关文件",Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        if(!datas.isEmpty()){
+//            datas.clear();
+//        }
+//        File[] files=file.listFiles();
+//        for(int i=0;i<files.length;i++){
+//            PublishVideoInfo publishVideoInfo = new PublishVideoInfo();
+//            MediaMetadataRetriever media = new MediaMetadataRetriever();
+//            media.setDataSource(files[i].getPath());// videoPath 本地视频的路径
+//            Bitmap bitmap  = media.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC );
+//            // mIvBigShow.setImageBitmap(bitmap);
+//            publishVideoInfo.setLocalurl(files[i].getAbsolutePath());
+//            publishVideoInfo.setBitmap(bitmap);
+//            datas.add(publishVideoInfo.getLocalurl());
+//        }
+//        if(datas.isEmpty()){
+//            Toast.makeText(CaogaoPlayingActivity.this,"没有相关文件",Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        mAdapter.replaceData(datas);
+//        if (mCurPlayer == null) {
+//            startPlay(0);
+//        }
+//    }
 }

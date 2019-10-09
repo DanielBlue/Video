@@ -176,6 +176,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
     private boolean isSelectMusic;
     private String curAudio;
     private String playName;
+    private String mLocalVideoFileName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -253,6 +254,9 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                     }
                 })
                 .start();
+
+        mLocalVideoFileName = System.currentTimeMillis() + ".mp4";
+        FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(),Constant.RECORD_VIDEO_PATH, mLocalVideoFileName);
     }
 
     @Override
@@ -314,6 +318,10 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                                     Gson gson = new Gson();
                                     PublishVideo publishVideo = gson.fromJson(publishVideoResult, PublishVideo.class);
                                     if (publishVideo.getCode() == 0 && publishVideo.getMessage().equals("成功上传")) {
+                                        File file = new File(Constant.RECORD_VIDEO_PATH, mLocalVideoFileName);
+                                        if (file.exists()){
+                                            file.delete();
+                                        }
                                         handler.sendEmptyMessage(1);
                                     } else if (publishVideo.getCode() == 1016) {
                                         handler.sendEmptyMessage(3);
