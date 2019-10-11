@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingTop="15dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="15dp">
 
     <TextView
         android:id="@+id/tv_message"
@@ -12,7 +16,8 @@
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/tv_message_time"
         android:textColor="@color/white"
-        android:textSize="16dp" />
+        android:textSize="16dp"
+        tools:text="xxx关注了你"/>
 
     <TextView
         android:id="@+id/tv_message_time"
@@ -20,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:textColor="@color/white"
-        android:textSize="16dp" />
+        android:textSize="16dp"
+        tools:text="2小时前"/>
 
 </RelativeLayout>

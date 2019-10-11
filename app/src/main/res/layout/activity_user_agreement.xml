@@ -23,26 +23,9 @@
         </com.am.shortVideo.view.StatusBarHeightView>
 
     </RelativeLayout>
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="30dp"
-        android:text="@string/tv2_info"
-        android:textColor="@color/white"
-        android:textSize="20dp" />
-
-
-    <TextView
-        android:id="@+id/tv_user_agreement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:text="1.xxxxxxxxxx\n2.xxxxxxxxxx\n3.xxxxxxxxxx"
-        android:textColor="@color/white"
-        android:textSize="20dp" />
+    <WebView
+        android:id="@+id/wv_web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></WebView>
 
 </LinearLayout>

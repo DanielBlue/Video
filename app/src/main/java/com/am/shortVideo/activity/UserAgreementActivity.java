@@ -1,9 +1,8 @@
 package com.am.shortVideo.activity;
 
-import android.os.Bundle;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.am.shortVideo.R;
 
@@ -16,8 +15,8 @@ public class UserAgreementActivity extends BaseActivity {
     ImageView ivBack;
     @BindView(R.id.bt_systemmessage)
     Button btSystemmessage;
-    @BindView(R.id.tv_user_agreement)
-    TextView tvUserAgreement;
+    @BindView(R.id.wv_web)
+    WebView wvWeb;
 
     @Override
     protected int getLayout() {
@@ -27,6 +26,8 @@ public class UserAgreementActivity extends BaseActivity {
     @Override
     protected void initEventAndData() {
         btSystemmessage.setText(getString(R.string.tv2_info));
+
+        wvWeb.loadUrl("file:///android_asset/user_agreement.html");
     }
 
     @OnClick(R.id.iv_back)

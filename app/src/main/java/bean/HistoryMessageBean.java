@@ -90,7 +90,16 @@ public class HistoryMessageBean {
             private int msgType;
             private String msgContent;
             private String userId;
+            private String msgTitle;
             private long createTime;
+
+            public String getMsgTitle() {
+                return msgTitle;
+            }
+
+            public void setMsgTitle(String msgTitle) {
+                this.msgTitle = msgTitle;
+            }
 
             public int getId() {
                 return id;

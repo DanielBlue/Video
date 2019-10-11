@@ -46,10 +46,10 @@ public class MessageAdapter extends MyBaseAdapter<HistoryMessageBean.DataBean.Pu
         if (getItemViewType(position) == NORMAL_VIEW) {
             PushHistoryMessageViewHolder pushHistoryMessageViewHolder = (PushHistoryMessageViewHolder) holder;
             HistoryMessageBean.DataBean.PushHistoryBean pushHistoryBean = datas.get(position);
-            pushHistoryMessageViewHolder.tvMessage.setText(pushHistoryBean.getMsgContent());
+            pushHistoryMessageViewHolder.tvMessage.setText(pushHistoryBean.getMsgTitle());
             pushHistoryMessageViewHolder.tvMessageTime.setText(FormatTime.formatYHDhm(pushHistoryBean.getCreateTime()));
 
-        }else if (getItemViewType(position) == FOOT_VIEW) {
+        } else if (getItemViewType(position) == FOOT_VIEW) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
             footViewHolder.text_foot.setVisibility(View.GONE);
         }
