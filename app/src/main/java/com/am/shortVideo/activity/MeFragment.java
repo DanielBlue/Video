@@ -44,6 +44,7 @@ import adapter.CaogaoImgAdapter;
 import adapter.UserVideoAdapter;
 import application.MyApplication;
 import base.onLoadMoreLinstener;
+import bean.LoginEvent;
 import bean.LogoutInfo;
 import bean.MessageWrap;
 import bean.PublishVideoInfo;
@@ -147,6 +148,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         maps.put("cookie", "");
                         ((MyApplication) getActivity().getApplication()).setMaps(maps, "exit");
                         EventBus.getDefault().post(MessageWrap.getInstance("false"));
+                        EventBus.getDefault().post(new LoginEvent(LoginEvent.LOGINOUT));
                         slidinmenu.showContent();
                         slidinmenu.toggle();
                     }
@@ -397,6 +399,10 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.ll3://账号管理
                 Log.d(TAG, "onClick: ll3");
+                if (MyApplication.getInstance().getUserInfo() == null) {
+                    Toast.makeText(getActivity(), "请先登录", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent1 = new Intent(getActivity(), ResetPasswordActivity.class);
                 startActivity(intent1);
                 break;

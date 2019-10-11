@@ -2,7 +2,6 @@ package adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,8 +14,8 @@ import android.widget.TextView;
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.ShortVideoPlayingActivity;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
-import java.io.Serializable;
 import java.util.List;
 
 import base.MyBaseViewHolder;
@@ -72,10 +71,8 @@ public class PictureShowAdapter extends RecyclerView.Adapter<MyBaseViewHolder> {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ShortVideoPlayingActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("videourl", datas.get(position));
-                    bundle.putInt("type", type);
-                    intent.putExtra("homeVideoImg", bundle);
+                    intent.putExtra("data", new Gson().toJson(datas));
+                    intent.putExtra("position", position);
                     context.startActivity(intent);
                 }
             });

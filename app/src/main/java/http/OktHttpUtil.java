@@ -1,12 +1,16 @@
 package http;
 
+import android.widget.Toast;
+
 import com.facebook.stetho.okhttp3.StethoInterceptor;
+import com.shuyu.gsyvideoplayer.utils.NetworkUtils;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import application.MyApplication;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Headers;
@@ -48,12 +52,28 @@ public class OktHttpUtil {
     }
 
     public void sendGetRequest(String url, Callback callback) {
+        if (!checkNetUsed()) return;
         Request request = new Request.Builder().url(url).build();
         okHttpClient.newCall(request).enqueue(callback);
 
     }
 
+    public boolean checkNetUsed() {
+        int netWorkType = NetworkUtils.getNetWorkType(MyApplication.mContext);
+        boolean b = netWorkType != NetworkUtils.NETWORK_NO;
+        if (!b) {
+            MyApplication.mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MyApplication.mContext,"无网络",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        return b;
+    }
+
     public void sendGetRequest(String url, HashMap<String, String> sessionMaps, Callback callback) {
+        if (!checkNetUsed()) return;
         Headers.Builder headbuilder = new Headers.Builder();
         for (Map.Entry<String, String> head : sessionMaps.entrySet()) {
             headbuilder.add(head.getKey(), head.getValue());
@@ -65,6 +85,7 @@ public class OktHttpUtil {
 
     //设置带参数的GET请求
     public void sendGetRequest(String url, HashMap<String, String> sessionMaps, HashMap<String, String> maps, Callback callback) {
+        if (!checkNetUsed()) return;
         Request.Builder builder = new Request.Builder();
         Headers.Builder headbuilder = new Headers.Builder();
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
@@ -79,6 +100,7 @@ public class OktHttpUtil {
     }
 
     public void setPostRequest(String url, HashMap<String, String> headmaps, HashMap<String, String> maps, Callback callback) {
+        if (!checkNetUsed()) return;
         FormBody.Builder builder = new FormBody.Builder();
         Headers.Builder headbuilder = new Headers.Builder();
         for (Map.Entry<String, String> key : maps.entrySet()) {
@@ -93,6 +115,7 @@ public class OktHttpUtil {
     }
 
     public void setPostRequest(String url, HashMap<String, String> headmaps, String path, Callback callback) {
+        if (!checkNetUsed()) return;
         File file = new File(path);
         RequestBody filebody = RequestBody.create(MediaType.parse("application/octet-stream"), file);
         RequestBody requestBody = new MultipartBody.Builder()
@@ -110,6 +133,7 @@ public class OktHttpUtil {
     public void setPostRequest(String url, HashMap<String, String> headmaps, HashMap<String, String> map1,
                                int type, Callback callback) {
 
+        if (!checkNetUsed()) return;
         MultipartBody.Builder multipartBody = new MultipartBody.Builder();
         multipartBody.setType(MultipartBody.FORM);
         for (Map.Entry<String, String> head1 : map1.entrySet()) {
@@ -132,6 +156,7 @@ public class OktHttpUtil {
     }
 
     public void setPostRequest(String url, HashMap<String, String> maps, Callback callback) {
+        if (!checkNetUsed()) return;
         FormBody.Builder builder = new FormBody.Builder();
         for (Map.Entry<String, String> key : maps.entrySet()) {
             builder.add(key.getKey(), key.getValue());
@@ -142,6 +167,7 @@ public class OktHttpUtil {
     }
 
     public void downMusicFile(String url, Callback callback) {
+        if (!checkNetUsed()) return;
         Request request = new Request.Builder().url(url).build();
         okHttpClient.newCall(request).enqueue(callback);
     }

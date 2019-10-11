@@ -69,7 +69,7 @@ dependencies {
     implementation 'com.shuyu:gsyVideoPlayer-java:5.0.0-beta'
     implementation 'com.shuyu:gsyVideoPlayer-armv5:5.0.0-beta'
     implementation 'com.shuyu:gsyVideoPlayer-armv7a:5.0.0-beta'
-
+    implementation 'com.shuyu:gsyVideoPlayer-x86:5.0.0-beta'
 //    implementation 'fm.jiecao:jiecaovideoplayer:5.5.2'
 
     implementation 'com.github.bumptech.glide:glide:3.7.0'

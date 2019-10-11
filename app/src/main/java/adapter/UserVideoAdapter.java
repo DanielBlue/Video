@@ -2,7 +2,6 @@ package adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.am.shortVideo.R;
-import com.am.shortVideo.activity.ShortVideoPlayingActivity;
 import com.am.shortVideo.activity.ZuopinPlayingActivity;
 import com.bumptech.glide.Glide;
 

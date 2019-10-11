@@ -1,7 +1,6 @@
 package com.am.shortVideo.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +19,7 @@ import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 import com.umeng.socialize.UMShareAPI;
 
@@ -149,7 +149,12 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        requestVideo();
+//        requestVideo();
+        if (mCurPlayer == null) {
+            int position = getIntent().getIntExtra("position",0);
+            mRvList.scrollToPosition(position);
+            startPlay(position);
+        }
     }
 
     private void requestVideo() {
@@ -221,10 +226,9 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
 
     private void addData() {
         Intent intent = getIntent();
-        Bundle bundle = intent.getBundleExtra("homeVideoImg");
-        HomeVideoImg.DataBean.IndexListBean data = (HomeVideoImg.DataBean.IndexListBean) bundle.getSerializable("videourl");
-        curChannel = bundle.getInt("type");
-        datas.add(data);
+        String dataJson = intent.getStringExtra("data");
+        List<HomeVideoImg.DataBean.IndexListBean> dataList = new Gson().fromJson(dataJson,new TypeToken<List<HomeVideoImg.DataBean.IndexListBean>>(){}.getType());
+        datas.addAll(dataList);
     }
 
     private void initView() {

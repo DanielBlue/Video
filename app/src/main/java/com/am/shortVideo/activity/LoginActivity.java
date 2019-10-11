@@ -23,6 +23,7 @@ import java.util.List;
 
 import application.MyApplication;
 import base.BaseActivity;
+import bean.LoginEvent;
 import bean.MessageWrap;
 import bean.UserLogin;
 import http.OktHttpUtil;
@@ -87,6 +88,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     public void run() {
                         isLoginSuccess = true;
                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                        EventBus.getDefault().post(new LoginEvent(LoginEvent.LOGIN));
                         if (isLoginSuccess) {
                             EventBus.getDefault().post(MessageWrap.getInstance("true"));
                         }

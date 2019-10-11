@@ -31,6 +31,7 @@ import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +41,9 @@ import java.util.List;
 import adapter.ShortVideoAdapter;
 import application.MyApplication;
 import bean.HomeVideoImg;
+import bean.LoginEvent;
 import customeview.ShortVideoPlayer;
+import event.MessageEvent;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -70,7 +73,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         datas.clear();
                     }
                     if (homevideImg.getMessage().equals("成功")) {
-                        currentPage++;
                         //isCanPlay=true;
                         circleDialog.dismiss();
                         Log.d(TAG, "handleMessage: 请求数据成功");
@@ -86,6 +88,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         if (mCurPlayer == null) {
                             startPlay(0);
                         }
+                        currentPage++;
                     } else {
                         circleDialog.dismiss();
                         mAdapter.loadMoreFail();
@@ -107,7 +110,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             ((Activity) getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getActivity(), "请求失败："+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "请求失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     circleDialog.dismiss();
                     home_swipeRefresh.setRefreshing(false);
                 }
@@ -245,12 +248,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     //开始播放
                     if (mCurPlayer != null) {
                         mCurPlayer.getCurrentPlayer().startPlayLogic();
+                        if (isRefresh) {
+                            mCurPlayer.getCurrentPlayer().onVideoPause();
+                            isRefresh = false;
+                        }
                         mCurPosition = position;
                     }
                 }
             }
         });
     }
+
+    private boolean isRefresh = false;
 
     @Override
     public void onStart() {
@@ -326,6 +335,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 }
             }
             mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent event) {
+        if (event != null) {
+            if (event instanceof LoginEvent) {
+                currentPage = 1;
+                if (mCurPlayer != null) {
+                    mCurPlayer.getCurrentPlayer().release();
+                    mCurPlayer = null;
+                }
+                isRefresh = true;
+                requestVideo();
+            }
         }
     }
 
