@@ -1,6 +1,8 @@
 package com.am.shortVideo.EventBean;
 
-public class AttentionEvent {
+import event.MessageEvent;
+
+public class AttentionEvent extends MessageEvent {
     public String uid;
     public boolean isAttent;
 

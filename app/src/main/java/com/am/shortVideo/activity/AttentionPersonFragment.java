@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
-import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,8 +33,10 @@ import java.util.List;
 import adapter.AttentionAdapter;
 import application.MyApplication;
 import bean.AttentionPerson;
+import bean.HomeAttentionEvent;
 import bean.MessageWrap;
 import customeview.SliderView;
+import event.MessageEvent;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -80,15 +81,13 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
                     }
                     if (attentionPerson.getCode() == 0) {
                         currentPage++;
-                        circleprogressDialog.dismiss();
-                        if (attentionPerson.getData().getPageList() != null && !attentionPerson.getData().getPageList().isEmpty()) {
-                            dates.addAll(attentionPerson.getData().getPageList());
-                            sortData();
-                            attenPersonAdapter.notifyDataSetChanged();
-                        }
+//                        circleprogressDialog.dismiss();
+                        dates.addAll(attentionPerson.getData().getPageList());
+                        sortData();
+                        attenPersonAdapter.notifyDataSetChanged();
                         slideView.setVisibility(dates.isEmpty() ? View.GONE : View.VISIBLE);
                     } else if (attentionPerson.getCode() == 1005) {
-                        circleprogressDialog.dismiss();
+//                        circleprogressDialog.dismiss();
                         if (attenPersonAdapter != null) {
                             attenPersonAdapter.clearAllData();
                         }
@@ -106,7 +105,7 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
             ((Activity) getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    circleprogressDialog.dismiss();
+//                    circleprogressDialog.dismiss();
                 }
             });
         }
@@ -127,7 +126,7 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
     private LinearLayoutManager layoutManger;
     private PinYinUtil pinYinUtil;
     private SliderView slideView;
-    private CircleProgressDialog circleprogressDialog;
+//    private CircleProgressDialog circleprogressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -136,7 +135,7 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
         okHttpUtil = MyApplication.getOkHttpUtil();
         pinYinUtil = new PinYinUtil();
         EventBus.getDefault().register(this);
-        circleprogressDialog = new CircleProgressDialog(getActivity());
+//        circleprogressDialog = new CircleProgressDialog(getActivity());
         initData();
         initView();
         return view;
@@ -200,7 +199,7 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
         maps.put("page", currentPage + "");
         okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_ATTENTIONPERSONQUERY,
                 ((MyApplication) getActivity().getApplicationContext()).getMaps(), maps, attenPersonCallback);
-        circleprogressDialog.showDialog();
+//        circleprogressDialog.showDialog();
     }
 
     //将集合中的汉字转化为字母
@@ -306,5 +305,13 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent event) {
+        if (event != null) {
+            if (event instanceof HomeAttentionEvent) {
+                onRefresh();
+            }
+        }
+    }
 }
 

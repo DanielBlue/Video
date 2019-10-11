@@ -36,6 +36,7 @@ import java.util.List;
 
 import application.MyApplication;
 import bean.AttentionOrCancelPerson;
+import bean.HomeAttentionEvent;
 import bean.HomeVideoImg;
 import bean.ShareVideo;
 import bean.UserInfo;
@@ -488,8 +489,9 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                                 helper.setVisible(R.id.user_attention, true)
                                                         .setBackgroundRes(R.id.user_attention, R.mipmap.add);
                                             }
-                                            EventBus.getDefault().post(new AttentionEvent(item.getUid(), cancelPerson.getData().isFollowStatus()));
                                             item.setFollowStatus(cancelPerson.getData().isFollowStatus());
+                                            EventBus.getDefault().post(new AttentionEvent(item.getUid(), cancelPerson.getData().isFollowStatus()));
+                                            EventBus.getDefault().post(new HomeAttentionEvent());
                                         }
                                     });
                                 } else if (cancelPerson.getCode() == 1005) {

@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
-import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,7 +30,9 @@ import java.util.List;
 import adapter.AttentionPersonVideoAdapter;
 import application.MyApplication;
 import bean.AttentionPersonVideo;
+import bean.HomeAttentionEvent;
 import bean.MessageWrap;
+import event.MessageEvent;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -71,13 +72,13 @@ public class VideoShowFragment extends Fragment implements SwipeRefreshLayout.On
                     }
                     if (attentionPersonVidep.getCode() == 0) {
                         currentPage++;
-                        circleProgressDialog.dismiss();
+//                        circleProgressDialog.dismiss();
                         if (attentionPersonVidep.getData().getIndexList() != null) {
                             dates.addAll(attentionPersonVidep.getData().getIndexList());
                             attentionPersonVideoAdapter.notifyDataSetChanged();
                         }
                     } else if (attentionPersonVidep.getCode() == 1005) {
-                        circleProgressDialog.dismiss();
+//                        circleProgressDialog.dismiss();
                         if (attentionPersonVideoAdapter != null) {
                             attentionPersonVideoAdapter.clearAllData();
                         }
@@ -87,7 +88,7 @@ public class VideoShowFragment extends Fragment implements SwipeRefreshLayout.On
             }
         }
     };
-    private CircleProgressDialog circleProgressDialog;
+//    private CircleProgressDialog circleProgressDialog;
     private List<AttentionPersonVideo.DataBean.IndexListBean> dates = new ArrayList<>();
 
     @Override
@@ -96,7 +97,7 @@ public class VideoShowFragment extends Fragment implements SwipeRefreshLayout.On
         view = inflater.inflate(R.layout.attentionpersonvideo_fargment, container, false);
         okHttpUtil = ((MyApplication) getActivity().getApplication()).getOkHttpUtil();
         EventBus.getDefault().register(this);
-        circleProgressDialog = new CircleProgressDialog(getActivity());
+//        circleProgressDialog = new CircleProgressDialog(getActivity());
         initView();
         initData();
         return view;
@@ -113,7 +114,7 @@ public class VideoShowFragment extends Fragment implements SwipeRefreshLayout.On
     private void initData() {
         HashMap<String, String> maps = new HashMap<>();
         maps.put("page", currentPage + "");
-        circleProgressDialog.showDialog();
+//        circleProgressDialog.showDialog();
         okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_ATTENTIONUSERVIDEO,
                 ((MyApplication) getActivity().getApplication()).getMaps(), maps, attentionPersonVideoCallback);
     }
@@ -125,7 +126,7 @@ public class VideoShowFragment extends Fragment implements SwipeRefreshLayout.On
             ((Activity) getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    circleProgressDialog.dismiss();
+//                    circleProgressDialog.dismiss();
                 }
             });
             Log.d(TAG, "onFailure: ");
@@ -201,5 +202,14 @@ public class VideoShowFragment extends Fragment implements SwipeRefreshLayout.On
     public void onRefresh() {
         currentPage = 1;
         initData();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent event) {
+        if (event != null) {
+            if (event instanceof HomeAttentionEvent) {
+                onRefresh();
+            }
+        }
     }
 }

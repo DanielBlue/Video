@@ -64,7 +64,7 @@ public class PictureShowAdapter extends RecyclerView.Adapter<MyBaseViewHolder> {
         if (getItemViewType(position) == DATA_LOAD_NORMAL) {
             Log.d(TAG, "onBindViewHolder:0 ");
             Glide.with(context).load(HttpUri.BASE_DOMAIN + datas.get(position).getCoverPath()).into(((PictureViewhHolder) holder).picture_thum);
-            Glide.with(context).load(datas.get(position).getAvatar()).into(((PictureViewhHolder) holder).iv_userimg);
+            Glide.with(context).load(HttpUri.BASE_DOMAIN + datas.get(position).getAvatar()).into(((PictureViewhHolder) holder).iv_userimg);
             ((PictureViewhHolder) holder).tv_videotmp.setText(datas.get(position).getLikeCounts() + "");
             ((PictureViewhHolder) holder).tv_usercity.setText(datas.get(position).getVideoPath());
             ((PictureViewhHolder) holder).picture_thum.setOnClickListener(new View.OnClickListener() {

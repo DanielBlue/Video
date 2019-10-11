@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 case 1:
                     HomeVideoImg homevideImg = (HomeVideoImg) msg.obj;
                     if (currentPage == 1) {
-                        datas.clear();
+                        mAdapter.getData().clear();
                     }
                     if (homevideImg.getMessage().equals("成功")) {
                         //isCanPlay=true;
@@ -329,12 +329,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Subscribe()
     public void changeAttention(AttentionEvent attentionEvent) {
         if (attentionEvent != null) {
-            for (int i = 0; i < datas.size(); i++) {
-                if (TextUtils.equals(datas.get(i).getUid(), attentionEvent.uid)) {
-                    datas.get(i).setFollowStatus(attentionEvent.isAttent);
+            for (int i = 0; i < mAdapter.getData().size(); i++) {
+                if (TextUtils.equals(mAdapter.getData().get(i).getUid(), attentionEvent.uid) && mAdapter.getData().get(i).isFollowStatus() != attentionEvent.isAttent) {
+                    mAdapter.getData().get(i).setFollowStatus(attentionEvent.isAttent);
+                    mAdapter.notifyItemChanged(i);
                 }
             }
-            mAdapter.notifyDataSetChanged();
         }
     }
 
