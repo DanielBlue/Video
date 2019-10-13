@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,6 +32,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import util.BaseUtils;
+import util.GlideUtils;
 import util.HttpUri;
 import util.PinYinUtil;
 
@@ -81,7 +81,7 @@ public class AttentionAdapter extends MyAllBaseAdapter<AttentionPerson.DataBean.
             } else {
                 holder.tv_tag.setVisibility(View.GONE);
             }
-            Glide.with(context).load(HttpUri.BASE_DOMAIN + datas.get(position).getAvatar()).into(holder.attentionperson_picture);
+            GlideUtils.showHeader(context,HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(),holder.attentionperson_picture);
             holder.attentionperson_account.setText(datas.get(position).getUid());
             holder.attentionperson_name.setText(datas.get(position).getNickName());
             if (datas.get(position).isFollowStatus()) {

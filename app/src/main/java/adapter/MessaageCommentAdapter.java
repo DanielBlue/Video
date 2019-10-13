@@ -17,10 +17,10 @@ import java.util.List;
 import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
 import bean.CommentAtBean;
-import bean.MessageCommentShow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import util.FootViewHolder;
 import util.FormatTime;
+import util.GlideUtils;
 import util.HttpUri;
 
 /**
@@ -62,7 +62,7 @@ public class MessaageCommentAdapter extends MyAllBaseAdapter<CommentAtBean.DataB
     public void getBindViewHolder(MyBaseViewHolder viewHolder, final int position) {
         if(getItemViewType(position)==DATA_LOAD_NORMAL){
             MessageCommentViewHolder messageCommentViewHolder=(MessageCommentViewHolder)viewHolder;
-            Glide.with(context).load(HttpUri.BASE_DOMAIN+datas.get(position).getAvatar()).into(messageCommentViewHolder.messagecomment_picture);
+            GlideUtils.showHeader(context, HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(), messageCommentViewHolder.messagecomment_picture);
             messageCommentViewHolder.messagecomment_nickname.setText(datas.get(position).getNickName());
             messageCommentViewHolder.message_comment_replay_warn.setText("回复了你的评论");
             messageCommentViewHolder.messagecomment_content.setText(datas.get(position).getContent());

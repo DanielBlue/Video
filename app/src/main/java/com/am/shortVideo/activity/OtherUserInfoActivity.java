@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 
@@ -43,6 +42,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import util.BaseUtils;
+import util.GlideUtils;
 import util.HttpUri;
 import util.SpaceItemDecoration;
 
@@ -97,10 +97,8 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                     OtherUserInfo userInfo = (OtherUserInfo) msg.obj;
                     if (userInfo.getCode() == 0) {
                         circleprogressDialog.dismiss();
-                        if (!userInfo.getData().getUserInfo().getAvatar().isEmpty()) {
-                            Glide.with(OtherUserInfoActivity.this).load(HttpUri.BASE_DOMAIN + userInfo.getData().getUserInfo().getAvatar())
-                                    .into(me_circleImageView);
-                        }
+                        GlideUtils.showHeader(OtherUserInfoActivity.this, HttpUri.BASE_DOMAIN + userInfo.getData().getUserInfo().getAvatar(), me_circleImageView);
+
                         if (!userInfo.getData().getUserInfo().getNickname().isEmpty()) {
                             me_nickname.setText(userInfo.getData().getUserInfo().getNickname());
                         }

@@ -16,6 +16,7 @@ import base.MyBaseViewHolder;
 import bean.SearchUserinfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 import util.FootViewHolder;
+import util.GlideUtils;
 import util.HttpUri;
 import util.PinYinUtil;
 
@@ -57,7 +58,7 @@ public class SearchUserinfoAdapter extends MyAllBaseAdapter<SearchUserinfo.DataB
             } else {
                 holder.tv_tag.setVisibility(View.GONE);
             }
-            Glide.with(context).load(HttpUri.BASE_DOMAIN + dates.get(position).getAvatar()).into(holder.attentionperson_picture);
+            GlideUtils.showHeader(context, HttpUri.BASE_DOMAIN + dates.get(position).getAvatar(), holder.attentionperson_picture);
             holder.attentionperson_account.setText(dates.get(position).getUid());
             holder.attentionperson_name.setText(dates.get(position).getNickName());
         } else if (getItemViewType(position) == FOOT_VIEW) {

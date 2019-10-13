@@ -33,6 +33,7 @@ import okhttp3.Response;
 import util.BaseUtils;
 import util.FootViewHolder;
 import util.FormatTime;
+import util.GlideUtils;
 import util.HttpUri;
 
 /**
@@ -69,7 +70,7 @@ public class LikeListAdapter extends MyAllBaseAdapter<LikeListShow.DataBean.Page
     public void getBindViewHolder(MyBaseViewHolder viewHolder,final int position) {
         if(getItemViewType(position)==DATA_LOAD_NORMAL){
             LikeListViewHolder holder=(LikeListViewHolder)viewHolder;
-         Glide.with(context).load(HttpUri.BASE_DOMAIN+dates.get(position).getAvatar()).into( holder.likelist_picture);
+            GlideUtils.showHeader(context,HttpUri.BASE_DOMAIN + dates.get(position).getAvatar(),holder.likelist_picture);
             holder.likelist_nickname.setText(dates.get(position).getNickName());
             holder.likelist_videotime.setText(FormatTime.formatTime(dates.get(position).getCreateTime()));
             Glide.with(context).load(HttpUri.BASE_DOMAIN+dates.get(position).getCover()).into( holder.likelist_videoimg);

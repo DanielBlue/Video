@@ -21,6 +21,7 @@ import java.util.List;
 import base.MyBaseViewHolder;
 import bean.HomeVideoImg;
 import de.hdodenhof.circleimageview.CircleImageView;
+import util.GlideUtils;
 import util.HttpUri;
 
 /**
@@ -63,8 +64,9 @@ public class PictureShowAdapter extends RecyclerView.Adapter<MyBaseViewHolder> {
         Log.d(TAG, "onBindViewHolder: ");
         if (getItemViewType(position) == DATA_LOAD_NORMAL) {
             Log.d(TAG, "onBindViewHolder:0 ");
-            Glide.with(context).load(HttpUri.BASE_DOMAIN + datas.get(position).getCoverPath()).into(((PictureViewhHolder) holder).picture_thum);
-            Glide.with(context).load(HttpUri.BASE_DOMAIN + datas.get(position).getAvatar()).into(((PictureViewhHolder) holder).iv_userimg);
+            GlideUtils.displayImage(context, HttpUri.BASE_DOMAIN + datas.get(position).getCoverPath(), ((PictureViewhHolder) holder).picture_thum);
+            GlideUtils.showHeader(context, HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(), ((PictureViewhHolder) holder).iv_userimg);
+
             ((PictureViewhHolder) holder).tv_videotmp.setText(datas.get(position).getLikeCounts() + "");
             ((PictureViewhHolder) holder).tv_usercity.setText(datas.get(position).getVideoPath());
             ((PictureViewhHolder) holder).picture_thum.setOnClickListener(new View.OnClickListener() {

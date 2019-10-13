@@ -52,6 +52,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import util.BaseUtils;
 import util.GetJsonDataUtil;
+import util.GlideUtils;
 import util.HttpUri;
 
 /**
@@ -147,10 +148,7 @@ public class PersonInfoActivity extends BaseActivity implements MyPopUpWindow.Po
                     UserInfo userInfo = (UserInfo) msg.obj;
                     if (userInfo.getCode() == 0) {
                         isChangeInfo = true;
-                        if (!userInfo.getData().getUserInfo().getAvatar().isEmpty()) {
-                            Glide.with(PersonInfoActivity.this).load(HttpUri.BASE_DOMAIN + userInfo.getData().getUserInfo().getAvatar())
-                                    .into(personinfo_circleImageview);
-                        }
+                        GlideUtils.showHeader(PersonInfoActivity.this, HttpUri.BASE_DOMAIN + userInfo.getData().getUserInfo().getAvatar(), personinfo_circleImageview);
                         if (!userInfo.getData().getUserInfo().getUid().isEmpty()) {
                             personinfo_account.setText(userInfo.getData().getUserInfo().getUid());
                         }

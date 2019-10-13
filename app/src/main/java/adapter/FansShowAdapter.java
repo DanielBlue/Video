@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -32,6 +31,7 @@ import okhttp3.Response;
 import util.BaseUtils;
 import util.FootViewHolder;
 import util.FormatTime;
+import util.GlideUtils;
 import util.HttpUri;
 import util.PinYinUtil;
 
@@ -76,7 +76,7 @@ public class FansShowAdapter extends MyAllBaseAdapter<FansShow.DataBean.PageList
             }else{
                 holder.tv_tag.setVisibility(View.GONE);
             }
-            Glide.with(context).load(HttpUri.BASE_DOMAIN+datas.get(position).getAvatar()).into(holder.fansCircleImagview);
+            GlideUtils.showHeader(context,HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(),(holder.fansCircleImagview));
             holder.fans_nickname.setText(datas.get(position).getNickName());
             holder.fans_attentionTime.setText(FormatTime.formatTime(datas.get(position).getFollowDate()));
             if(datas.get(position).isFollowStatus()){

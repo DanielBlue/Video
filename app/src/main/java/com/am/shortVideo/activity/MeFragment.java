@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.am.shortVideo.R;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
@@ -55,6 +54,7 @@ import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import util.GlideUtils;
 import util.HttpUri;
 import util.MeSpaceItemDecoration;
 import util.PreferencesUtil;
@@ -99,10 +99,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         me_swiprefreshlayout.setRefreshing(false);
                         islogin = false;
                         bt_changpersoninfo.setText(getActivity().getResources().getString(R.string.me_editorinfo));
-                        if (!userInfo.getData().getUserInfo().getAvatar().isEmpty()) {
-                            Glide.with(getActivity()).load(HttpUri.BASE_DOMAIN + userInfo.getData().getUserInfo().getAvatar())
-                                    .into(me_circleImageView);
-                        }
+                        GlideUtils.showHeader(getActivity(), HttpUri.BASE_DOMAIN + userInfo.getData().getUserInfo().getAvatar(), me_circleImageView);
                         if (!userInfo.getData().getUserInfo().getNickname().isEmpty()) {
                             me_nickname.setText(userInfo.getData().getUserInfo().getNickname());
                         }
@@ -286,9 +283,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         me_swiprefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (curSelect==0){
+                if (curSelect == 0) {
                     initData();
-                }else {
+                } else {
                     getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
                 }
             }

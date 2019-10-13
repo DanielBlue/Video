@@ -48,6 +48,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import util.BaseUtils;
+import util.GlideUtils;
 import util.HttpUri;
 import util.SystemUtils;
 
@@ -73,7 +74,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                 .setVisible(R.id.rl_bugfood, !TextUtils.isEmpty(item.getGoodsName()))
                 .setText(R.id.tv_recommendfood, item.getGoodsName());
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
-        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getAvatar()).into((ImageView) helper.getView(R.id.user_circleImage));
+        GlideUtils.showHeader(mContext,HttpUri.BASE_DOMAIN + item.getAvatar(),(ImageView) helper.getView(R.id.user_circleImage));
 
         if (item.isFollowStatus() || TextUtils.equals(item.getUid(), ((MyApplication) mContext.getApplicationContext()).getUseruid())) {
             helper.setVisible(R.id.user_attention, true)

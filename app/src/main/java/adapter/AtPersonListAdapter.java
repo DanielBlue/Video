@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import bean.AttentionPerson;
+import util.GlideUtils;
 import util.HttpUri;
 import util.PinYinUtil;
 
@@ -31,7 +32,7 @@ public class AtPersonListAdapter extends BaseQuickAdapter<AttentionPerson.DataBe
         } else {
             helper.setVisible(R.id.tv_tag,false);
         }
-        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getAvatar()).into((ImageView) helper.getView(R.id.attentionperson_picture));
+        GlideUtils.showHeader(mContext,HttpUri.BASE_DOMAIN + item.getAvatar(),(ImageView) helper.getView(R.id.attentionperson_picture));
         helper.setText(R.id.tv_attention_count,item.getUid())
                 .setText(R.id.tv_attenionperson_name,item.getNickName())
                 .setVisible(R.id.bt_attentionperson,false);

@@ -34,6 +34,7 @@ import okhttp3.Response;
 import util.BaseUtils;
 import util.FootViewHolder;
 import util.FormatTime;
+import util.GlideUtils;
 import util.HttpUri;
 
 /**
@@ -72,7 +73,7 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
     public void getBindViewHolder(MyBaseViewHolder viewHolder, final int position) {
         if (getItemViewType(position) == 0) {
             final CommentViewHolder commentViewHolder = (CommentViewHolder) viewHolder;
-            Glide.with(context).load(HttpUri.BASE_DOMAIN + datas.get(position).getAvatar()).into(((CommentViewHolder) viewHolder).userImg);
+            GlideUtils.showHeader(context,HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(),((CommentViewHolder) viewHolder).userImg);
             commentViewHolder.tv_commentTime.setText(FormatTime.formatTime(datas.get(position).getCommentTime()));
             commentViewHolder.tv_userName.setText(datas.get(position).getNickName());
             if (datas.get(position).getAtType() == 1) {//有@用户
@@ -90,7 +91,8 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
             }
             if (datas.get(position).isReplyState()) {
                 commentViewHolder.rl_authoritycomment.setVisibility(View.VISIBLE);
-                Glide.with(context).load(HttpUri.BASE_DOMAIN + datas.get(position).getAuthorReply().getAuthorAvatar()).into(commentViewHolder.authorityImg);
+                GlideUtils.showHeader(context,HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(),(commentViewHolder.authorityImg));
+
                 commentViewHolder.tv_authority_commentTime.setText(FormatTime.formatTime(datas.get(position).getAuthorReply().getReplyTime()));
                 commentViewHolder.tv_authorityName.setText(datas.get(position).getAuthorReply().getAuthorNickName());
                 commentViewHolder.tv_authority_replay.setText("回复" + datas.get(position).getNickName());

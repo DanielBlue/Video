@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
@@ -42,6 +41,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import util.BaseUtils;
+import util.GlideUtils;
 import util.HttpUri;
 import util.SystemUtils;
 
@@ -115,7 +115,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
                 .setText(R.id.tv_foodname, item.getVideoDesc())
                 .setText(R.id.tv_recommendfood, item.getGoodsName());
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
-        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getAvatar()).into((ImageView) helper.getView(R.id.user_circleImage));
+        GlideUtils.showHeader(mContext,HttpUri.BASE_DOMAIN + item.getAvatar(),(ImageView) helper.getView(R.id.user_circleImage));
         if (item.getUid().equals(MyApplication.getInstance().getUseruid())) {
             helper.setVisible(R.id.user_attention, false);
         } else if (item.isFollowStatus()) {
