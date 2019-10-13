@@ -8,13 +8,22 @@ import android.widget.TextView;
 
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
+import application.MyApplication;
 import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
+import bean.OtherUserInfo;
 import bean.SearchUserinfo;
 import de.hdodenhof.circleimageview.CircleImageView;
+import http.OktHttpUtil;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 import util.FootViewHolder;
 import util.GlideUtils;
 import util.HttpUri;
@@ -64,21 +73,23 @@ public class SearchUserinfoAdapter extends MyAllBaseAdapter<SearchUserinfo.DataB
             holder.attentionperson_picture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    HashMap<String, String> map = new HashMap<>();
-//                    map.put("uid", dates.get(position).getUid());
-//                    OktHttpUtil.getInstance().sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_USEROTHERINFO,
-//                            MyApplication.getInstance().getMaps(), map, new Callback() {
-//                                @Override
-//                                public void onFailure(Call call, IOException e) {
-//
-//                                }
-//
-//                                @Override
-//                                public void onResponse(Call call, Response response) throws IOException {
-//
-//                                }
-//                            });
-                    OtherUserInfoActivity.start(context, dates.get(position).getUid(), false);
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("uid", dates.get(position).getUid());
+                    OktHttpUtil.getInstance().sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_USEROTHERINFO,
+                            MyApplication.getInstance().getMaps(), map, new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
+
+                                }
+
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    String userinfoResult = response.body().string();
+                                    Gson gson = new Gson();
+                                    OtherUserInfo userinfo = gson.fromJson(userinfoResult, OtherUserInfo.class);
+                                    OtherUserInfoActivity.start(context, dates.get(position).getUid(), userinfo.getData().getUserInfo().isFollowState());
+                                }
+                            });
                 }
             });
         } else if (getItemViewType(position) == FOOT_VIEW) {

@@ -1,9 +1,9 @@
 package db;
 
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
@@ -14,8 +14,20 @@ public class UserModel extends BaseModel {
     @PrimaryKey(autoincrement = true)
     private int id;
 
+    @Unique
     @Column
     private String name;
+
+    @Column
+    private long date;
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
 
     public int getId() {
         return id;

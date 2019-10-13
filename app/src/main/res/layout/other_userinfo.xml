@@ -3,6 +3,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:background="@color/theme_dark_line">
 
     <RelativeLayout
@@ -36,7 +37,7 @@
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:src="@mipmap/app_icon"/>
 
         <TextView
@@ -71,7 +72,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:layout_marginEnd="20dp"
-            android:background="#394051"
+            android:background="#C51C55"
             android:gravity="center"
             android:text="@string/bt_attention"
             android:textColor="@color/white"
@@ -84,8 +85,6 @@
             android:layout_below="@id/me_useraccount"
             android:layout_alignParentStart="true"
             android:layout_marginStart="15dp"
-            android:layout_toLeftOf="@+id/me_editorinfo"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="20dp"
             android:gravity="left"
             android:text="@string/me_personaltitle"
@@ -98,9 +97,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/me_useraccount"
             android:layout_alignTop="@id/tv_persontitle"
+            android:layout_marginEnd="20dp"
             android:layout_toEndOf="@id/tv_persontitle"
+            android:layout_toLeftOf="@+id/me_editorinfo"
             android:gravity="center"
             android:maxLines="1"
+            tools:text="6666666666666666666666"
             android:textColor="@color/white"
             android:textSize="16sp"/>
 

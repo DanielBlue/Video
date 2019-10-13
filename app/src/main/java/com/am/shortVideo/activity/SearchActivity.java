@@ -1,9 +1,6 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -56,7 +53,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        dbDatas = SQLite.select().from(UserModel.class).orderBy(UserModel_Table.id, false)
+        dbDatas = SQLite.select().from(UserModel.class).orderBy(UserModel_Table.date, false)
                 .queryList();
         if (!dbDatas.isEmpty()) {
             historyMessageAdatper = new HistoryMessageAdapter(dbDatas, this);
@@ -91,16 +88,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     if (!ed_edittext.getText().toString().trim().isEmpty()) {
                         if (dbDatas.size() < 10) {
                             String searchName = ed_edittext.getText().toString().trim();
-                            UserModel userModel = new UserModel();
-                            userModel.setName(searchName);
-                            userModel.save();
-
+                            saveSearchBean(searchName);
                         } else {
                             SQLite.delete(UserModel.class).where(UserModel_Table.name.eq(dbDatas.get(9).getName())).execute();
                             String searchName = ed_edittext.getText().toString().trim();
-                            UserModel userModel = new UserModel();
-                            userModel.setName(searchName);
-                            userModel.save();
+                            saveSearchBean(searchName);
                         }
                         Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
                         startActivity(intent);
@@ -114,13 +106,26 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     }
 
+    private void saveSearchBean(String searchName) {
+        List<UserModel> userModels = SQLite.select().from(UserModel.class).where(UserModel_Table.name.eq(searchName)).queryList();
+        if (userModels.size() > 0) {
+            UserModel userModel = userModels.get(0);
+            userModel.setDate(System.currentTimeMillis());
+            userModel.update();
+        } else {
+            UserModel userModel = new UserModel();
+            userModel.setDate(System.currentTimeMillis());
+            userModel.setName(searchName);
+            userModel.insert();
+        }
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
                 finish();
                 break;
-
         }
     }
 }
