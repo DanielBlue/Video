@@ -1,40 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
+        android:id="@+id/rl_likelist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/rl_likelist"
-            android:layout_width="match_parent"
-            android:paddingTop="22dp"
-            android:paddingBottom="15dp"
-            android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/likelist_picture"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/app_icon" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/likelist_picture"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="10dp"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/app_icon" />
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_toStartOf="@+id/likelist_videoimg"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/likelist_picture"
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/likelist_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:gravity="center"
-                android:layout_alignTop="@id/likelist_picture"
-                android:layout_toEndOf="@id/likelist_picture"
-                android:text="11111"
+                tools:text="11111"
                 android:textSize="14sp"
                 android:textColor="@color/colorWhite"
-                android:layout_marginStart="15dp" />
+                />
 
             <TextView
                 android:id="@+id/likelist_message"
@@ -42,12 +45,10 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:gravity="center"
-                android:layout_toEndOf="@id/likelist_picture"
+                android:layout_marginTop="5dp"
                 android:text="@string/tv_likelist_message"
                 android:textSize="14sp"
-                android:textColor="@color/colorWhite"
-                android:layout_below="@id/likelist_nickname"
-                android:layout_alignStart="@id/likelist_nickname" />
+                android:textColor="@color/colorWhite" />
 
             <TextView
                 android:id="@+id/likelist_attemtion_time"
@@ -55,39 +56,36 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:gravity="center"
-                android:layout_toEndOf="@id/likelist_picture"
+                android:layout_marginTop="5dp"
                 android:text="@string/tv_fans_message"
                 android:textSize="12sp"
-                android:textColor="@color/colorGray"
-                android:layout_below="@id/likelist_message"
-                android:layout_alignStart="@id/likelist_nickname" />
+                android:textColor="@color/colorGray" />
+        </LinearLayout>
 
-            <ImageView
-                android:id="@+id/likelist_videoimg"
-                android:layout_width="80dp"
-                android:layout_height="71dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp"
-                android:layout_centerVertical="true"
-                android:background="@color/colorlowgray"
-                android:scaleType="fitXY"
-                android:layout_marginTop="8dp" />
+        <ImageView
+            android:id="@+id/likelist_videoimg"
+            android:layout_width="80dp"
+            android:layout_height="71dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"
+            android:layout_marginTop="8dp" />
 
-            <ImageView
-                android:id="@+id/likelist_video_start"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_alignParentEnd="true"
-                android:background="@mipmap/shouye_stop"
-                android:layout_marginEnd="45dp"
-                android:layout_centerVertical="true" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray"
-            android:layout_below="@id/rl_likelist"/>
+        <ImageView
+            android:id="@+id/likelist_video_start"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_alignParentEnd="true"
+            android:background="@mipmap/shouye_stop"
+            android:layout_marginEnd="45dp"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGray"
+        android:layout_below="@id/rl_likelist"/>
 
 </RelativeLayout>

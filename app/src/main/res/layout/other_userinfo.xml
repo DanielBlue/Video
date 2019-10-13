@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/theme_dark_line">
 
     <RelativeLayout
         android:id="@+id/toolbar"
@@ -17,7 +18,7 @@
             android:orientation="vertical"
             app:use_type="use_padding_top">
 
-            <include layout="@layout/fans_title" />
+            <include layout="@layout/fans_title"/>
 
         </com.am.shortVideo.view.StatusBarHeightView>
 
@@ -36,7 +37,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:src="@mipmap/app_icon" />
+            android:src="@mipmap/app_icon"/>
 
         <TextView
             android:id="@+id/me_nickname"
@@ -48,7 +49,7 @@
             android:maxLines="1"
             android:paddingStart="4dp"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/me_useraccount"
@@ -61,7 +62,7 @@
             android:layout_toEndOf="@id/me_circleimageview"
             android:maxLines="1"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/me_editorinfo"
@@ -70,10 +71,11 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:layout_marginEnd="20dp"
+            android:background="#394051"
             android:gravity="center"
             android:text="@string/bt_attention"
             android:textColor="@color/white"
-            android:textSize="18dp" />
+            android:textSize="18dp"/>
 
         <TextView
             android:id="@+id/tv_persontitle"
@@ -82,11 +84,13 @@
             android:layout_below="@id/me_useraccount"
             android:layout_alignParentStart="true"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
+            android:layout_toLeftOf="@+id/me_editorinfo"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:gravity="left"
             android:text="@string/me_personaltitle"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/tv_personalcontent"
@@ -98,7 +102,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/tv_me_attention"
@@ -111,7 +115,7 @@
             android:gravity="center"
             android:text="@string/bt_attention"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/tv_me_attentioncount"
@@ -122,7 +126,7 @@
             android:layout_toEndOf="@id/tv_me_attention"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/tv_me_fans"
@@ -134,7 +138,7 @@
             android:gravity="center"
             android:text="@string/title_fans"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/tv_me_fanscount"
@@ -145,7 +149,7 @@
             android:layout_toEndOf="@id/tv_me_fans"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/tv_me_zans"
@@ -157,7 +161,7 @@
             android:gravity="center"
             android:text="@string/me_zantitle"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/tv_me_zanscount"
@@ -168,7 +172,7 @@
             android:layout_toEndOf="@id/tv_me_zans"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
     </RelativeLayout>
 
     <View
@@ -177,7 +181,7 @@
         android:layout_height="2dp"
         android:layout_below="@id/user_info"
         android:layout_marginTop="10dp"
-        android:background="@color/colorGray" />
+        android:background="@color/colorGray"/>
 
     <LinearLayout
         android:id="@+id/ll_user_zuoping"
@@ -201,7 +205,7 @@
                 android:gravity="center"
                 android:text="@string/me_zuoping"
                 android:textColor="@color/colorWhite"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <View
                 android:id="@+id/me_line3"
@@ -211,7 +215,7 @@
                 android:layout_alignStart="@id/bt_mezuoping"
                 android:layout_marginStart="18dp"
                 android:background="@color/colorWhite"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -230,7 +234,7 @@
                 android:background="@null"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="@string/me_caogao"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <View
                 android:id="@+id/me_line2"
@@ -240,7 +244,7 @@
                 android:layout_alignStart="@id/bt_mecaogao"
                 android:layout_marginStart="18dp"
                 android:background="@color/colorWhite"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </RelativeLayout>
 
     </LinearLayout>

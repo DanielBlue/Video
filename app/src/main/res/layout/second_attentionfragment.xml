@@ -18,11 +18,11 @@
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <customeview.SliderView
-        android:id="@+id/sliderview"
-        android:layout_width="30dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone" />
+    <!--<customeview.SliderView-->
+        <!--android:id="@+id/sliderview"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:visibility="gone" />-->
 </RelativeLayout>

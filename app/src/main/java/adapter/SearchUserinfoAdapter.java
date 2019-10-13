@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.am.shortVideo.R;
-import com.bumptech.glide.Glide;
+import com.am.shortVideo.activity.OtherUserInfoActivity;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class SearchUserinfoAdapter extends MyAllBaseAdapter<SearchUserinfo.DataB
     }
 
     @Override
-    public void getBindViewHolder(MyBaseViewHolder viewHolder, int position) {
+    public void getBindViewHolder(MyBaseViewHolder viewHolder, final int position) {
         if (getItemViewType(position) == NORMAL_VIEW) {
             final SearchUserinfoViewHolder holder = (SearchUserinfoViewHolder) viewHolder;
             char letter = getfontLetter(position);
@@ -61,6 +61,26 @@ public class SearchUserinfoAdapter extends MyAllBaseAdapter<SearchUserinfo.DataB
             GlideUtils.showHeader(context, HttpUri.BASE_DOMAIN + dates.get(position).getAvatar(), holder.attentionperson_picture);
             holder.attentionperson_account.setText(dates.get(position).getUid());
             holder.attentionperson_name.setText(dates.get(position).getNickName());
+            holder.attentionperson_picture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    HashMap<String, String> map = new HashMap<>();
+//                    map.put("uid", dates.get(position).getUid());
+//                    OktHttpUtil.getInstance().sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_USEROTHERINFO,
+//                            MyApplication.getInstance().getMaps(), map, new Callback() {
+//                                @Override
+//                                public void onFailure(Call call, IOException e) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onResponse(Call call, Response response) throws IOException {
+//
+//                                }
+//                            });
+                    OtherUserInfoActivity.start(context, dates.get(position).getUid(), false);
+                }
+            });
         } else if (getItemViewType(position) == FOOT_VIEW) {
             FootViewHolder holder1 = (FootViewHolder) viewHolder;
             holder1.text_foot.setVisibility(View.GONE);

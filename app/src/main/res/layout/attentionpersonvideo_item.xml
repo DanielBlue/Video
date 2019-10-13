@@ -3,7 +3,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:layout_marginBottom="15dp">
+                android:background="@color/theme_dark_line"
+    >
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/attention_personvideo_picture"
@@ -161,7 +162,8 @@
         android:layout_below="@id/rl_commentcount"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/login_bg_edt"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/rect_bg_2e3443_cor_4dp"
         android:paddingBottom="10dp">
 
         <TextView

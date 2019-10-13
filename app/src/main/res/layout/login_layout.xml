@@ -36,7 +36,7 @@
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:scaleType="centerCrop"
-            android:src="@mipmap/app_icon" />
+            android:src="@drawable/app_icon" />
     </RelativeLayout>
 
     <EditText

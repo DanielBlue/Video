@@ -85,7 +85,7 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
                         dates.addAll(attentionPerson.getData().getPageList());
                         sortData();
                         attenPersonAdapter.notifyDataSetChanged();
-                        slideView.setVisibility(dates.isEmpty() ? View.GONE : View.VISIBLE);
+//                        slideView.setVisibility(dates.isEmpty() ? View.GONE : View.VISIBLE);
                     } else if (attentionPerson.getCode() == 1005) {
 //                        circleprogressDialog.dismiss();
                         if (attenPersonAdapter != null) {
@@ -125,7 +125,7 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
     private PagerSnapHelper pagerSnapHelper;
     private LinearLayoutManager layoutManger;
     private PinYinUtil pinYinUtil;
-    private SliderView slideView;
+//    private SliderView slideView;
 //    private CircleProgressDialog circleprogressDialog;
 
     @Override
@@ -152,8 +152,8 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
 
         attenPersonAdapter = new AttentionAdapter(dates, getActivity(), pinYinUtil);
         secondFragment_recycle.setAdapter(attenPersonAdapter);
-        slideView = (SliderView) view.findViewById(R.id.sliderview);
-        slideView.setChangeLetterLinstener(this);
+//        slideView = (SliderView) view.findViewById(R.id.sliderview);
+//        slideView.setChangeLetterLinstener(this);
         secondFragment_recycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

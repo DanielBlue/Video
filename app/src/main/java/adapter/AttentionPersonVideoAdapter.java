@@ -46,6 +46,7 @@ import okhttp3.Response;
 import util.BaseUtils;
 import util.FootViewHolder;
 import util.FormatTime;
+import util.GlideUtils;
 import util.HttpUri;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -95,7 +96,7 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
             holder.attentionpersonvideo_likecount.setText(datas.get(position).getLikeCounts() + "");
             holder.attentionpersonvideo_commentcount.setText(datas.get(position).getCommentCounts() + "");
             holder.attentionpersonvideo_Allcommentcount.setText(datas.get(position).getCommentCounts() + "人评论过");
-            Glide.with(context).load(HttpUri.BASE_DOMAIN + datas.get(position).getCoverPath()).into(holder.attentionpersonvideo_videoimg);
+            GlideUtils.displayRoundImage(context,HttpUri.BASE_DOMAIN + datas.get(position).getCoverPath(),holder.attentionpersonvideo_videoimg,4);
             if (datas.get(position).getComment() != null) {
                 holder.attentionpersonvideo_usercommentnickname.setVisibility(View.VISIBLE);
                 holder.attentionpersonvideo_usercommentcontent.setVisibility(View.VISIBLE);

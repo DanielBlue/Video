@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.LookFullScreenVideo;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -73,7 +72,7 @@ public class LikeListAdapter extends MyAllBaseAdapter<LikeListShow.DataBean.Page
             GlideUtils.showHeader(context,HttpUri.BASE_DOMAIN + dates.get(position).getAvatar(),holder.likelist_picture);
             holder.likelist_nickname.setText(dates.get(position).getNickName());
             holder.likelist_videotime.setText(FormatTime.formatTime(dates.get(position).getCreateTime()));
-            Glide.with(context).load(HttpUri.BASE_DOMAIN+dates.get(position).getCover()).into( holder.likelist_videoimg);
+            GlideUtils.displayRoundImage(context,HttpUri.BASE_DOMAIN+dates.get(position).getCover(),holder.likelist_videoimg,4);
             holder.likelist_videostart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

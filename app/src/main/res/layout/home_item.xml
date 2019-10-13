@@ -16,8 +16,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="8dp"
-        android:layout_marginBottom="14dp"
-        android:src="@mipmap/app_icon"
+        android:layout_marginBottom="25dp"
+        android:src="@drawable/default_avatar"
         />
     <RelativeLayout
         android:layout_width="61dp"

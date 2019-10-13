@@ -67,7 +67,7 @@ public class MessaageCommentAdapter extends MyAllBaseAdapter<CommentAtBean.DataB
             messageCommentViewHolder.message_comment_replay_warn.setText("回复了你的评论");
             messageCommentViewHolder.messagecomment_content.setText(datas.get(position).getContent());
             messageCommentViewHolder.messagecomment_time.setText(FormatTime.formatTime(datas.get(position).getCommentTime()));
-            Glide.with(context).load(HttpUri.BASE_DOMAIN+datas.get(position).getCoverPath()).into(messageCommentViewHolder.messagecomment_videoImg);
+            GlideUtils.displayRoundImage(context,HttpUri.BASE_DOMAIN+datas.get(position).getCoverPath(),messageCommentViewHolder.messagecomment_videoImg,4);
             messageCommentViewHolder.messagecomment_videostart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

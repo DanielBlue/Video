@@ -329,7 +329,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         if (messageWrap.getMessage().equals("true")) {
             initData();
         } else if (messageWrap.getMessage().equals("false")) {
-            me_circleImageView.setImageDrawable(getActivity().getResources().getDrawable(R.mipmap.app_icon));
+            me_circleImageView.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.default_avatar));
             me_nickname.setText("");
             me_useraccount.setText("");
             me_personalcontent.setText("");

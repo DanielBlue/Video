@@ -5,13 +5,17 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.am.shortVideo.R;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import adapter.MessageAdapter;
@@ -29,11 +33,10 @@ import util.RecycleViewDivider;
 
 public class MessageHelpActivity extends BaseActivity {
     @BindView(R.id.message_recycle)
-    RecyclerView messageRecycle;
+    RecyclerView mRvList;
 
     private static final String TAG = "MessageHelpActivity";
     private OktHttpUtil okHttpUtil;
-    private List<HistoryMessageBean.DataBean.PushHistoryBean> datas = new ArrayList<>();
 
     private Handler handler = new Handler() {
         @Override
@@ -42,10 +45,15 @@ public class MessageHelpActivity extends BaseActivity {
             switch (msg.what) {
                 case 1://需要修改
                     HistoryMessageBean historymessage = (HistoryMessageBean) msg.obj;
-                    datas.clear();
+                    List<HistoryMessageBean.DataBean.PushHistoryBean> dataList = historymessage.getData().getPushHistory();
                     if (historymessage.getCode() == 0) {
-                        datas.addAll(historymessage.getData().getPushHistory());
-                        messageAdapter.notifyDataSetChanged();
+                        if (dataList.size() > 0) {
+                            messageAdapter.addData(dataList);
+                            messageAdapter.loadMoreComplete();
+                            currentPage++;
+                        } else {
+                            messageAdapter.loadMoreEnd();
+                        }
                     } else if (historymessage.getCode() == 1005) {
                         BaseUtils.getLoginDialog(MessageHelpActivity.this).show();
                     }
@@ -89,17 +97,33 @@ public class MessageHelpActivity extends BaseActivity {
 
     private void initView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, android.support.v7.widget.LinearLayoutManager.VERTICAL, false);
-        messageRecycle.setLayoutManager(linearLayoutManager);
-        messageRecycle.addItemDecoration(new RecycleViewDivider(this, LinearLayout.VERTICAL, 2, 0, 0, getResources().getColor(R.color.color_e5e5e5)));
+        mRvList.setLayoutManager(linearLayoutManager);
+        mRvList.addItemDecoration(new RecycleViewDivider(this, LinearLayout.VERTICAL, 2, 0, 0, getResources().getColor(R.color.color_e5e5e5)));
 
-        messageAdapter = new MessageAdapter(this, datas);
-        messageRecycle.setAdapter(messageAdapter);
-
+        messageAdapter = new MessageAdapter(new ArrayList<HistoryMessageBean.DataBean.PushHistoryBean>());
+        messageAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                initData();
+            }
+        }, mRvList);
+        mRvList.setAdapter(messageAdapter);
+        ((TextView) findViewById(R.id.bt_systemmessage)).setText("消息助手");
+        findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
+    private int currentPage = 1;
+
     private void initData() {
+        HashMap<String, String> param = new HashMap<>();
+        param.put("page", String.valueOf(currentPage));
         okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.MESSAGE.REQUEST_HEADER_PUSHHISTORY
-                , ((MyApplication) this.getApplicationContext()).getMaps(), historyCallback);
+                , ((MyApplication) this.getApplicationContext()).getMaps(), param, historyCallback);
     }
 
 }
