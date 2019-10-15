@@ -1,5 +1,6 @@
 package com.am.shortVideo.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,6 +52,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import util.HttpUri;
+import util.LogUtils;
 
 
 /**
@@ -152,8 +156,38 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         EventBus.getDefault().register(this);
         initView();
         setButtonOnClickListener();
+        MyApplication.mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initPermission();
+            }
+        }, 500);
         return view;
     }
+
+    private void initPermission() {
+        AndPermission.with(this)
+                .runtime()
+                .permission(android.Manifest.permission.CAMERA,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.READ_PHONE_STATE)
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        LogUtils.d("MainActivity", "权限被允许：" + data.size());
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        LogUtils.d("MainActivity", "权限被拒绝：" + data.size());
+                    }
+                })
+                .start();
+    }
+
 
     private void setButtonOnClickListener() {
         //bt_menu.setOnClickListener(this);
@@ -319,6 +353,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void changeCommentCount(CommentCountEvent commentCountEvent) {
         if (commentCountEvent != null) {
             View view = pagerSnapHelper.findSnapView(layoutManger);
+            int position = layoutManger.getPosition(view);
+            mAdapter.getData().get(position).setCommentCounts(commentCountEvent.count);
             if (view != null) {
                 BaseViewHolder holder = (BaseViewHolder) mRvList.getChildViewHolder(view);
                 holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");

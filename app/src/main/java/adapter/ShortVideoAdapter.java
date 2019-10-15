@@ -14,7 +14,6 @@ import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.LoginActivity;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
@@ -74,7 +73,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                 .setVisible(R.id.rl_bugfood, !TextUtils.isEmpty(item.getGoodsName()))
                 .setText(R.id.tv_recommendfood, item.getGoodsName());
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
-        GlideUtils.showHeader(mContext,HttpUri.BASE_DOMAIN + item.getAvatar(),(ImageView) helper.getView(R.id.user_circleImage));
+        GlideUtils.showHeader(mContext, HttpUri.BASE_DOMAIN + item.getAvatar(), (ImageView) helper.getView(R.id.user_circleImage));
 
         if (item.isFollowStatus() || TextUtils.equals(item.getUid(), ((MyApplication) mContext.getApplicationContext()).getUseruid())) {
             helper.setVisible(R.id.user_attention, true)
@@ -440,7 +439,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                         @Override
                                         public void run() {
                                             if (!userinfo.getData().getUserInfo().getUid().equals(item)) {
-                                                OtherUserInfoActivity.start(mContext,item.getUid(),item.isFollowStatus());
+                                                OtherUserInfoActivity.start(mContext, item.getUid(), item.isFollowStatus());
                                             } else {
                                                 Toast.makeText(mContext, "请在个人中心查看信息", Toast.LENGTH_SHORT).show();
                                             }
@@ -478,10 +477,10 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                 String attentionResult = response.body().string();
                                 Gson gson = new Gson();
                                 final AttentionOrCancelPerson cancelPerson = gson.fromJson(attentionResult, AttentionOrCancelPerson.class);
-                                if (cancelPerson.getCode() == 0) {
-                                    ((Activity) mContext).runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                ((Activity) mContext).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (cancelPerson.getCode() == 0) {
                                             getData().get(helper.getLayoutPosition()).setFollowStatus(cancelPerson.getData().isFollowStatus());
                                             if (cancelPerson.getData().isFollowStatus()) {
                                                 helper.setVisible(R.id.user_attention, true)
@@ -493,11 +492,11 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                             item.setFollowStatus(cancelPerson.getData().isFollowStatus());
                                             EventBus.getDefault().post(new AttentionEvent(item.getUid(), cancelPerson.getData().isFollowStatus()));
                                             EventBus.getDefault().post(new HomeAttentionEvent());
+                                        } else if (cancelPerson.getCode() == 1005) {
+                                            BaseUtils.getLoginDialog(mContext).show();
                                         }
-                                    });
-                                } else if (cancelPerson.getCode() == 1005) {
-                                    BaseUtils.getLoginDialog(mContext).show();
-                                }
+                                    }
+                                });
                             }
                         });
             }

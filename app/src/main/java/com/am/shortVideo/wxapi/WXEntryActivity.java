@@ -1,4 +1,4 @@
-package wxapi;
+package com.am.shortVideo.wxapi;
 
 import com.umeng.socialize.weixin.view.WXCallbackActivity;
 

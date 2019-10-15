@@ -12,8 +12,6 @@ import android.widget.Toast;
 
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -170,30 +168,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_login:
-                AndPermission.with(this)
-                        .runtime()
-                        .permission(android.Manifest.permission.READ_PHONE_STATE)
-                        .onGranted(new Action<List<String>>() {
-                            @Override
-                            public void onAction(List<String> data) {
-                                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                                HashMap<String, String> maps = new HashMap<>();
-                                maps.put("phone", et_inputpassphone.getText().toString().trim());
-                                maps.put("password", et_inputpassword.getText().toString().trim());
-                                maps.put("type", "2");
-                                maps.put("device_id", et_inputpassphone.getText().toString().trim());
-                                maps.put("device_type", "android");
-                                okHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.LoginOrRegister.REQUEST_HEADER_LOGIN
-                                        , maps, loginCallBack);
-                            }
-                        })
-                        .onDenied(new Action<List<String>>() {
-                            @Override
-                            public void onAction(List<String> data) {
-                                Toast.makeText(LoginActivity.this, "权限被拒绝", Toast.LENGTH_SHORT);
-                            }
-                        })
-                        .start();
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                HashMap<String, String> maps = new HashMap<>();
+                maps.put("phone", et_inputpassphone.getText().toString().trim());
+                maps.put("password", et_inputpassword.getText().toString().trim());
+                maps.put("type", "2");
+                maps.put("device_id", et_inputpassphone.getText().toString().trim());
+                maps.put("device_type", "android");
+                okHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.LoginOrRegister.REQUEST_HEADER_LOGIN
+                        , maps, loginCallBack);
                 break;
             case R.id.tv_register:
                 Intent intent = new Intent(this, RegisterActivity.class);

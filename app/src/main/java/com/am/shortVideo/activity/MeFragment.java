@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,6 +98,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         me_swiprefreshlayout.setRefreshing(false);
                         islogin = false;
                         bt_changpersoninfo.setText(getActivity().getResources().getString(R.string.me_editorinfo));
+                        bt_changpersoninfo.setBackgroundResource(R.drawable.bg_round_394051);
                         GlideUtils.showHeader(getActivity(), HttpUri.BASE_DOMAIN + userInfo.getData().getUserInfo().getAvatar(), me_circleImageView);
                         if (!userInfo.getData().getUserInfo().getNickname().isEmpty()) {
                             me_nickname.setText(userInfo.getData().getUserInfo().getNickname());
@@ -419,7 +419,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.ll6://退出登录
                 Log.d(TAG, "onClick: ll6");
-                if (TextUtils.isEmpty(MyApplication.getInstance().getUseruid())) {
+                if (MyApplication.getInstance().getUserInfo() == null) {
+                    Toast.makeText(getActivity(), "请先登录", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

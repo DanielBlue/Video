@@ -72,7 +72,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:layout_marginEnd="20dp"
-            android:background="#C51C55"
+            android:background="@drawable/bg_round_da6464"
             android:gravity="center"
             android:text="@string/bt_attention"
             android:textColor="@color/white"

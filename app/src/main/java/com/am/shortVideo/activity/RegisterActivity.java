@@ -1,15 +1,11 @@
 package com.am.shortVideo.activity;
 
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +17,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.HashMap;
 
+import application.MyApplication;
 import base.BaseActivity;
 import bean.SmsBean;
 import bean.UserRegister;
@@ -113,7 +110,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                     String registerResult = response.body().string();
                                     Log.d(TAG, "onResponse: \n" + registerResult);
                                     Gson gson = new Gson();
-                                    UserRegister userRegister = gson.fromJson(registerResult, UserRegister.class);
+                                    final UserRegister userRegister = gson.fromJson(registerResult, UserRegister.class);
                                     if (userRegister.getCode() == 0) {
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -123,6 +120,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                             }
                                         });
                                         finish();
+                                    } else {
+                                        MyApplication.mHandler.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(RegisterActivity.this,
+                                                        userRegister.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
                                 }
                             });
@@ -151,7 +156,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                 if (smsBean.code == 0) {
                                     mHandler.sendEmptyMessage(0);
                                 } else {
-                                    runOnUiThread(new Runnable() {
+                                    MyApplication.mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
                                             Toast.makeText(RegisterActivity.this,
@@ -197,20 +202,20 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     public boolean isAllRegister() {
-        if (et_inputphoner.getText().toString() == null) {
+        if (et_inputphoner.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "输入不可为空", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (et_inputpassword.getText().toString() == null) {
+        if (et_inputpassword.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "输入不可为空", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (et_confirmpassword.getText().toString() == null && !et_confirmpassword.getText()
+        if (et_confirmpassword.getText().toString().trim().isEmpty() && !et_confirmpassword.getText()
                 .toString().trim().equals(et_inputpassword.getText().toString().trim())) {
             Toast.makeText(this, "输入错误", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (et_indentfycode.getText().toString() == null) {
+        if (et_indentfycode.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "输入不可为空", Toast.LENGTH_SHORT).show();
             return false;
         }

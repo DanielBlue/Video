@@ -110,8 +110,10 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                         }
                         if (curFollowStatus) {
                             bt_changpersoninfo.setText("取消关注");
+                            bt_changpersoninfo.setBackgroundResource(R.drawable.bg_round_394051);
                         } else {
                             bt_changpersoninfo.setText("关注");
+                            bt_changpersoninfo.setBackgroundResource(R.drawable.bg_round_da6464);
                         }
                         me_fanscount.setText("" + userInfo.getData().getUserInfo().getFansCount());
                         me_attentioncount.setText("" + userInfo.getData().getUserInfo().getFollowCount());

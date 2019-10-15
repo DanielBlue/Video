@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import adapter.AtUserNickAdapter;
 import adapter.CommentAdapter;
 import application.MyApplication;
 import bean.AtPersonEvent;
@@ -255,52 +254,6 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
 
                     }
                 });
-
-    }
-
-    private List<AttentionPerson.DataBean.PageListBean> loadAtData() {
-        oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_ATTENTIONPERSONQUERY,
-                ((MyApplication) context.getApplicationContext()).getMaps(), new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String attentionperson = response.body().string();
-                        Log.d(TAG, "attentionlist-->onResponse: \n" + attentionperson);
-                        Gson gson = new Gson();
-                        final AttentionPerson attentionPersonVideo = gson.fromJson(attentionperson, AttentionPerson.class);
-                        if (attentionPersonVideo.getData() != null && attentionPersonVideo.getData().getPageList() != null) {
-                            ((Activity) context).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    newCommentDatas = attentionPersonVideo.getData().getPageList();
-                                    AtUserNickAdapter atUsernickAdatpter = new AtUserNickAdapter(newCommentDatas, context);
-                                    comment_recycleview1.setAdapter(atUsernickAdatpter);
-                                    atUsernickAdatpter.setOnNickItemLinstener(new AtUserNickAdapter.AtNickCallBack() {
-                                        @Override
-                                        public void getAtName(String nicknama, String id) {
-                                            currentStatus = 1;
-                                            isAtClick = false;
-                                            Log.d(TAG, "nicknama: " + nicknama + "id\t" + id);
-                                            At_id = id;
-                                            ed_comment.setText("@" + nicknama + ":");
-                                            ed_comment.setSelection(ed_comment.getText().length());
-                                            openKeybord(ed_comment, context);
-                                            bl_at.setVisibility(View.GONE);
-                                        }
-                                    });
-                                    bl_at.setVisibility(View.VISIBLE);
-                                }
-                            });
-
-                        }
-                    }
-                });
-
-        return newCommentDatas;
 
     }
 

@@ -128,6 +128,7 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
         getWindow().setAttributes(params);
         setContentView(R.layout.activity_tidal_pat_record_video);
         //mMusicBean = (MusicBean) getIntent().getSerializableExtra("MusicBean");
+        mMusicBean = new MusicBean();
         mPresenter = new RecordVideoPresenter(this, mMusicBean);
         initView();
         boolean isAudioPermission = CheckPermissionUtil.isHasAudioPermission(this);
@@ -1010,6 +1011,10 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
             //mTidalPatRecordDraftBean.setAudioId(curAudio);
             Log.d("jiejie", "isSelectMusic:\t " + isSelectMusic + "name:\t" + playName);
             if (isSelectMusic) {
+                mMusicBean.setUrl(Constant.DOWNBGM + File.separator + playName + ".mp3");
+
+                showCutAudioLayout();
+
 //                mPresenter.cutAudio(Constant.DOWNBGM+File.separator+name+".mp3", 0, 200 * 1000000L, "cut_audio", new HomeCallBack() {
 //                    @Override
 //                    public void finish(Object obj) {

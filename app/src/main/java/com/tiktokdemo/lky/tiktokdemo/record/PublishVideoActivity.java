@@ -82,7 +82,6 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
     private OktHttpUtil okHttpUtil;
     private TidalPatRecordDraftBean mTidalPatRecordDraftBean;
     private PublishVideoInfo publishVideoInfo;
-    private boolean isOpenGps;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -108,7 +107,6 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
         @Override
         public void onLocationChanged(Location location) {
             Log.d(TAG, "onLocationChanged: ");
-            isOpenGps = true;
             float accuracy = location.getAccuracy();//获取精确位置
             double altitude = location.getAltitude();//获取海拔
             final double latitude = location.getLatitude();//获取纬度，平行
@@ -161,12 +159,10 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
         @Override
         public void onProviderEnabled(String provider) {
             Log.d(TAG, "onProviderEnabled: ");
-            isOpenGps = true;
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-            isOpenGps = false;
             Log.d(TAG, "onProviderDisabled: ");
         }
 
@@ -259,6 +255,21 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
         FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(),Constant.RECORD_VIDEO_PATH, mLocalVideoFileName);
     }
 
+    public boolean isGpsOPen() {
+        LocationManager locationManager
+                = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // 通过GPS卫星定位，定位级别可以精确到街（通过24颗卫星定位，在室外和空旷的地方定位准确、速度快）
+        boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        // 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
+        boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (gps || network) {
+            return true;
+        }
+
+        return false;
+    }
+
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -272,7 +283,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                 saveVideo(mTidalPatRecordDraftBean);
                 break;
             case R.id.bt_publishvideo:
-                if (!isOpenGps) {
+                if (!isGpsOPen()) {
                     openAlertDialog(this);
                     return;
                 }

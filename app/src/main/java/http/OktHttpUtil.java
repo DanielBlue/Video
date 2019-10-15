@@ -35,6 +35,7 @@ public class OktHttpUtil {
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .addNetworkInterceptor(new StethoInterceptor())
+//                .addNetworkInterceptor(new SessionInterceptor())
                 .build();
 
     }

@@ -1,6 +1,5 @@
 package com.am.shortVideo.activity;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -9,10 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.am.shortVideo.R;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-
-import java.util.List;
 
 import base.BaseActivity;
 
@@ -50,29 +45,6 @@ public class WelcomActivity extends BaseActivity implements View.OnClickListener
         tv_welcome.setOnClickListener(this);
     }
 
-    private void initPermission() {
-        AndPermission.with(this)
-                .runtime()
-                .permission(android.Manifest.permission.CAMERA,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.READ_PHONE_STATE)
-                .onGranted(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> data) {
-
-                    }
-                })
-                .onDenied(new Action<List<String>>() {
-                    @Override
-                    public void onAction(List<String> data) {
-
-                    }
-                })
-                .start();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -88,7 +60,6 @@ public class WelcomActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void initEventAndData() {
         initView();
-        initPermission();
     }
 
     @Override

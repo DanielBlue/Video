@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -73,7 +72,7 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
     public void getBindViewHolder(MyBaseViewHolder viewHolder, final int position) {
         if (getItemViewType(position) == 0) {
             final CommentViewHolder commentViewHolder = (CommentViewHolder) viewHolder;
-            GlideUtils.showHeader(context,HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(),((CommentViewHolder) viewHolder).userImg);
+            GlideUtils.showHeader(context, HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(), ((CommentViewHolder) viewHolder).userImg);
             commentViewHolder.tv_commentTime.setText(FormatTime.formatTime(datas.get(position).getCommentTime()));
             commentViewHolder.tv_userName.setText(datas.get(position).getNickName());
             if (datas.get(position).getAtType() == 1) {//有@用户
@@ -91,10 +90,12 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
             }
             if (datas.get(position).isReplyState()) {
                 commentViewHolder.rl_authoritycomment.setVisibility(View.VISIBLE);
-                GlideUtils.showHeader(context,HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(),(commentViewHolder.authorityImg));
+                GlideUtils.showHeader(context, HttpUri.BASE_DOMAIN + datas.get(position).getAvatar(), (commentViewHolder.authorityImg));
 
                 commentViewHolder.tv_authority_commentTime.setText(FormatTime.formatTime(datas.get(position).getAuthorReply().getReplyTime()));
                 commentViewHolder.tv_authorityName.setText(datas.get(position).getAuthorReply().getAuthorNickName());
+                GlideUtils.showHeader(context, HttpUri.BASE_DOMAIN + datas.get(position).getAuthorReply().getAuthorAvatar(), (commentViewHolder.iv_secondcomment_picture));
+
                 commentViewHolder.tv_authority_replay.setText("回复" + datas.get(position).getNickName());
                 commentViewHolder.tv_authority_commentContent.setText(datas.get(position).getAuthorReply().getReplyContent());
             } else {
@@ -122,7 +123,7 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
                                             @Override
                                             public void run() {
                                                 if (!userinfo.getData().getUserInfo().getUid().equals(datas.get(position))) {
-                                                    OtherUserInfoActivity.start(context,datas.get(position).getCommentUid(),true);
+                                                    OtherUserInfoActivity.start(context, datas.get(position).getCommentUid(), true);
                                                 } else {
                                                     Toast.makeText(context, "请在个人中心查看信息", Toast.LENGTH_SHORT).show();
                                                 }
@@ -217,6 +218,7 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
         private ImageView iv_usersupport;
         private TextView tv_atnickname;
         private RelativeLayout rl_comment_item;
+        private CircleImageView iv_secondcomment_picture;
 
         public CommentViewHolder(View itemView) {
             super(itemView);
@@ -232,6 +234,8 @@ public class CommentAdapter extends MyAllBaseAdapter<VideoComment.DataBean.Comme
             tv_commentContent = (TextView) view.findViewById(R.id.tv_commentContent);
             authorityImg = (CircleImageView) view.findViewById(R.id.iv_comment_picture);
             tv_authorityName = (TextView) view.findViewById(R.id.tv_secondcommentName);
+            iv_secondcomment_picture = (CircleImageView) view.findViewById(R.id.iv_secondcomment_picture);
+
             tv_authority_commentTime = (TextView) view.findViewById(R.id.tv_secondcommenttime);
             tv_authority_commentContent = (TextView) view.findViewById(R.id.tv_secondcommentContent);
             tv_authority_replay = (TextView) view.findViewById(R.id.tv_replayname);

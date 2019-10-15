@@ -67,8 +67,9 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/bg_round_da6464"
+            android:background="@drawable/select_get_code_bg"
             android:gravity="center"
+            android:textColor="#fff"
             android:text="@string/register_get_identitycode"
             android:textSize="12dp" />
 
@@ -89,6 +90,7 @@
         android:layout_marginRight="50dp"
         android:background="@null"
         android:hint="@string/register_password"
+        android:inputType="textPassword"
         android:textColor="@color/text_333333"
         android:textColorHint="@color/text_babcc1"
         android:textSize="16dp" />
