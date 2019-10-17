@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
@@ -25,7 +24,6 @@ import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
 import bean.AttentionOrCancelPerson;
 import bean.AttentionPerson;
-import bean.UserInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 import http.OktHttpUtil;
 import okhttp3.Call;
@@ -132,40 +130,41 @@ public class AttentionAdapter extends MyAllBaseAdapter<AttentionPerson.DataBean.
             holder.attentionperson_picture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_PERSONINFO
-                            , ((MyApplication) context.getApplicationContext()).getMaps(), new Callback() {
-                                @Override
-                                public void onFailure(Call call, IOException e) {
-
-                                }
-
-                                @Override
-                                public void onResponse(Call call, Response response) throws IOException {
-                                    String userinfoResult = response.body().string();
-                                    Log.d(TAG, "onResponse: userinfoCallback\n" + userinfoResult);
-                                    Gson gson = new Gson();
-                                    final UserInfo userinfo = gson.fromJson(userinfoResult, UserInfo.class);
-                                    if (userinfo.getCode() == 0) {
-                                        ((Activity) context).runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                if (!userinfo.getData().getUserInfo().getUid().equals(datas.get(position))) {
-                                                    OtherUserInfoActivity.start(context,datas.get(position).getUid(),datas.get(position).isFollowStatus());
-                                                } else {
-                                                    Toast.makeText(context, "请在个人中心查看信息", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                    } else if (userinfo.getCode() == 1005) {
-                                        ((Activity) context).runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                BaseUtils.getLoginDialog(context).show();
-                                            }
-                                        });
-                                    }
-                                }
-                            });
+                    OtherUserInfoActivity.start(context,datas.get(position).getUid(),true);
+//                    okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_PERSONINFO
+//                            , ((MyApplication) context.getApplicationContext()).getMaps(), new Callback() {
+//                                @Override
+//                                public void onFailure(Call call, IOException e) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onResponse(Call call, Response response) throws IOException {
+//                                    String userinfoResult = response.body().string();
+//                                    Log.d(TAG, "onResponse: userinfoCallback\n" + userinfoResult);
+//                                    Gson gson = new Gson();
+//                                    final UserInfo userinfo = gson.fromJson(userinfoResult, UserInfo.class);
+//                                    if (userinfo.getCode() == 0) {
+//                                        ((Activity) context).runOnUiThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                if (!userinfo.getData().getUserInfo().getUid().equals(datas.get(position))) {
+//                                                    OtherUserInfoActivity.start(context,datas.get(position).getUid(),datas.get(position).isFollowStatus());
+//                                                } else {
+//                                                    Toast.makeText(context, "请在个人中心查看信息", Toast.LENGTH_SHORT).show();
+//                                                }
+//                                            }
+//                                        });
+//                                    } else if (userinfo.getCode() == 1005) {
+//                                        ((Activity) context).runOnUiThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                BaseUtils.getLoginDialog(context).show();
+//                                            }
+//                                        });
+//                                    }
+//                                }
+//                            });
                 }
             });
 

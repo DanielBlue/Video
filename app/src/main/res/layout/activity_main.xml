@@ -38,8 +38,9 @@
 
             <ImageView
                 android:id="@+id/iv_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
                 android:layout_gravity="center"
                 android:src="@mipmap/home" />
 
@@ -54,8 +55,9 @@
 
             <ImageView
                 android:id="@+id/iv_attention"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
                 android:layout_gravity="center"
                 android:src="@mipmap/guanzhu_1" />
 
@@ -84,9 +86,10 @@
                 />
             <ImageView
                 android:id="@+id/iv_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:scaleType="centerInside"
                 android:src="@mipmap/xiaoxi_1" />
 
         </FrameLayout>
@@ -100,10 +103,11 @@
 
             <ImageView
                 android:id="@+id/iv_me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
                 android:layout_gravity="center"
-                android:background="@mipmap/me_1" />
+                android:src="@mipmap/me_1" />
 
         </LinearLayout>
 

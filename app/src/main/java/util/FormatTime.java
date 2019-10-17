@@ -9,14 +9,14 @@ import java.util.Date;
 
 public class FormatTime {
     public static String formatTime(long time) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm");
         Date date = new Date(time);
         String formatvalue = simpleDateFormat.format(date);
         return formatvalue;
     }
 
     public static String formatYHDhm(long time) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = new Date(time);
         String formatvalue = simpleDateFormat.format(date);
         return formatvalue;

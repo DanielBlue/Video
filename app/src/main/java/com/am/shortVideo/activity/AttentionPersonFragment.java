@@ -136,7 +136,6 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
         pinYinUtil = new PinYinUtil();
         EventBus.getDefault().register(this);
 //        circleprogressDialog = new CircleProgressDialog(getActivity());
-        initData();
         initView();
         return view;
     }
@@ -237,6 +236,12 @@ public class AttentionPersonFragment extends Fragment implements SwipeRefreshLay
         } else if (messageWrap.getMessage().equals("false")) {
 
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        onRefresh();
     }
 
     @Override

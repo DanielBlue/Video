@@ -332,6 +332,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                                             @Override
                                             public void run() {
                                                 bt_changpersoninfo.setText("取消关注");
+                                                bt_changpersoninfo.setBackgroundResource(R.drawable.bg_round_394051);
                                             }
                                         });
                                     } else {
@@ -341,6 +342,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
                                             @Override
                                             public void run() {
                                                 bt_changpersoninfo.setText("关注");
+                                                bt_changpersoninfo.setBackgroundResource(R.drawable.bg_round_da6464);
                                             }
                                         });
                                     }

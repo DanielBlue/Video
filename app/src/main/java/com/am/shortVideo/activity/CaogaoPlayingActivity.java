@@ -30,13 +30,14 @@ import customeview.ShortVideoPlayer;
 public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "ShortVideoPlayingActivi";
     private RecyclerView mRvList;
-    private List<String> datas=new ArrayList<>();
+    private List<String> datas = new ArrayList<>();
     private PagerSnapHelper mSnapHelper;
     private LinearLayoutManager layoutManger;
     private DrawerLayout drawLayout;
     private RelativeLayout rl_menu;
     private Button bt_find;
     private Button bt_menu;
+    private TextView personinfo_save;
     private TextView systemmessage;
     private ImageView iv_back;
     private int curChannel;
@@ -92,7 +93,7 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
                     startPlay(0);
                 }
             }
-        },500);
+        }, 500);
     }
 
     private int mCurPosition = -1;
@@ -126,33 +127,52 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
 //        bt_menu.setOnClickListener(this);
         iv_back.setOnClickListener(this);
     }
+
     private void addData() {
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         Bundle data = intent.getBundleExtra("data");
         datas = (List<String>) data.getSerializable("datas");
-        curChannel=data.getInt("type",5);
+        curChannel = data.getInt("type", 5);
     }
+
     private void initView() {
-        iv_back=(ImageView)findViewById(R.id.iv_back);
-        mRvList =(RecyclerView)findViewById(R.id.recyle_view);
+        iv_back = (ImageView) findViewById(R.id.iv_back);
+        mRvList = (RecyclerView) findViewById(R.id.recyle_view);
 //        drawLayout=(DrawerLayout)findViewById(R.id.ac_drawlayout);
 //          rl_menu=(RelativeLayout)findViewById(R.id.rl);
 //          bt_menu=(Button)findViewById(R.id.bt_menu);
 //           bt_find=(Button)findViewById(R.id.bt_serach);
-        systemmessage=(TextView)findViewById(R.id.bt_systemmessage);
-        if(curChannel==0){
+        systemmessage = (TextView) findViewById(R.id.bt_systemmessage);
+        personinfo_save = findViewById(R.id.personinfo_save);
+        personinfo_save.setText("发布");
+        personinfo_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                introducedVideo();
+            }
+        });
+        if (curChannel == 0) {
             systemmessage.setText("全部");
-        }else if(curChannel==1){
+        } else if (curChannel == 1) {
             systemmessage.setText("同城");
-        }else if(curChannel==2){
+        } else if (curChannel == 2) {
             systemmessage.setText("推荐");
-        }else if(curChannel==3){
+        } else if (curChannel == 3) {
             systemmessage.setText("大V");
-        }else if(curChannel==4){
+        } else if (curChannel == 4) {
             systemmessage.setText("作品");
-        }else if(curChannel==5){
+        } else if (curChannel == 5) {
             systemmessage.setText("草稿");
         }
+    }
+
+    /**
+     * 发布视频
+     */
+    private void introducedVideo() {
+        View view = mSnapHelper.findSnapView(layoutManger);
+        int position = layoutManger.getPosition(view);
+        String s = mAdapter.getData().get(position);
     }
 
     @Override
@@ -164,14 +184,22 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        if (mCurPlayer != null) {
+            mCurPlayer.getCurrentPlayer().onVideoPause();
+        }
+    }
+
+    @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.bt_serach:
                 break;
             case R.id.bt_systeminfo:
-                if(!drawLayout.isDrawerOpen(rl_menu)){
+                if (!drawLayout.isDrawerOpen(rl_menu)) {
                     drawLayout.openDrawer(rl_menu);
-                }else{
+                } else {
                     drawLayout.closeDrawer(rl_menu);
                 }
                 break;
@@ -185,6 +213,7 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
             default:
         }
     }
+
 //    public void getCaoGaoImg(String path){
 //        File file=new File(path);
 //        if(!file.exists()){

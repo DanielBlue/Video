@@ -251,9 +251,15 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                                                 public void onResponse(Call call, Response response) throws IOException {
                                                                     String shareResult = response.body().string();
                                                                     Gson gson = new Gson();
-                                                                    ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
+                                                                    final ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                     if (shareVideo.getCode() == 0) {
-                                                                        helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
+                                                                        MyApplication.mHandler.post(new Runnable() {
+                                                                            @Override
+                                                                            public void run() {
+                                                                                helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
+
+                                                                            }
+                                                                        });
                                                                     }
                                                                 }
                                                             });
@@ -294,9 +300,14 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                                                 public void onResponse(Call call, Response response) throws IOException {
                                                                     String shareResult = response.body().string();
                                                                     Gson gson = new Gson();
-                                                                    ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
+                                                                    final ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                     if (shareVideo.getCode() == 0) {
-                                                                        helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
+                                                                        MyApplication.mHandler.post(new Runnable() {
+                                                                            @Override
+                                                                            public void run() {
+                                                                                helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
+                                                                            }
+                                                                        });
                                                                     }
                                                                 }
                                                             });
@@ -348,9 +359,14 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                                                                 public void onResponse(Call call, Response response) throws IOException {
                                                                                     String shareResult = response.body().string();
                                                                                     Gson gson = new Gson();
-                                                                                    ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
+                                                                                    final ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                                     if (shareVideo.getCode() == 0) {
-                                                                                        helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
+                                                                                        MyApplication.mHandler.post(new Runnable() {
+                                                                                            @Override
+                                                                                            public void run() {
+                                                                                                helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
+                                                                                            }
+                                                                                        });
                                                                                     }
                                                                                 }
                                                                             });
@@ -393,9 +409,14 @@ public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.In
                                                                 public void onResponse(Call call, Response response) throws IOException {
                                                                     String shareResult = response.body().string();
                                                                     Gson gson = new Gson();
-                                                                    ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
+                                                                    final ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                     if (shareVideo.getCode() == 0) {
-                                                                        helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
+                                                                        MyApplication.mHandler.post(new Runnable() {
+                                                                            @Override
+                                                                            public void run() {
+                                                                                helper.setText(R.id.tv_sharecount, "" + shareVideo.getData().getShareCounts());
+                                                                            }
+                                                                        });
                                                                     }
                                                                 }
                                                             });

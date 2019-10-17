@@ -184,6 +184,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             isLogin = true;
         } else if (messageWrap.getMessage().equals("false")) {
             isLogin = false;
+            updateHomeRedDotState(false);
         }
     }
 
