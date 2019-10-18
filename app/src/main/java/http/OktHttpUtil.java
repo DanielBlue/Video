@@ -140,8 +140,10 @@ public class OktHttpUtil {
         for (Map.Entry<String, String> head1 : map1.entrySet()) {
             if (head1.getKey().equals("coverFile") || head1.getKey().equals("uploadFile")) {
                 File file = new File(head1.getValue());
-                RequestBody filebody = RequestBody.create(MediaType.parse("application/octet-stream"), file);
-                multipartBody.addFormDataPart(head1.getKey(), file.getName(), filebody);
+                if (file.exists()){
+                    RequestBody filebody = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+                    multipartBody.addFormDataPart(head1.getKey(), file.getName(), filebody);
+                }
             } else {
                 multipartBody.addFormDataPart(head1.getKey(), head1.getValue());
             }

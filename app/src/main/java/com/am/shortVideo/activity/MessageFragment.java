@@ -35,6 +35,7 @@ import java.util.List;
 
 import adapter.PushHistoryMessageAdapter;
 import bean.HistoryMessageBean;
+import bean.MessageWrap;
 import event.MessageEvent;
 import event.RedDotEvent;
 import http.OktHttpUtil;
@@ -193,6 +194,18 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
 
                 updateHomeRedDotState();
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getLoginStatus(MessageWrap messageWrap) {
+        Log.d(TAG, "getLoginStatus: ");
+        if (messageWrap.getMessage().equals("true")) {
+
+        } else if (messageWrap.getMessage().equals("false")) {
+            mViewDotSupport.setVisibility(View.INVISIBLE);
+            mViewDotFans.setVisibility(View.INVISIBLE);
+            mViewDotComment.setVisibility(View.INVISIBLE);
         }
     }
 

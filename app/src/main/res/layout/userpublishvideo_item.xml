@@ -31,4 +31,13 @@
         android:paddingBottom="8dp"
         android:textSize="16sp"
         android:layout_marginStart="4dp"/>
+    <ImageView
+        android:id="@+id/btn_del"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/del"
+        android:visibility="invisible"
+        />
 </RelativeLayout>

@@ -14,6 +14,11 @@ import android.widget.TextView;
 
 import com.am.shortVideo.R;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.tiktokdemo.lky.tiktokdemo.record.PublishVideoActivity;
+import com.tiktokdemo.lky.tiktokdemo.record.bean.TidalPatRecordDraftBean;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +26,9 @@ import java.util.List;
 import adapter.CaogaoAdapter;
 import application.MyApplication;
 import base.BaseActivity;
+import bean.PublishVideoEvent;
 import customeview.ShortVideoPlayer;
+import event.MessageEvent;
 
 /**
  * Created by 李杰 on 2019/9/17.
@@ -136,13 +143,13 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initView() {
-        iv_back = (ImageView) findViewById(R.id.iv_back);
+        iv_back = (ImageView) findViewById(R.id.personinfo_back);
         mRvList = (RecyclerView) findViewById(R.id.recyle_view);
 //        drawLayout=(DrawerLayout)findViewById(R.id.ac_drawlayout);
 //          rl_menu=(RelativeLayout)findViewById(R.id.rl);
 //          bt_menu=(Button)findViewById(R.id.bt_menu);
 //           bt_find=(Button)findViewById(R.id.bt_serach);
-        systemmessage = (TextView) findViewById(R.id.bt_systemmessage);
+        systemmessage = (TextView) findViewById(R.id.tv_title);
         personinfo_save = findViewById(R.id.personinfo_save);
         personinfo_save.setText("发布");
         personinfo_save.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +180,23 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
         View view = mSnapHelper.findSnapView(layoutManger);
         int position = layoutManger.getPosition(view);
         String s = mAdapter.getData().get(position);
+
+        Intent intent = new Intent(this, PublishVideoActivity.class);
+        TidalPatRecordDraftBean bean = new TidalPatRecordDraftBean();
+        bean.setVideoLocalUrl(s);
+        intent.putExtra("mTidalPatRecordDraftBean", bean);
+        intent.putExtra("isSelectMusic", false);
+        intent.putExtra("isFromDraft", true);
+        startActivity(intent);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent event) {
+        if (event != null) {
+            if (event instanceof PublishVideoEvent) {
+                finish();
+            }
+        }
     }
 
     @Override
@@ -203,7 +227,7 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
                     drawLayout.closeDrawer(rl_menu);
                 }
                 break;
-            case R.id.iv_back:
+            case R.id.personinfo_back:
                 finish();
                 break;
 //            case R.id.bt_comment:
@@ -213,6 +237,7 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
             default:
         }
     }
+
 
 //    public void getCaoGaoImg(String path){
 //        File file=new File(path);

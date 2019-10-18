@@ -232,13 +232,13 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
     }
 
     private void initView() {
-        iv_back = (ImageView) findViewById(R.id.iv_back);
+        iv_back = (ImageView) findViewById(R.id.personinfo_back);
         mRvList = (RecyclerView) findViewById(R.id.recyle_view);
 //        drawLayout=(DrawerLayout)findViewById(R.id.ac_drawlayout);
 //          rl_menu=(RelativeLayout)findViewById(R.id.rl);
 //          bt_menu=(Button)findViewById(R.id.bt_menu);
 //           bt_find=(Button)findViewById(R.id.bt_serach);
-        systemmessage = (TextView) findViewById(R.id.bt_systemmessage);
+        systemmessage = (TextView) findViewById(R.id.tv_title);
         if (curChannel == 0) {
             systemmessage.setText("全部");
         } else if (curChannel == 1) {

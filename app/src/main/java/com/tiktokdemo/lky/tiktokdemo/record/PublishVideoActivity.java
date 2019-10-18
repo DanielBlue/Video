@@ -48,6 +48,8 @@ import com.tiktokdemo.lky.tiktokdemo.utils.ToastTool;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -57,6 +59,7 @@ import java.util.List;
 
 import application.MyApplication;
 import bean.PublishVideo;
+import bean.PublishVideoEvent;
 import bean.PublishVideoInfo;
 import http.OktHttpUtil;
 import okhttp3.Call;
@@ -173,6 +176,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
     private String curAudio;
     private String playName;
     private String mLocalVideoFileName;
+    private boolean isFromDraft;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,6 +186,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
         okHttpUtil = OktHttpUtil.getInstance();
         mTidalPatRecordDraftBean = (TidalPatRecordDraftBean) getIntent().getSerializableExtra("mTidalPatRecordDraftBean");
         isSelectMusic = getIntent().getBooleanExtra("isSelectMusic", false);
+        isFromDraft = getIntent().getBooleanExtra("isFromDraft", false);
         if (isSelectMusic) {
             curAudio = getIntent().getStringExtra("AudioId");
             playName = getIntent().getStringExtra("Name");
@@ -252,7 +257,9 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                 .start();
 
         mLocalVideoFileName = System.currentTimeMillis() + ".mp4";
-        FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(),Constant.RECORD_VIDEO_PATH, mLocalVideoFileName);
+        if (!isFromDraft) {
+            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH, mLocalVideoFileName);
+        }
     }
 
     public boolean isGpsOPen() {
@@ -294,14 +301,18 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                     } else {
                         maps1.put("audioId", "null");
                     }
-                    maps1.put("coverFile",Constant.DOWNBGM + File.separator + "audio.jpg");
+                    maps1.put("coverFile", Constant.DOWNBGM + File.separator + "audio.jpg");
                     maps1.put("location", publishVideoInfo.getLocation());
                     if (ed_publishfoodid.getText().toString().trim().isEmpty()) {
                         maps1.put("shopId", "null");
                     } else if (!ed_publishfoodid.getText().toString().trim().isEmpty()) {
                         maps1.put("shopId", ed_publishfoodid.getText().toString().trim());
                     }
-                    maps1.put("uploadFile", Constant.RECORD_VIDEO_PATH_TEMP1 + File.separator + "shibo.mp4");
+                    if (isFromDraft) {
+                        maps1.put("uploadFile", mTidalPatRecordDraftBean.getVideoLocalUrl());
+                    } else {
+                        maps1.put("uploadFile", Constant.RECORD_VIDEO_PATH_TEMP1 + File.separator + "shibo.mp4");
+                    }
                     if (ed_publishmessage.getText().toString().trim().isEmpty()) {
                         maps1.put("videoDesc", "null");
                     } else {
@@ -316,7 +327,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                             , ((MyApplication) getApplication()).getMaps(), maps1, 1, new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
-                                    Log.d(TAG, "onFailure: "+e.getMessage());
+                                    Log.d(TAG, "onFailure: " + e.getMessage());
                                     e.printStackTrace();
                                     handler.sendEmptyMessage(2);
                                     progressDialog.dismiss();
@@ -330,8 +341,16 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                                     PublishVideo publishVideo = gson.fromJson(publishVideoResult, PublishVideo.class);
                                     if (publishVideo.getCode() == 0 && publishVideo.getMessage().equals("成功上传")) {
                                         File file = new File(Constant.RECORD_VIDEO_PATH, mLocalVideoFileName);
-                                        if (file.exists()){
+                                        if (file.exists()) {
                                             file.delete();
+                                        }
+
+                                        File localFile = new File(mTidalPatRecordDraftBean.getVideoLocalUrl());
+                                        if (localFile.exists()) {
+                                            localFile.delete();
+                                        }
+                                        if (isFromDraft) {
+                                            EventBus.getDefault().post(new PublishVideoEvent(mTidalPatRecordDraftBean.getVideoLocalUrl()));
                                         }
                                         handler.sendEmptyMessage(1);
                                     } else if (publishVideo.getCode() == 1016) {
@@ -387,7 +406,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
     public void saveBitmap(PublishVideoInfo publishVideoInfo) {
         Log.e(TAG, "保存图片");
         File f = new File(Constant.DOWNBGM + File.separator + "audio.jpg");
-        if (!f.getParentFile().exists()){
+        if (!f.getParentFile().exists()) {
             f.getParentFile().mkdirs();
         }
         if (f.exists()) {

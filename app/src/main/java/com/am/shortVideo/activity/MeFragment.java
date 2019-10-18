@@ -45,10 +45,12 @@ import base.onLoadMoreLinstener;
 import bean.LoginEvent;
 import bean.LogoutInfo;
 import bean.MessageWrap;
+import bean.PublishVideoEvent;
 import bean.PublishVideoInfo;
 import bean.SerachPublishVideo;
 import bean.UserInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
+import event.MessageEvent;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -321,6 +323,17 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             }
         });
         me_recycleview2.setVisibility(View.GONE);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent event) {
+        if (event != null) {
+            if (event instanceof PublishVideoEvent) {
+                if (curSelect != 0) {
+                    getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
+                }
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
