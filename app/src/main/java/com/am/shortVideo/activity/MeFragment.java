@@ -495,6 +495,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         }
         CaogaoImgAdapter caogaoImgAdapter = new CaogaoImgAdapter(bitmaps, getActivity());
         me_recycleview2.setAdapter(caogaoImgAdapter);
+        me_swiprefreshlayout.setRefreshing(false);
     }
 
 }

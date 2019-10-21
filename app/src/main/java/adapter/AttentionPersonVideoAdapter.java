@@ -166,7 +166,7 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
                 public void onClick(View v) {
                     web = new UMWeb(HttpUri.BASE_DOMAIN + datas.get(position).getVideoUrl());
                     web.setTitle(datas.get(position).getNickName());
-                    web.setThumb(umImage);
+//                    web.setThumb(umImage);
                     web.setDescription(datas.get(position).getVideoDesc());
                     new ShareAction((Activity) context).setDisplayList(SHARE_MEDIA.QQ,
                             SHARE_MEDIA.QZONE, SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)

@@ -207,9 +207,9 @@ public class PersonInfoActivity extends BaseActivity implements MyPopUpWindow.Po
     private void setOnClickListner() {
         //personinfo_account.setOnClickListener(this);
         personinfo_nickname.setOnClickListener(this);
-        personinfo_city.setOnClickListener(this);
+        findViewById(R.id.rl_personinfo_city).setOnClickListener(this);
         personinfo_personnalname.setOnClickListener(this);
-        personinfo_birthday.setOnClickListener(this);
+        findViewById(R.id.rl_personinfo_birthday).setOnClickListener(this);
         personinfo_sex.setOnClickListener(this);
         personinfo_back.setOnClickListener(this);
         personinfo_save.setOnClickListener(this);
@@ -425,10 +425,10 @@ public class PersonInfoActivity extends BaseActivity implements MyPopUpWindow.Po
 //            case R.id.et_personinfo_nickname:
 //                new EditInfoPopupwindow(this, 1).setOnTextStringLinstener(this);
 //                break;
-            case R.id.et_personinfo_birthday:
+            case R.id.rl_personinfo_birthday:
                 initTimePicker1();
                 break;
-            case R.id.et_personinfo_city:
+            case R.id.rl_personinfo_city:
                 initCityPicker();
                 break;
             case R.id.et_personinfo_sex:

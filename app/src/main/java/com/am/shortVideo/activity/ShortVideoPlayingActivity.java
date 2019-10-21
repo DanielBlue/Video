@@ -151,7 +151,7 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
         });
 //        requestVideo();
         if (mCurPlayer == null) {
-            int position = getIntent().getIntExtra("position",0);
+            int position = getIntent().getIntExtra("position", 0);
             mRvList.scrollToPosition(position);
             startPlay(position);
         }
@@ -186,6 +186,15 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
                         ((MyApplication) getApplication()).getMaps(), maps3, homevideoCallback);
 
                 break;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mCurPlayer != null) {
+            //先释放之前的播放器
+            mCurPlayer.getCurrentPlayer().onVideoPause();
         }
     }
 
@@ -227,13 +236,15 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
     private void addData() {
         Intent intent = getIntent();
         String dataJson = intent.getStringExtra("data");
-        List<HomeVideoImg.DataBean.IndexListBean> dataList = new Gson().fromJson(dataJson,new TypeToken<List<HomeVideoImg.DataBean.IndexListBean>>(){}.getType());
+        List<HomeVideoImg.DataBean.IndexListBean> dataList = new Gson().fromJson(dataJson, new TypeToken<List<HomeVideoImg.DataBean.IndexListBean>>() {
+        }.getType());
         datas.addAll(dataList);
     }
 
     private void initView() {
         iv_back = (ImageView) findViewById(R.id.personinfo_back);
         mRvList = (RecyclerView) findViewById(R.id.recyle_view);
+        findViewById(R.id.personinfo_save).setVisibility(View.INVISIBLE);
 //        drawLayout=(DrawerLayout)findViewById(R.id.ac_drawlayout);
 //          rl_menu=(RelativeLayout)findViewById(R.id.rl);
 //          bt_menu=(Button)findViewById(R.id.bt_menu);
@@ -264,7 +275,7 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
                     drawLayout.closeDrawer(rl_menu);
                 }
                 break;
-            case R.id.iv_back:
+            case R.id.personinfo_back:
                 finish();
                 break;
 //            case R.id.bt_comment:
@@ -287,7 +298,7 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
             View view = mSnapHelper.findSnapView(layoutManger);
             if (view != null) {
                 BaseViewHolder holder = (BaseViewHolder) mRvList.getChildViewHolder(view);
-                holder.setText(R.id.tv_commentcount,commentCountEvent.count + "");
+                holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");
 
             }
         }

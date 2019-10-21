@@ -227,9 +227,10 @@ public class SearchUserVideoFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void getSearchData(MessageSearchinfo messageSearchinfo) {
         Log.d(TAG, "getSearchData: \n" + messageSearchinfo.getMessage());
-        ed_edittext.setText(messageSearchinfo.getMessage());
-        searchVideo(messageSearchinfo.getMessage());
-
+        if (ed_edittext!=null){
+            ed_edittext.setText(messageSearchinfo.getMessage());
+            searchVideo(messageSearchinfo.getMessage());
+        }
     }
 
     private void searchVideo(String str) {

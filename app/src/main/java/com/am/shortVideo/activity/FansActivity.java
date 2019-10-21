@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
@@ -139,6 +140,11 @@ public class FansActivity extends BaseActivity implements View.OnClickListener, 
         if (messageWrap.getMessage().equals("true")) {
             initData();
         }
+    }
+
+    @Subscribe()
+    public void changeAttention(AttentionEvent attentionEvent) {
+        onRefresh();
     }
 
     private Callback fansCallBack = new Callback() {
