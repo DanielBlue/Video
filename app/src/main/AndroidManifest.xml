@@ -154,10 +154,10 @@
                 <data android:scheme="tencent101783528" />
             </intent-filter>
         </activity>
-        <!--<activity-->
-            <!--android:name="com.tencent.connect.common.AssistActivity"-->
-            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar"-->
-            <!--android:configChanges="orientation|keyboardHidden|screenSize"/>-->
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
 
         <!-- 视频录制相关功能 -->

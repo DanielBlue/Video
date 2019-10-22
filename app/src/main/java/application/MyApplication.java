@@ -61,7 +61,7 @@ public class MyApplication extends Application {
 
         //友盟初始化
         UMConfigure.init(this, "5d566c434ca357a3a60006c1", "umeng", UMConfigure.DEVICE_TYPE_PHONE, "");
-        UMConfigure.setLogEnabled(BuildConfig.DEBUG);
+        UMConfigure.setLogEnabled(true);
         /**
          * 友盟相关平台配置。注意友盟官方新文档中没有这项配置，但是如果不配置会吊不起来相关平台的授权界面
          */
