@@ -20,7 +20,7 @@ import java.util.List;
 
 import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
-import bean.SerachPublishVideo;
+import bean.IndexListBean;
 import util.FootViewHolder;
 import util.HttpUri;
 
@@ -28,12 +28,12 @@ import util.HttpUri;
  * Created by 李杰 on 2019/9/7.
  */
 
-public class UserVideoAdapter extends MyAllBaseAdapter<SerachPublishVideo.DataBean.IndexListBean, MyBaseViewHolder> {
+public class UserVideoAdapter extends MyAllBaseAdapter<IndexListBean, MyBaseViewHolder> {
     private static final String TAG = "UserVideoAdapter";
     private Context context;
-    private List<SerachPublishVideo.DataBean.IndexListBean> dates;
+    private List<IndexListBean> dates;
 
-    public UserVideoAdapter(List<SerachPublishVideo.DataBean.IndexListBean> dates, Context context) {
+    public UserVideoAdapter(List<IndexListBean> dates, Context context) {
         super(dates, context);
         this.context = context;
         this.dates = dates;

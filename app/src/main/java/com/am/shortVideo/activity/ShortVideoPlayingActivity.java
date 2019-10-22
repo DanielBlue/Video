@@ -25,6 +25,7 @@ import com.umeng.socialize.UMShareAPI;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import adapter.ShortVideoAdapter;
 import application.MyApplication;
 import base.BaseActivity;
 import bean.HomeVideoImg;
+import bean.IndexListBean;
 import customeview.ShortVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
@@ -49,7 +51,7 @@ import util.HttpUri;
 public class ShortVideoPlayingActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "ShortVideoPlayingActivi";
     private RecyclerView mRvList;
-    private List<HomeVideoImg.DataBean.IndexListBean> datas = new ArrayList<>();
+    private List<IndexListBean> datas = new ArrayList<>();
     private PagerSnapHelper mSnapHelper;
     private LinearLayoutManager layoutManger;
     private DrawerLayout drawLayout;
@@ -236,7 +238,7 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
     private void addData() {
         Intent intent = getIntent();
         String dataJson = intent.getStringExtra("data");
-        List<HomeVideoImg.DataBean.IndexListBean> dataList = new Gson().fromJson(dataJson, new TypeToken<List<HomeVideoImg.DataBean.IndexListBean>>() {
+        List<IndexListBean> dataList = new Gson().fromJson(dataJson, new TypeToken<List<IndexListBean>>() {
         }.getType());
         datas.addAll(dataList);
     }
@@ -292,14 +294,18 @@ public class ShortVideoPlayingActivity extends BaseActivity implements View.OnCl
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 
-    @Subscribe()
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeCommentCount(CommentCountEvent commentCountEvent) {
         if (commentCountEvent != null) {
             View view = mSnapHelper.findSnapView(layoutManger);
-            if (view != null) {
-                BaseViewHolder holder = (BaseViewHolder) mRvList.getChildViewHolder(view);
-                holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");
-
+            int position = layoutManger.getPosition(view);
+            IndexListBean indexListBean = mAdapter.getData().get(position);
+            if (indexListBean.getVid().equals(commentCountEvent.vid)){
+                indexListBean.setCommentCounts(commentCountEvent.count);
+                if (view != null) {
+                    BaseViewHolder holder = (BaseViewHolder) mRvList.getChildViewHolder(view);
+                    holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");
+                }
             }
         }
     }

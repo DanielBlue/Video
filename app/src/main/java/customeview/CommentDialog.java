@@ -42,7 +42,7 @@ import adapter.CommentAdapter;
 import application.MyApplication;
 import bean.AtPersonEvent;
 import bean.AttentionPerson;
-import bean.HomeVideoImg;
+import bean.IndexListBean;
 import bean.PublishComment;
 import bean.UserInfo;
 import bean.VideoComment;
@@ -73,7 +73,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
     private Button bt_sendcomment;
     private List<VideoComment.DataBean.CommentListBean> comentdatas;
     private TextView allCommentcount;
-    private List<HomeVideoImg.DataBean.IndexListBean> homevideodatas;
+    private List<IndexListBean> homevideodatas;
     private OktHttpUtil oktHttpUtil;
     private int curposition;
     private Button bt_at;
@@ -87,7 +87,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
     private boolean isAuthority = false;
     private Window mWindow;
 
-    public static CommentDialog newInstance(List<HomeVideoImg.DataBean.IndexListBean> homevideodatas, int curposition) {
+    public static CommentDialog newInstance(List<IndexListBean> homevideodatas, int curposition) {
         Bundle args = new Bundle();
         CommentDialog fragment = new CommentDialog();
         args.putString("homevideodatas", new Gson().toJson(homevideodatas));
@@ -112,7 +112,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         mWindow.setWindowAnimations(R.style.comment_detail_anim);
         mWindow.setGravity(Gravity.BOTTOM);
         context = getActivity();
-        this.homevideodatas = new Gson().fromJson(getArguments().getString("homevideodatas"), new TypeToken<List<HomeVideoImg.DataBean.IndexListBean>>() {
+        this.homevideodatas = new Gson().fromJson(getArguments().getString("homevideodatas"), new TypeToken<List<IndexListBean>>() {
         }.getType());
         this.curposition = getArguments().getInt("curposition");
         initView(rootView);
@@ -371,6 +371,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                                         comentdatas = videoComment.getData().getCommentList();
                                                         CommentCountEvent commentCountEvent = new CommentCountEvent();
                                                         commentCountEvent.count = comentdatas.size();
+                                                        commentCountEvent.vid = homevideodatas.get(curposition).getVid();
                                                         EventBus.getDefault().post(commentCountEvent);
                                                         ((Activity) context).runOnUiThread(new Runnable() {
                                                             @Override

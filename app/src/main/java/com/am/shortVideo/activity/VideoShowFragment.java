@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
 
@@ -31,6 +32,7 @@ import adapter.AttentionPersonVideoAdapter;
 import application.MyApplication;
 import bean.AttentionPersonVideo;
 import bean.HomeAttentionEvent;
+import bean.IndexListBean;
 import bean.MessageWrap;
 import event.MessageEvent;
 import http.OktHttpUtil;
@@ -88,8 +90,8 @@ public class VideoShowFragment extends Fragment implements SwipeRefreshLayout.On
             }
         }
     };
-//    private CircleProgressDialog circleProgressDialog;
-    private List<AttentionPersonVideo.DataBean.IndexListBean> dates = new ArrayList<>();
+    //    private CircleProgressDialog circleProgressDialog;
+    private List<IndexListBean> dates = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -108,6 +110,17 @@ public class VideoShowFragment extends Fragment implements SwipeRefreshLayout.On
         Log.d(TAG, "getLoginStatus: ");
         if (messageWrap.getMessage().equals("true")) {
             initData();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void changeCommentCount(CommentCountEvent commentCountEvent) {
+        for (IndexListBean bean : dates) {
+            if (bean.getVid().equals(commentCountEvent.vid)){
+                bean.setCommentCounts(commentCountEvent.count);
+                attentionPersonVideoAdapter.notifyDataSetChanged();
+                break;
+            }
         }
     }
 

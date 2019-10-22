@@ -1,17 +1,12 @@
 package com.am.shortVideo.activity;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +25,7 @@ import application.MyApplication;
 import base.BaseActivity;
 import base.onLoadMoreLinstener;
 import bean.HomeVideoImg;
+import bean.IndexListBean;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,7 +43,7 @@ public class SwitchChannelActivity extends BaseActivity implements SwipeRefreshL
     private SwipeRefreshLayout switchchannel_swiperefresh;
     private PictureShowAdapter pictureAdapter;
     private int curChannel = 0;
-    private List<HomeVideoImg.DataBean.IndexListBean> datas = new ArrayList<>();
+    private List<IndexListBean> datas = new ArrayList<>();
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

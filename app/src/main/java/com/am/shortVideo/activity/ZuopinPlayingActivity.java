@@ -16,11 +16,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.umeng.socialize.UMShareAPI;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +35,7 @@ import java.util.List;
 import adapter.ZuopinAdapter;
 import application.MyApplication;
 import base.BaseActivity;
+import bean.IndexListBean;
 import bean.SerachPublishVideo;
 import customeview.ShortVideoPlayer;
 import http.OktHttpUtil;
@@ -45,7 +51,7 @@ import util.HttpUri;
 public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "ShortVideoPlayingActivi";
     private RecyclerView mRvList;
-    private List<SerachPublishVideo.DataBean.IndexListBean> datas = new ArrayList<>();
+    private List<IndexListBean> datas = new ArrayList<>();
     private PagerSnapHelper mSnapHelper;
     private LinearLayoutManager layoutManger;
     private DrawerLayout drawLayout;
@@ -136,6 +142,7 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
 
     @Override
     protected void initEventAndData() {
+        EventBus.getDefault().register(this);
         okHttpUtil = OktHttpUtil.getInstance();
         addData();
         initView();
@@ -267,7 +274,7 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
     private void addData() {
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("homeVideoImg");
-        datas = (List<SerachPublishVideo.DataBean.IndexListBean>) bundle.getSerializable("datas");
+        datas = (List<IndexListBean>) bundle.getSerializable("datas");
         position = intent.getIntExtra("position", 0);
         currentPage = intent.getIntExtra("currentPage", 0);
 //        SerachPublishVideo.DataBean.IndexListBean data = (SerachPublishVideo.DataBean.IndexListBean) bundle.getSerializable("videourl");
@@ -300,6 +307,7 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         if (mCurPlayer != null) {
             mCurPlayer.getCurrentPlayer().release();
         }
@@ -325,6 +333,23 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
 //                break;
 
             default:
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void changeCommentCount(CommentCountEvent commentCountEvent) {
+        if (commentCountEvent != null) {
+            for (int x=0;x<datas.size();x++) {
+                IndexListBean bean =datas.get(x);
+                if (bean.getVid().equals(commentCountEvent.vid)) {
+                    bean.setCommentCounts(commentCountEvent.count);
+                    BaseViewHolder holder = (BaseViewHolder) mRvList.findViewHolderForAdapterPosition(x);
+                    if (holder!=null){
+                        holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");
+                    }
+                    break;
+                }
+            }
         }
     }
 

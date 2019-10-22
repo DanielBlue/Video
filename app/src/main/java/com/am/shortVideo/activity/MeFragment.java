@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.am.shortVideo.R;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
@@ -35,13 +36,17 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import adapter.CaogaoImgAdapter;
+import adapter.MeVideoAdapter;
 import adapter.UserVideoAdapter;
 import application.MyApplication;
 import base.onLoadMoreLinstener;
+import bean.IndexListBean;
 import bean.LoginEvent;
 import bean.LogoutInfo;
 import bean.MessageWrap;
@@ -86,6 +91,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private HashMap<String, String> maps;
     private ArrayList<PublishVideoInfo> bitmaps = new ArrayList<>();
     private int curSelect = 0;
+    private MeVideoAdapter mAdapter;
+    private int currentPage = 1;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -114,11 +121,10 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         me_fanscount.setText("" + userInfo.getData().getUserInfo().getFansCount());
                         me_attentioncount.setText("" + userInfo.getData().getUserInfo().getFollowCount());
                         me_zanscount.setText("" + userInfo.getData().getUserInfo().getGetLikeCount());
-                        maps = new HashMap<>();
-                        maps.put("uid", userInfo.getData().getUserInfo().getUid());
                         ((MyApplication) getActivity().getApplicationContext()).setUserUid(userInfo.getData().getUserInfo().getUid());
-                        oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_SEARCHUSERVIDEO
-                                , ((MyApplication) getActivity().getApplicationContext()).getMaps(), maps, video_zuopingCallback);
+                        currentPage = 1;
+                        mUid = userInfo.getData().getUserInfo().getUid();
+                        getVideoList();
                     } else if (userInfo.getCode() == 1005) {
                         circleprogress.dismiss();
                         islogin = true;
@@ -131,10 +137,41 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 case 2:
                     SerachPublishVideo serachPublishVideo = (SerachPublishVideo) msg.obj;
                     if (serachPublishVideo.getCode() == 0) {
-                        if (serachPublishVideo.getData() != null) {
-                            UserVideoAdapter userVideoAdapter = new UserVideoAdapter(serachPublishVideo
-                                    .getData().getIndexList(), getActivity());
-                            me_recycleview.setAdapter(userVideoAdapter);
+                        if (mAdapter == null) {
+                            mAdapter = new MeVideoAdapter(new ArrayList<IndexListBean>());
+                            me_recycleview.setAdapter(mAdapter);
+                            mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                    Intent intent = new Intent(getActivity(), ZuopinPlayingActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable("datas", (Serializable) mAdapter.getData());
+                                    bundle.putSerializable("position", position);
+                                    bundle.putSerializable("videourl", mAdapter.getData().get(position));
+                                    bundle.putInt("type", 4);
+                                    intent.putExtra("homeVideoImg", bundle);
+                                    intent.putExtra("user_uid", mAdapter.getData().get(position).getUid());
+                                    getActivity().startActivity(intent);
+                                }
+                            });
+                            mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+                                @Override
+                                public void onLoadMoreRequested() {
+                                    getVideoList();
+                                }
+                            }, me_recycleview);
+                        }
+
+                        List<IndexListBean> indexList = serachPublishVideo.getData().getIndexList();
+                        if (indexList.size() > 0) {
+                            if (currentPage++ == 1) {
+                                mAdapter.setNewData(indexList);
+                            } else {
+                                mAdapter.addData(indexList);
+                            }
+                            mAdapter.loadMoreComplete();
+                        } else {
+                            mAdapter.loadMoreEnd();
                         }
                     }
                     break;
@@ -156,6 +193,16 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             }
         }
     };
+    private String mUid;
+
+    private void getVideoList() {
+        maps = new HashMap<>();
+        maps.put("uid", mUid);
+        maps.put("page", currentPage + "");
+        oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_SEARCHUSERVIDEO
+                , ((MyApplication) getActivity().getApplicationContext()).getMaps(), maps, video_zuopingCallback);
+    }
+
     private Callback video_zuopingCallback = new Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
@@ -303,14 +350,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         GridLayoutManager gridmanger = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         me_recycleview.setLayoutManager(gridmanger);
         me_recycleview.addItemDecoration(new MeSpaceItemDecoration(10));
-        me_recycleview.addOnScrollListener(new onLoadMoreLinstener() {
-            @Override
-            protected void onLoadMoreing(int countItem, int lastItem) {
-                //加载更多
-//                oktHttpUtil.sendGetRequest(HttpUri.BASE_URL+HttpUri.VIDEO.REQUEST_HEADER_SEARCHUSERVIDEO
-//                        ,((MyApplication)getActivity().getApplication()).getMaps(),maps,video_zuopingCallback);
-            }
-        });
         GridLayoutManager gridmanger1 = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         me_recycleview2.setLayoutManager(gridmanger1);
         me_recycleview2.addItemDecoration(new MeSpaceItemDecoration(10));

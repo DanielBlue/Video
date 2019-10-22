@@ -28,6 +28,7 @@ import adapter.AtUserNickAdapter;
 import adapter.CommentAdapter;
 import application.MyApplication;
 import bean.AttentionPerson;
+import bean.IndexListBean;
 import bean.PublishComment;
 import bean.SerachPublishVideo;
 import bean.UserInfo;
@@ -53,53 +54,55 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
     private View view;
     private RecyclerView comment_recycleview;
     private EditText ed_comment;
-    private boolean isopen=false;
+    private boolean isopen = false;
     private CommentAdapter commentAdapter;
     private Button bt_hidepop;
     private Button bt_sendcomment;
     private List<VideoComment.DataBean.CommentListBean> comentdatas;
     private TextView allCommentcount;
-    private  List<SerachPublishVideo.DataBean.IndexListBean> homevideodatas;
+    private List<IndexListBean> homevideodatas;
     private OktHttpUtil oktHttpUtil;
     private int curposition;
     private Button bt_at;
-    private List<AttentionPerson.DataBean.PageListBean> newCommentDatas=new ArrayList<>();
+    private List<AttentionPerson.DataBean.PageListBean> newCommentDatas = new ArrayList<>();
     private RecyclerView comment_recycleview1;
-    private boolean isAtClick=false;
+    private boolean isAtClick = false;
     private String At_id;
     private int authorytReplayPosition;
-    private int currentStatus=0;//0代表默认评论 //1代表@ //2代表作者回复
-    private boolean isAuthority=false;
-    public ZuopinCommentPopUpwindow(Context context, List<SerachPublishVideo.DataBean.IndexListBean> homevideodatas, int curposition) {
+    private int currentStatus = 0;//0代表默认评论 //1代表@ //2代表作者回复
+    private boolean isAuthority = false;
+
+    public ZuopinCommentPopUpwindow(Context context, List<IndexListBean> homevideodatas, int curposition) {
         super(context);
-        this.context=context;
-        this.homevideodatas=homevideodatas;
-        this.curposition=curposition;
-        oktHttpUtil= ((MyApplication)context.getApplicationContext()).getOkHttpUtil();
+        this.context = context;
+        this.homevideodatas = homevideodatas;
+        this.curposition = curposition;
+        oktHttpUtil = ((MyApplication) context.getApplicationContext()).getOkHttpUtil();
         initView();
     }
+
     private void initView() {
         setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
         setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-        view= LayoutInflater.from(context).inflate(R.layout.comment_popupwindow,null,false);
+        view = LayoutInflater.from(context).inflate(R.layout.comment_popupwindow, null, false);
         setContentView(view);
         setFocusable(true);
         setAnimationStyle(R.style.Mypopupwindow);
         setOutsideTouchable(true);
-        showAtLocation(view, Gravity.BOTTOM,0,0);
-        comment_recycleview=(RecyclerView)view.findViewById(R.id.comment_recyleview);
-        comment_recycleview1=(RecyclerView)view.findViewById(R.id.comment_recyleview1);
-        ed_comment=(EditText)view.findViewById(R.id.et_comment);
-        bt_hidepop=(Button)view.findViewById(R.id.bt_commentcancel);
-        allCommentcount=(TextView)view.findViewById(R.id.tv_allcommentaccount);
-        bt_sendcomment=(Button)view.findViewById(R.id.bt_sendcomment);
-        bt_at=(Button)view.findViewById(R.id.bt_at);
+        showAtLocation(view, Gravity.BOTTOM, 0, 0);
+        comment_recycleview = (RecyclerView) view.findViewById(R.id.comment_recyleview);
+        comment_recycleview1 = (RecyclerView) view.findViewById(R.id.comment_recyleview1);
+        ed_comment = (EditText) view.findViewById(R.id.et_comment);
+        bt_hidepop = (Button) view.findViewById(R.id.bt_commentcancel);
+        allCommentcount = (TextView) view.findViewById(R.id.tv_allcommentaccount);
+        bt_sendcomment = (Button) view.findViewById(R.id.bt_sendcomment);
+        bt_at = (Button) view.findViewById(R.id.bt_at);
 
-        LinearLayoutManager linerlayoutManager=new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager linerlayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         comment_recycleview.setLayoutManager(linerlayoutManager);
-        LinearLayoutManager linerlayoutManager1=new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager linerlayoutManager1 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         comment_recycleview1.setLayoutManager(linerlayoutManager1);
-        comment_recycleview.addItemDecoration(new RecycleViewDivider(context, LinearLayout.VERTICAL,2,0,0,context.getResources().getColor(R.color.colorDarkGray)));
+        comment_recycleview.addItemDecoration(new RecycleViewDivider(context, LinearLayout.VERTICAL, 2, 0, 0, context.getResources().getColor(R.color.colorDarkGray)));
 
         bt_sendcomment.setOnClickListener(this);
         ed_comment.setOnClickListener(this);
@@ -107,7 +110,7 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
         bt_at.setOnClickListener(this);
 
         HashMap<String, String> commentmaps = new HashMap<>();
-        commentmaps.put("vid",homevideodatas.get(curposition).getVid());// "5995716959957168"
+        commentmaps.put("vid", homevideodatas.get(curposition).getVid());// "5995716959957168"
         oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_VIDEOCOMMENT,
                 ((MyApplication) context.getApplicationContext()).getMaps(), commentmaps, new Callback() {
                     @Override
@@ -123,7 +126,7 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                         VideoComment videoComment = gson.fromJson(result, VideoComment.class);
                         if (videoComment.getCode() == 0) {
                             comentdatas = videoComment.getData().getCommentList();
-                            oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_PERSONINFO,  ((MyApplication) context.getApplicationContext()).getMaps(), new Callback() {
+                            oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_PERSONINFO, ((MyApplication) context.getApplicationContext()).getMaps(), new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
                                     e.printStackTrace();
@@ -136,27 +139,27 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                                     Log.d(TAG, "onResponse: userinfoCallback\n" + userinfoResult);
                                     Gson gson = new Gson();
                                     UserInfo userinfo = gson.fromJson(userinfoResult, UserInfo.class);
-                                    if(userinfo.getCode()==0&&userinfo.getData()!=null){
-                                        if(userinfo.getData().getUserInfo().getUid().equals(homevideodatas.get(curposition).getUid())){
-                                            isAuthority=true;
-                                            ((Activity)context).runOnUiThread(new Runnable() {
+                                    if (userinfo.getCode() == 0 && userinfo.getData() != null) {
+                                        if (userinfo.getData().getUserInfo().getUid().equals(homevideodatas.get(curposition).getUid())) {
+                                            isAuthority = true;
+                                            ((Activity) context).runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment)+"("+homevideodatas.get(curposition).getCommentCounts()+")");
-                                                    if(comentdatas!=null) {
+                                                    allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment) + "(" + homevideodatas.get(curposition).getCommentCounts() + ")");
+                                                    if (comentdatas != null) {
                                                         commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
                                                         commentAdapter.setOnAuthorityReplayLinstener(ZuopinCommentPopUpwindow.this);
                                                         comment_recycleview.setAdapter(commentAdapter);
                                                     }
                                                 }
                                             });
-                                        }else{
-                                            isAuthority=false;
-                                            ((Activity)context).runOnUiThread(new Runnable() {
+                                        } else {
+                                            isAuthority = false;
+                                            ((Activity) context).runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment)+"("+homevideodatas.get(curposition).getCommentCounts()+")");
-                                                    if(comentdatas!=null) {
+                                                    allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment) + "(" + homevideodatas.get(curposition).getCommentCounts() + ")");
+                                                    if (comentdatas != null) {
                                                         commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
                                                         commentAdapter.setOnAuthorityReplayLinstener(ZuopinCommentPopUpwindow.this);
                                                         comment_recycleview.setAdapter(commentAdapter);
@@ -164,8 +167,8 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                                                 }
                                             });
                                         }
-                                    }else if(userinfo.getCode()==1005){
-                                        ((Activity)context).runOnUiThread(new Runnable() {
+                                    } else if (userinfo.getCode() == 1005) {
+                                        ((Activity) context).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 BaseUtils.getLoginDialog(context).show();
@@ -176,8 +179,8 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                             });
 
 
-                        }else if(videoComment.getCode()==1005){
-                            ((Activity)context).runOnUiThread(new Runnable() {
+                        } else if (videoComment.getCode() == 1005) {
+                            ((Activity) context).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     BaseUtils.getLoginDialog(context).show();
@@ -192,7 +195,7 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
 
     private List<AttentionPerson.DataBean.PageListBean> loadAtData() {
         oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_ATTENTIONPERSONQUERY,
-                ((MyApplication)context.getApplicationContext()).getMaps(), new Callback() {
+                ((MyApplication) context.getApplicationContext()).getMaps(), new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
 
@@ -200,15 +203,15 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        String attentionperson=response.body().string();
-                        Log.d(TAG, "attentionlist-->onResponse: \n"+attentionperson);
-                        Gson gson=new Gson();
-                        final  AttentionPerson attentionPersonVideo=gson.fromJson(attentionperson, AttentionPerson.class);
-                        if(attentionPersonVideo.getData()!=null&&attentionPersonVideo.getData().getPageList()!=null){
-                            ((Activity)context).runOnUiThread(new Runnable() {
+                        String attentionperson = response.body().string();
+                        Log.d(TAG, "attentionlist-->onResponse: \n" + attentionperson);
+                        Gson gson = new Gson();
+                        final AttentionPerson attentionPersonVideo = gson.fromJson(attentionperson, AttentionPerson.class);
+                        if (attentionPersonVideo.getData() != null && attentionPersonVideo.getData().getPageList() != null) {
+                            ((Activity) context).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    newCommentDatas=attentionPersonVideo.getData().getPageList();
+                                    newCommentDatas = attentionPersonVideo.getData().getPageList();
                                     AtUserNickAdapter atUsernickAdatpter = new AtUserNickAdapter(newCommentDatas, context);
                                     comment_recycleview1.setAdapter(atUsernickAdatpter);
                                     atUsernickAdatpter.setOnNickItemLinstener(ZuopinCommentPopUpwindow.this);
@@ -224,7 +227,7 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
     }
 
     //打开软键盘
-    public  void openKeybord(EditText mEditText, Context mContext) {
+    public void openKeybord(EditText mEditText, Context mContext) {
         InputMethodManager imm = (InputMethodManager) mContext
                 .getSystemService(INPUT_METHOD_SERVICE);
         imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN);
@@ -242,48 +245,48 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bt_sendcomment:
-                closeKeybord(ed_comment,context);
+                closeKeybord(ed_comment, context);
                 //String addData=ed_comment.getText().toString();
                 //comentdatas.add(addData);
                 //commentAdapter.notifyDataSetChanged();
-                String url="";
-                HashMap<String,String> maps=new HashMap<>();
-                if(currentStatus==0) {
-                    String  contents = ed_comment.getText().toString().trim();
-                    if(contents.isEmpty()){
-                        Toast.makeText(context,"输入内容不能为空",Toast.LENGTH_SHORT).show();
+                String url = "";
+                HashMap<String, String> maps = new HashMap<>();
+                if (currentStatus == 0) {
+                    String contents = ed_comment.getText().toString().trim();
+                    if (contents.isEmpty()) {
+                        Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    maps.put("vid",homevideodatas.get(curposition).getVid()); //;//"5995716959957168"
-                    maps.put("content",contents);
-                    maps.put("at_uid","null");
-                    url=HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
-                }else if(currentStatus==1){
-                    currentStatus=0;
+                    maps.put("vid", homevideodatas.get(curposition).getVid()); //;//"5995716959957168"
+                    maps.put("content", contents);
+                    maps.put("at_uid", "null");
+                    url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
+                } else if (currentStatus == 1) {
+                    currentStatus = 0;
                     String commentcontents = ed_comment.getText().toString().trim();
-                    String contents=commentcontents.substring(commentcontents.indexOf(":")+1, commentcontents.length());
-                    if(contents.isEmpty()){
-                        Toast.makeText(context,"输入内容不能为空",Toast.LENGTH_SHORT).show();
+                    String contents = commentcontents.substring(commentcontents.indexOf(":") + 1, commentcontents.length());
+                    if (contents.isEmpty()) {
+                        Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    maps.put("vid",homevideodatas.get(curposition).getVid()); //;//"5995716959957168"
-                    maps.put("content",contents);
-                    maps.put("at_uid",At_id);
-                    url=HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
-                }else if(currentStatus==2){
-                    currentStatus=0;
+                    maps.put("vid", homevideodatas.get(curposition).getVid()); //;//"5995716959957168"
+                    maps.put("content", contents);
+                    maps.put("at_uid", At_id);
+                    url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
+                } else if (currentStatus == 2) {
+                    currentStatus = 0;
                     String commentcontents = ed_comment.getText().toString().trim();
-                    String contents=commentcontents.substring(commentcontents.indexOf(":")+1, commentcontents.length());
-                    if(contents.isEmpty()){
-                        Toast.makeText(context,"输入内容不能为空",Toast.LENGTH_SHORT).show();
+                    String contents = commentcontents.substring(commentcontents.indexOf(":") + 1, commentcontents.length());
+                    if (contents.isEmpty()) {
+                        Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    maps.put("cid",""+comentdatas.get(curposition).getId()); //;//"5995716959957168"
-                    maps.put("content",contents);
+                    maps.put("cid", "" + comentdatas.get(curposition).getId()); //;//"5995716959957168"
+                    maps.put("content", contents);
                     //maps.put("at_uid","");
-                    url=HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_REPLYCOMMENT;
+                    url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_REPLYCOMMENT;
                 }
 
 
@@ -296,11 +299,11 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
 
                             @Override
                             public void onResponse(Call call, Response response) throws IOException {
-                                String commentResult=response.body().string();
-                                Log.d(TAG, "onResponse: \n"+commentResult);
-                                Gson gson=new Gson();
-                                PublishComment publishComment=gson.fromJson(commentResult,PublishComment.class);
-                                if(publishComment.getCode()==0&&publishComment.getMessage().contains("成功评论")){
+                                String commentResult = response.body().string();
+                                Log.d(TAG, "onResponse: \n" + commentResult);
+                                Gson gson = new Gson();
+                                PublishComment publishComment = gson.fromJson(commentResult, PublishComment.class);
+                                if (publishComment.getCode() == 0 && publishComment.getMessage().contains("成功评论")) {
                                     Log.d(TAG, "onResponse-->comment:sucess ");
 //                                    VideoComment.DataBean.CommentListBean  commentListBean=new VideoComment.DataBean.CommentListBean();
 //                                    //commentListBean.setAvatar(publishComment.getData().getComment().getContent());
@@ -318,7 +321,7 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                                     final HashMap<String, String> commentmaps = new HashMap<>();
                                     commentmaps.put("vid", homevideodatas.get(curposition).getVid());//"5995716959957168"
                                     oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_VIDEOCOMMENT,
-                                            ((MyApplication) context.getApplicationContext()).getMaps(), commentmaps, new Callback(){
+                                            ((MyApplication) context.getApplicationContext()).getMaps(), commentmaps, new Callback() {
                                                 @Override
                                                 public void onFailure(Call call, IOException e) {
 
@@ -329,17 +332,17 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                                                     String result = response.body().string();
                                                     Log.d(TAG, "usercommentonResponse: \n" + result);
                                                     Gson gson = new Gson();
-                                                    final   VideoComment videoComment = gson.fromJson(result, VideoComment.class);
+                                                    final VideoComment videoComment = gson.fromJson(result, VideoComment.class);
                                                     if (videoComment.getCode() == 0) {
-                                                        if(!comentdatas.isEmpty()){
+                                                        if (!comentdatas.isEmpty()) {
                                                             comentdatas.clear();
                                                         }
                                                         comentdatas = videoComment.getData().getCommentList();
-                                                        ((Activity)context).runOnUiThread(new Runnable() {
+                                                        ((Activity) context).runOnUiThread(new Runnable() {
                                                             @Override
                                                             public void run() {
                                                                 ed_comment.setText("");
-                                                                commentAdapter=new CommentAdapter(comentdatas,context,isAuthority);
+                                                                commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
                                                                 commentAdapter.setOnAuthorityReplayLinstener(ZuopinCommentPopUpwindow.this);
                                                                 comment_recycleview.setAdapter(commentAdapter);
                                                             }
@@ -349,20 +352,20 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                                                 }
                                             });
 
-                                }else if(publishComment.getCode()==1005){
-                                    ((Activity)context).runOnUiThread(new Runnable() {
+                                } else if (publishComment.getCode() == 1005) {
+                                    ((Activity) context).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             dismiss();
                                             BaseUtils.getLoginDialog(context).show();
                                         }
                                     });
-                                }else if(publishComment.getCode()==400){
-                                    ((Activity)context).runOnUiThread(new Runnable() {
+                                } else if (publishComment.getCode() == 400) {
+                                    ((Activity) context).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             dismiss();
-                                            Toast.makeText(context,"发送失败",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "发送失败", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -377,15 +380,14 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
                 dismiss();
                 break;
             case R.id.bt_at:
-                if(!isAtClick) {
-                    isAtClick=true;
+                if (!isAtClick) {
+                    isAtClick = true;
                     if (!comentdatas.isEmpty()) {
                         comment_recycleview1.setVisibility(View.VISIBLE);
-                        loadAtData();
-
                     }
-                }else{
-                    isAtClick=false;
+                    loadAtData();
+                } else {
+                    isAtClick = false;
                     comment_recycleview1.setVisibility(View.GONE);
                 }
                 break;
@@ -395,24 +397,24 @@ public class ZuopinCommentPopUpwindow extends PopupWindow implements View.OnClic
 
     @Override
     public void getAtName(String nicknama, String id) {
-        currentStatus=1;
-        isAtClick=false;
-        Log.d(TAG, "nicknama: "+nicknama+"id\t"+id);
-        At_id=id;
-        ed_comment.setText("@"+nicknama+":");
+        currentStatus = 1;
+        isAtClick = false;
+        Log.d(TAG, "nicknama: " + nicknama + "id\t" + id);
+        At_id = id;
+        ed_comment.setText("@" + nicknama + ":");
         ed_comment.setSelection(ed_comment.getText().length());
-        openKeybord(ed_comment,context);
+        openKeybord(ed_comment, context);
         comment_recycleview1.setVisibility(View.GONE);
 
     }
 
     @Override
     public void authorityReplayData(int position) {
-        currentStatus=2;
-        isAtClick=false;
-        authorytReplayPosition=position;
-        ed_comment.setText("回复"+comentdatas.get(position).getNickName()+":");
+        currentStatus = 2;
+        isAtClick = false;
+        authorytReplayPosition = position;
+        ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
         ed_comment.setSelection(ed_comment.getText().length());
-        openKeybord(ed_comment,context);
+        openKeybord(ed_comment, context);
     }
 }

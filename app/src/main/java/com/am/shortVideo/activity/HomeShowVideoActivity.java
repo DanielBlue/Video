@@ -29,6 +29,7 @@ import adapter.ShortVideoAdapter;
 import application.MyApplication;
 import base.BaseActivity;
 import bean.HomeVideoImg;
+import bean.IndexListBean;
 import customeview.ShortVideoPlayer;
 import http.OktHttpUtil;
 import okhttp3.Call;
@@ -45,7 +46,7 @@ public class HomeShowVideoActivity extends BaseActivity implements View.OnClickL
 
     private static final String TAG = "HomeShowVideoActivity";
     private RecyclerView mRvList;
-    private List<HomeVideoImg.DataBean.IndexListBean> datas = new ArrayList<>();
+    private List<IndexListBean> datas = new ArrayList<>();
     private PagerSnapHelper mSnapHelper;
     private LinearLayoutManager layoutManger;
     private DrawerLayout drawLayout;

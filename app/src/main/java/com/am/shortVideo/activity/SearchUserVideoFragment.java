@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
@@ -36,6 +37,7 @@ import java.util.List;
 import adapter.AttentionPersonVideoAdapter;
 import application.MyApplication;
 import bean.AttentionPersonVideo;
+import bean.IndexListBean;
 import bean.MessageSearchinfo;
 import http.OktHttpUtil;
 import okhttp3.Call;
@@ -125,7 +127,7 @@ public class SearchUserVideoFragment extends Fragment {
     private EditText ed_edittext;
     private SwipeRefreshLayout srl_swipeRefresh;
     private CircleProgressDialog cicleprogress;
-    private List<AttentionPersonVideo.DataBean.IndexListBean> datas = new ArrayList<>();
+    private List<IndexListBean> datas = new ArrayList<>();
     private AttentionPersonVideoAdapter attentionPersonVideoAdapter;
 
     @Nullable
@@ -224,10 +226,24 @@ public class SearchUserVideoFragment extends Fragment {
 
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void changeCommentCount(CommentCountEvent commentCountEvent) {
+        if (commentCountEvent != null) {
+            for (IndexListBean bean : datas) {
+                if (bean.getVid().equals(commentCountEvent.vid)) {
+                    bean.setCommentCounts(commentCountEvent.count);
+                    attentionPersonVideoAdapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void getSearchData(MessageSearchinfo messageSearchinfo) {
         Log.d(TAG, "getSearchData: \n" + messageSearchinfo.getMessage());
-        if (ed_edittext!=null){
+        if (ed_edittext != null) {
             ed_edittext.setText(messageSearchinfo.getMessage());
             searchVideo(messageSearchinfo.getMessage());
         }

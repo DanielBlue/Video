@@ -13,13 +13,12 @@ import android.widget.TextView;
 
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.ShortVideoPlayingActivity;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.util.List;
 
 import base.MyBaseViewHolder;
-import bean.HomeVideoImg;
+import bean.IndexListBean;
 import de.hdodenhof.circleimageview.CircleImageView;
 import util.GlideUtils;
 import util.HttpUri;
@@ -33,10 +32,10 @@ public class PictureShowAdapter extends RecyclerView.Adapter<MyBaseViewHolder> {
     private static final int DATA_LOAD_NORMAL = 0;
     private static final int DATA_LOAD_FOOTER = 1;
     Context context;
-    private List<HomeVideoImg.DataBean.IndexListBean> datas;
+    private List<IndexListBean> datas;
     private int type;
 
-    public PictureShowAdapter(List<HomeVideoImg.DataBean.IndexListBean> datas, Context context, int type) {
+    public PictureShowAdapter(List<IndexListBean> datas, Context context, int type) {
         this.context = context;
         this.datas = datas;
         this.type = type;

@@ -33,6 +33,7 @@ import adapter.UserVideoAdapter;
 import application.MyApplication;
 import base.BaseActivity;
 import bean.AttentionOrCancelPerson;
+import bean.IndexListBean;
 import bean.OtherUserInfo;
 import bean.PublishVideoInfo;
 import bean.SerachPublishVideo;
@@ -189,7 +190,7 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
         }
     };
     private ImageView iv_back;
-    private List<SerachPublishVideo.DataBean.IndexListBean> dates = new ArrayList<>();
+    private List<IndexListBean> dates = new ArrayList<>();
     private UserVideoAdapter userVideoAdapter;
 
     @Override

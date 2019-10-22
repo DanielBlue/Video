@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
+import com.am.shortVideo.activity.LoginActivity;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
@@ -31,11 +33,11 @@ import java.util.List;
 
 import application.MyApplication;
 import bean.AttentionOrCancelPerson;
-import bean.SerachPublishVideo;
+import bean.IndexListBean;
 import bean.ShareVideo;
 import bean.VideoSupportOrUn;
+import customeview.CommentDialog;
 import customeview.ShortVideoPlayer;
-import customeview.ZuopinCommentPopUpwindow;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -49,16 +51,16 @@ import util.SystemUtils;
  * Created by 李杰 on 2019/9/17.
  */
 
-public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.IndexListBean, BaseViewHolder> {
+public class ZuopinAdapter extends BaseQuickAdapter<IndexListBean, BaseViewHolder> {
     private OktHttpUtil oktHttpUtil;
 
-    public ZuopinAdapter(@Nullable List<SerachPublishVideo.DataBean.IndexListBean> data) {
+    public ZuopinAdapter(@Nullable List<IndexListBean> data) {
         super(R.layout.shortvideo_item, data);
         oktHttpUtil = MyApplication.getOkHttpUtil();
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, final SerachPublishVideo.DataBean.IndexListBean item) {
+    protected void convert(final BaseViewHolder helper, final IndexListBean item) {
         ShortVideoPlayer videoPlayer = helper.getView(R.id.video_player);
 
         GSYVideoOptionBuilder videoBuilder = new GSYVideoOptionBuilder();
@@ -179,7 +181,16 @@ public class ZuopinAdapter extends BaseQuickAdapter<SerachPublishVideo.DataBean.
         helper.getView(R.id.iv_usercomment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ZuopinCommentPopUpwindow(mContext, getData(), helper.getLayoutPosition());
+//                new ZuopinCommentPopUpwindow(mContext, getData(), helper.getLayoutPosition());
+                if (MyApplication.getInstance().getUserInfo() != null) {
+                    if (mContext instanceof AppCompatActivity) {
+                        ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction().add(CommentDialog.newInstance(getData(), helper.getLayoutPosition()), "CommentDialog").commitAllowingStateLoss();
+                    }
+                } else {
+                    Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(mContext, LoginActivity.class);
+                    mContext.startActivity(intent);
+                }
             }
         });
 

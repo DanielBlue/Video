@@ -44,6 +44,7 @@ import java.util.List;
 import adapter.ShortVideoAdapter;
 import application.MyApplication;
 import bean.HomeVideoImg;
+import bean.IndexListBean;
 import bean.LoginEvent;
 import customeview.ShortVideoPlayer;
 import event.MessageEvent;
@@ -65,7 +66,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private RecyclerView mRvList;
     private SwipeRefreshLayout home_swipeRefresh;
     private OktHttpUtil okHttpUtil;
-    private List<HomeVideoImg.DataBean.IndexListBean> datas = new ArrayList<>();
+    private List<IndexListBean> datas = new ArrayList<>();
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -349,20 +350,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    @Subscribe()
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeCommentCount(CommentCountEvent commentCountEvent) {
         if (commentCountEvent != null) {
             View view = pagerSnapHelper.findSnapView(layoutManger);
             int position = layoutManger.getPosition(view);
-            mAdapter.getData().get(position).setCommentCounts(commentCountEvent.count);
-            if (view != null) {
-                BaseViewHolder holder = (BaseViewHolder) mRvList.getChildViewHolder(view);
-                holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");
+            IndexListBean indexListBean = mAdapter.getData().get(position);
+            if (indexListBean.getVid().equals(commentCountEvent.vid)){
+                indexListBean.setCommentCounts(commentCountEvent.count);
+                if (view != null) {
+                    BaseViewHolder holder = (BaseViewHolder) mRvList.getChildViewHolder(view);
+                    holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");
+                }
             }
         }
     }
 
-    @Subscribe()
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeAttention(AttentionEvent attentionEvent) {
         if (attentionEvent != null) {
             for (int i = 0; i < mAdapter.getData().size(); i++) {

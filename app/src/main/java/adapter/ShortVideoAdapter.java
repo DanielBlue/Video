@@ -36,7 +36,7 @@ import java.util.List;
 import application.MyApplication;
 import bean.AttentionOrCancelPerson;
 import bean.HomeAttentionEvent;
-import bean.HomeVideoImg;
+import bean.IndexListBean;
 import bean.ShareVideo;
 import bean.UserInfo;
 import bean.VideoSupportOrUn;
@@ -55,16 +55,16 @@ import util.SystemUtils;
  * Created by 李杰 on 2019/8/5.
  */
 
-public class ShortVideoAdapter extends BaseQuickAdapter<HomeVideoImg.DataBean.IndexListBean, BaseViewHolder> {
+public class ShortVideoAdapter extends BaseQuickAdapter<IndexListBean, BaseViewHolder> {
     private OktHttpUtil oktHttpUtil;
 
-    public ShortVideoAdapter(@Nullable List<HomeVideoImg.DataBean.IndexListBean> data) {
+    public ShortVideoAdapter(@Nullable List<IndexListBean> data) {
         super(R.layout.shortvideo_item, data);
         oktHttpUtil = MyApplication.getOkHttpUtil();
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, final HomeVideoImg.DataBean.IndexListBean item) {
+    protected void convert(final BaseViewHolder helper, final IndexListBean item) {
         helper.setText(R.id.tv_authoritycity, item.getVideoPath())
                 .setText(R.id.tv_likecount, item.getLikeCounts() + "")
                 .setText(R.id.tv_commentcount, item.getCommentCounts() + "")

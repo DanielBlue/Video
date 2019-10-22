@@ -3,6 +3,7 @@ package adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.am.shortVideo.R;
+import com.am.shortVideo.activity.LoginActivity;
 import com.am.shortVideo.activity.LookFullScreenVideo;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
 import com.bumptech.glide.Glide;
@@ -33,11 +35,11 @@ import java.util.List;
 import application.MyApplication;
 import base.MyAllBaseAdapter;
 import base.MyBaseViewHolder;
-import bean.AttentionPersonVideo;
+import bean.IndexListBean;
 import bean.ShareVideo;
 import bean.UserInfo;
 import bean.VideoSupportOrUn;
-import customeview.ShowVideoPopUpWindow;
+import customeview.CommentDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 import http.OktHttpUtil;
 import okhttp3.Call;
@@ -55,16 +57,15 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
  * Created by JC on 2019/9/4.
  */
 
-public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPersonVideo.DataBean.IndexListBean
-        , MyBaseViewHolder> {
+public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<IndexListBean, MyBaseViewHolder> {
     private static final String TAG = "AttentionPersonVideoAda";
     private final OktHttpUtil okHttpUtil;
     private final UMImage umImage;
     private Context context;
-    private List<AttentionPersonVideo.DataBean.IndexListBean> datas;
+    private List<IndexListBean> datas;
     private UMWeb web;
 
-    public AttentionPersonVideoAdapter(List<AttentionPersonVideo.DataBean.IndexListBean> dates, Context context) {
+    public AttentionPersonVideoAdapter(List<IndexListBean> dates, Context context) {
         super(dates, context);
         this.context = context;
         this.datas = dates;
@@ -118,8 +119,17 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
             holder.et_attentionperson_sendcontent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new ShowVideoPopUpWindow(context, datas, position);
+//                    new ShowVideoPopUpWindow(context, datas, position);
                     //new CommentPopupWindow(context,datas.get(position).)
+                    if (MyApplication.getInstance().getUserInfo() != null) {
+                        if (context instanceof AppCompatActivity) {
+                            ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction().add(CommentDialog.newInstance(datas, position), "CommentDialog").commitAllowingStateLoss();
+                        }
+                    } else {
+                        Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        context.startActivity(intent);
+                    }
                 }
             });
             holder.attentionpersonvideo_picture.setOnClickListener(new View.OnClickListener() {
@@ -199,9 +209,14 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
                                                                         String shareResult = response.body().string();
                                                                         Log.d(TAG, "onResponse: \n" + shareResult);
                                                                         Gson gson = new Gson();
-                                                                        ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
+                                                                        final ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                         if (shareVideo.getCode() == 0) {
-                                                                            holder.attentionpersonvideo_sharecount.setText("" + shareVideo.getData().getShareCounts());
+                                                                            MyApplication.mHandler.post(new Runnable() {
+                                                                                @Override
+                                                                                public void run() {
+                                                                                    holder.attentionpersonvideo_sharecount.setText("" + shareVideo.getData().getShareCounts());
+                                                                                }
+                                                                            });
                                                                         }
                                                                     }
                                                                 });
@@ -243,9 +258,14 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
                                                                         String shareResult = response.body().string();
                                                                         Log.d(TAG, "onResponse: \n" + shareResult);
                                                                         Gson gson = new Gson();
-                                                                        ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
+                                                                        final ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                         if (shareVideo.getCode() == 0) {
-                                                                            holder.attentionpersonvideo_sharecount.setText("" + shareVideo.getData().getShareCounts());
+                                                                            MyApplication.mHandler.post(new Runnable() {
+                                                                                @Override
+                                                                                public void run() {
+                                                                                    holder.attentionpersonvideo_sharecount.setText("" + shareVideo.getData().getShareCounts());
+                                                                                }
+                                                                            });
                                                                         }
                                                                     }
                                                                 });
@@ -298,9 +318,14 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
                                                                                         String shareResult = response.body().string();
                                                                                         Log.d(TAG, "onResponse: \n" + shareResult);
                                                                                         Gson gson = new Gson();
-                                                                                        ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
+                                                                                        final ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                                         if (shareVideo.getCode() == 0) {
-                                                                                            holder.attentionpersonvideo_sharecount.setText("" + shareVideo.getData().getShareCounts());
+                                                                                            MyApplication.mHandler.post(new Runnable() {
+                                                                                                @Override
+                                                                                                public void run() {
+                                                                                                    holder.attentionpersonvideo_sharecount.setText("" + shareVideo.getData().getShareCounts());
+                                                                                                }
+                                                                                            });
                                                                                         }
                                                                                     }
                                                                                 });
@@ -344,9 +369,14 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
                                                                         String shareResult = response.body().string();
                                                                         Log.d(TAG, "onResponse: \n" + shareResult);
                                                                         Gson gson = new Gson();
-                                                                        ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
+                                                                        final ShareVideo shareVideo = gson.fromJson(shareResult, ShareVideo.class);
                                                                         if (shareVideo.getCode() == 0) {
-                                                                            holder.attentionpersonvideo_sharecount.setText("" + shareVideo.getData().getShareCounts());
+                                                                            MyApplication.mHandler.post(new Runnable() {
+                                                                                @Override
+                                                                                public void run() {
+                                                                                    holder.attentionpersonvideo_sharecount.setText("" + shareVideo.getData().getShareCounts());
+                                                                                }
+                                                                            });
                                                                         }
                                                                     }
                                                                 });
@@ -372,7 +402,16 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<AttentionPerso
             holder.iv_attentionperson_commentimg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new ShowVideoPopUpWindow(context, datas, position);
+//                    new ShowVideoPopUpWindow(context, datas, position);
+                    if (MyApplication.getInstance().getUserInfo() != null) {
+                        if (context instanceof AppCompatActivity) {
+                            ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction().add(CommentDialog.newInstance(datas, position), "CommentDialog").commitAllowingStateLoss();
+                        }
+                    } else {
+                        Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        context.startActivity(intent);
+                    }
                 }
             });
             holder.iv_attentionperson_likeimg.setOnClickListener(new View.OnClickListener() {

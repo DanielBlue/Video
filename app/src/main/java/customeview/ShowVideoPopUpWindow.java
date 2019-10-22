@@ -28,7 +28,7 @@ import adapter.AtUserNickAdapter;
 import adapter.CommentAdapter;
 import application.MyApplication;
 import bean.AttentionPerson;
-import bean.AttentionPersonVideo;
+import bean.IndexListBean;
 import bean.PublishComment;
 import bean.UserInfo;
 import bean.VideoComment;
@@ -59,7 +59,7 @@ public class ShowVideoPopUpWindow extends PopupWindow implements View.OnClickLis
     private Button bt_sendcomment;
     private List<VideoComment.DataBean.CommentListBean> comentdatas;
     private TextView allCommentcount;
-    private List<AttentionPersonVideo.DataBean.IndexListBean> homevideodatas;
+    private List<IndexListBean> homevideodatas;
     private OktHttpUtil oktHttpUtil;
     private int curposition;
     private Button bt_at;
@@ -71,7 +71,7 @@ public class ShowVideoPopUpWindow extends PopupWindow implements View.OnClickLis
     private int currentStatus = 0;//0代表默认评论 //1代表@ //2代表作者回复
     private boolean isAuthority = false;
 
-    public ShowVideoPopUpWindow(Context context, List<AttentionPersonVideo.DataBean.IndexListBean> homevideodatas, int curposition) {
+    public ShowVideoPopUpWindow(Context context, List<IndexListBean> homevideodatas, int curposition) {
         super(context);
         this.context = context;
         this.homevideodatas = homevideodatas;
@@ -383,9 +383,8 @@ public class ShowVideoPopUpWindow extends PopupWindow implements View.OnClickLis
                     isAtClick = true;
                     if (!comentdatas.isEmpty()) {
                         comment_recycleview1.setVisibility(View.VISIBLE);
-                        loadAtData();
-
                     }
+                    loadAtData();
                 } else {
                     isAtClick = false;
                     comment_recycleview1.setVisibility(View.GONE);
