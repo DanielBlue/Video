@@ -302,6 +302,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     fragmentTran.add(R.id.fl_container, meFragment);
                 } else {
                     fragmentTran.show(meFragment);
+                    if (MyApplication.getInstance().getUserInfo() != null) {
+                        meFragment.initData();
+                    }
                 }
                 break;
             default:

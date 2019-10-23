@@ -92,7 +92,8 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
             }
         }
     };
-//    Callback homevideoCallback = new Callback() {
+
+    //    Callback homevideoCallback = new Callback() {
 //        @Override
 //        public void onFailure(Call call, IOException e) {
 //
@@ -132,7 +133,7 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
     };
     private String curUid;
     private int position;
-    private int currentPage;
+    private int currentPage = 0;
     private ZuopinAdapter mAdapter;
 
     @Override
@@ -159,7 +160,6 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
             }
         }, mRvList);
         mRvList.setAdapter(mAdapter);
-        mRvList.scrollToPosition(position);
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -221,14 +221,16 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
 //                    }
             }
         });
+        //                layoutManger.scrollToPositionWithOffset(position, 0);
+        mRvList.scrollToPosition(position);
         MyApplication.mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (mCurPlayer == null) {
-                    startPlay(0);
+                    startPlay(position);
                 }
             }
-        },500);
+        }, 1000);
     }
 
     private int mCurPosition = -1;
@@ -275,8 +277,7 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("homeVideoImg");
         datas = (List<IndexListBean>) bundle.getSerializable("datas");
-        position = intent.getIntExtra("position", 0);
-        currentPage = intent.getIntExtra("currentPage", 0);
+        position = bundle.getInt("position", 0);
 //        SerachPublishVideo.DataBean.IndexListBean data = (SerachPublishVideo.DataBean.IndexListBean) bundle.getSerializable("videourl");
 //        curChannel = bundle.getInt("type");
         curUid = intent.getStringExtra("user_uid");
@@ -339,12 +340,12 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeCommentCount(CommentCountEvent commentCountEvent) {
         if (commentCountEvent != null) {
-            for (int x=0;x<datas.size();x++) {
-                IndexListBean bean =datas.get(x);
+            for (int x = 0; x < datas.size(); x++) {
+                IndexListBean bean = datas.get(x);
                 if (bean.getVid().equals(commentCountEvent.vid)) {
                     bean.setCommentCounts(commentCountEvent.count);
                     BaseViewHolder holder = (BaseViewHolder) mRvList.findViewHolderForAdapterPosition(x);
-                    if (holder!=null){
+                    if (holder != null) {
                         holder.setText(R.id.tv_commentcount, commentCountEvent.count + "");
                     }
                     break;

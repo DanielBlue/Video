@@ -3,6 +3,7 @@ package customeview;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
 import com.am.shortVideo.activity.AtPersonActivity;
+import com.am.shortVideo.activity.LoginActivity;
 import com.am.shortVideo.view.BubbleLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,7 +46,7 @@ import bean.AtPersonEvent;
 import bean.AttentionPerson;
 import bean.IndexListBean;
 import bean.PublishComment;
-import bean.UserInfo;
+import bean.UserInfoBean;
 import bean.VideoComment;
 import event.MessageEvent;
 import http.OktHttpUtil;
@@ -170,77 +172,82 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                         VideoComment videoComment = gson.fromJson(result, VideoComment.class);
                         if (videoComment.getCode() == 0) {
                             comentdatas = videoComment.getData().getCommentList();
-                            oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_PERSONINFO, ((MyApplication) context.getApplicationContext()).getMaps(), new Callback() {
-                                @Override
-                                public void onFailure(Call call, IOException e) {
-                                    e.printStackTrace();
-                                    Log.e(TAG, "onFailure: ");
-                                }
-
-                                @Override
-                                public void onResponse(Call call, Response response) throws IOException {
-                                    String userinfoResult = response.body().string();
-                                    Log.d(TAG, "onResponse: userinfoCallback\n" + userinfoResult);
-                                    Gson gson = new Gson();
-                                    UserInfo userinfo = gson.fromJson(userinfoResult, UserInfo.class);
-                                    if (userinfo.getCode() == 0 && userinfo.getData() != null) {
-                                        if (userinfo.getData().getUserInfo().getUid().equals(homevideodatas.get(curposition).getUid())) {
-                                            isAuthority = true;
-                                            ((Activity) context).runOnUiThread(new Runnable() {
+                            UserInfoBean userInfo = MyApplication.getInstance().getUserInfo();
+                            if (userInfo != null && userInfo.getUid().equals(homevideodatas.get(curposition).getUid())) {
+                                isAuthority = true;
+                                ((Activity) context).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment) + homevideodatas.get(curposition).getCommentCounts());
+                                        if (comentdatas != null) {
+                                            commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
+                                            commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
                                                 @Override
-                                                public void run() {
-                                                    allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment) + homevideodatas.get(curposition).getCommentCounts());
-                                                    if (comentdatas != null) {
-                                                        commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
-                                                        commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
-                                                            @Override
-                                                            public void authorityReplayData(int position) {
-                                                                currentStatus = 2;
-                                                                isAtClick = false;
-                                                                authorytReplayPosition = position;
-                                                                ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
-                                                                ed_comment.setSelection(ed_comment.getText().length());
-                                                                openKeybord(ed_comment, context);
-                                                            }
-                                                        });
-                                                        comment_recycleview.setAdapter(commentAdapter);
-                                                    }
+                                                public void authorityReplayData(int position) {
+                                                    currentStatus = 2;
+                                                    isAtClick = false;
+                                                    authorytReplayPosition = position;
+                                                    ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
+                                                    ed_comment.setSelection(ed_comment.getText().length());
+                                                    openKeybord(ed_comment, context);
                                                 }
                                             });
-                                        } else {
-                                            isAuthority = false;
-                                            ((Activity) context).runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment) + "(" + homevideodatas.get(curposition).getCommentCounts() + ")");
-                                                    if (comentdatas != null) {
-                                                        commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
-                                                        commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
-                                                            @Override
-                                                            public void authorityReplayData(int position) {
-                                                                currentStatus = 2;
-                                                                isAtClick = false;
-                                                                authorytReplayPosition = position;
-                                                                ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
-                                                                ed_comment.setSelection(ed_comment.getText().length());
-                                                                openKeybord(ed_comment, context);
-                                                            }
-                                                        });
-                                                        comment_recycleview.setAdapter(commentAdapter);
-                                                    }
-                                                }
-                                            });
+                                            comment_recycleview.setAdapter(commentAdapter);
                                         }
-                                    } else if (userinfo.getCode() == 1005) {
-                                        ((Activity) context).runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                BaseUtils.getLoginDialog(context).show();
-                                            }
-                                        });
                                     }
-                                }
-                            });
+                                });
+                            } else {
+                                isAuthority = false;
+                                ((Activity) context).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment) + "(" + homevideodatas.get(curposition).getCommentCounts() + ")");
+                                        if (comentdatas != null) {
+                                            commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
+                                            commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
+                                                @Override
+                                                public void authorityReplayData(int position) {
+                                                    currentStatus = 2;
+                                                    isAtClick = false;
+                                                    authorytReplayPosition = position;
+                                                    ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
+                                                    ed_comment.setSelection(ed_comment.getText().length());
+                                                    openKeybord(ed_comment, context);
+                                                }
+                                            });
+                                            comment_recycleview.setAdapter(commentAdapter);
+                                        }
+                                    }
+                                });
+                            }
+
+//                            oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_PERSONINFO, ((MyApplication) context.getApplicationContext()).getMaps(), new Callback() {
+//                                @Override
+//                                public void onFailure(Call call, IOException e) {
+//                                    e.printStackTrace();
+//                                    Log.e(TAG, "onFailure: ");
+//                                }
+//
+//                                @Override
+//                                public void onResponse(Call call, Response response) throws IOException {
+//                                    String userinfoResult = response.body().string();
+//                                    Log.d(TAG, "onResponse: userinfoCallback\n" + userinfoResult);
+//                                    Gson gson = new Gson();
+//                                    UserInfo userinfo = gson.fromJson(userinfoResult, UserInfo.class);
+//
+//
+//                                    if (userinfo.getCode() == 0 && userinfo.getData() != null) {
+//
+//                                    } else if (userinfo.getCode() == 1005) {
+//                                        ((Activity) context).runOnUiThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                BaseUtils.getLoginDialog(context).show();
+//                                            }
+//                                        });
+//                                    }
+//                                }
+//                            });
 
 
                         } else if (videoComment.getCode() == 1005) {
@@ -276,66 +283,67 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bt_sendcomment:
-                closeKeybord(ed_comment, context);
-                //String addData=ed_comment.getText().toString();
-                //comentdatas.add(addData);
-                //commentAdapter.notifyDataSetChanged();
-                String url = "";
-                HashMap<String, String> maps = new HashMap<>();
-                if (currentStatus == 0) {
-                    String contents = ed_comment.getText().toString().trim();
-                    if (contents.isEmpty()) {
-                        Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
-                        break;
+        if (MyApplication.getInstance().getUserInfo() != null) {
+            switch (v.getId()) {
+                case R.id.bt_sendcomment:
+                    closeKeybord(ed_comment, context);
+                    //String addData=ed_comment.getText().toString();
+                    //comentdatas.add(addData);
+                    //commentAdapter.notifyDataSetChanged();
+                    String url = "";
+                    HashMap<String, String> maps = new HashMap<>();
+                    if (currentStatus == 0) {
+                        String contents = ed_comment.getText().toString().trim();
+                        if (contents.isEmpty()) {
+                            Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        maps.put("vid", homevideodatas.get(curposition).getVid()); //;//"5995716959957168"
+                        maps.put("content", contents);
+                        maps.put("at_uid", "null");
+                        url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
+                    } else if (currentStatus == 1) {
+                        currentStatus = 0;
+                        String commentcontents = ed_comment.getText().toString().trim();
+                        String contents = commentcontents.substring(commentcontents.indexOf(":") + 1, commentcontents.length());
+                        if (contents.isEmpty()) {
+                            Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        maps.put("vid", homevideodatas.get(curposition).getVid()); //;//"5995716959957168"
+                        maps.put("content", contents);
+                        maps.put("at_uid", At_id);
+                        url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
+                    } else if (currentStatus == 2) {
+                        currentStatus = 0;
+                        String commentcontents = ed_comment.getText().toString().trim();
+                        String contents = commentcontents.substring(commentcontents.indexOf(":") + 1, commentcontents.length());
+                        if (contents.isEmpty()) {
+                            Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        maps.put("cid", "" + comentdatas.get(curposition).getId()); //;//"5995716959957168"
+                        maps.put("content", contents);
+                        //maps.put("at_uid","");
+                        url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_REPLYCOMMENT;
                     }
-                    maps.put("vid", homevideodatas.get(curposition).getVid()); //;//"5995716959957168"
-                    maps.put("content", contents);
-                    maps.put("at_uid", "null");
-                    url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
-                } else if (currentStatus == 1) {
-                    currentStatus = 0;
-                    String commentcontents = ed_comment.getText().toString().trim();
-                    String contents = commentcontents.substring(commentcontents.indexOf(":") + 1, commentcontents.length());
-                    if (contents.isEmpty()) {
-                        Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    maps.put("vid", homevideodatas.get(curposition).getVid()); //;//"5995716959957168"
-                    maps.put("content", contents);
-                    maps.put("at_uid", At_id);
-                    url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
-                } else if (currentStatus == 2) {
-                    currentStatus = 0;
-                    String commentcontents = ed_comment.getText().toString().trim();
-                    String contents = commentcontents.substring(commentcontents.indexOf(":") + 1, commentcontents.length());
-                    if (contents.isEmpty()) {
-                        Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    maps.put("cid", "" + comentdatas.get(curposition).getId()); //;//"5995716959957168"
-                    maps.put("content", contents);
-                    //maps.put("at_uid","");
-                    url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_REPLYCOMMENT;
-                }
 
 
-                oktHttpUtil.setPostRequest(url,
-                        ((MyApplication) context.getApplicationContext()).getMaps(), maps, new Callback() {
-                            @Override
-                            public void onFailure(Call call, IOException e) {
+                    oktHttpUtil.setPostRequest(url,
+                            ((MyApplication) context.getApplicationContext()).getMaps(), maps, new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onResponse(Call call, Response response) throws IOException {
-                                String commentResult = response.body().string();
-                                Log.d(TAG, "onResponse: \n" + commentResult);
-                                Gson gson = new Gson();
-                                PublishComment publishComment = gson.fromJson(commentResult, PublishComment.class);
-                                if (publishComment.getCode() == 0 && publishComment.getMessage().contains("成功评论")) {
-                                    Log.d(TAG, "onResponse-->comment:sucess ");
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    String commentResult = response.body().string();
+                                    Log.d(TAG, "onResponse: \n" + commentResult);
+                                    Gson gson = new Gson();
+                                    PublishComment publishComment = gson.fromJson(commentResult, PublishComment.class);
+                                    if (publishComment.getCode() == 0 && publishComment.getMessage().contains("成功评论")) {
+                                        Log.d(TAG, "onResponse-->comment:sucess ");
 //                                    VideoComment.DataBean.CommentListBean  commentListBean=new VideoComment.DataBean.CommentListBean();
 //                                    //commentListBean.setAvatar(publishComment.getData().getComment().getContent());
 //                                    commentListBean.setContent(publishComment.getData().getComment().getContent());
@@ -349,95 +357,92 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
 //                                            comment_recycleview.scrollToPosition(comentdatas.size()-1);
 //                                        }
 //                                    });
-                                    final HashMap<String, String> commentmaps = new HashMap<>();
-                                    commentmaps.put("vid", homevideodatas.get(curposition).getVid());//"5995716959957168"
-                                    oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_VIDEOCOMMENT,
-                                            ((MyApplication) context.getApplicationContext()).getMaps(), commentmaps, new Callback() {
-                                                @Override
-                                                public void onFailure(Call call, IOException e) {
-
-                                                }
-
-                                                @Override
-                                                public void onResponse(Call call, Response response) throws IOException {
-                                                    String result = response.body().string();
-                                                    Log.d(TAG, "usercommentonResponse: \n" + result);
-                                                    Gson gson = new Gson();
-                                                    final VideoComment videoComment = gson.fromJson(result, VideoComment.class);
-                                                    if (videoComment.getCode() == 0) {
-                                                        if (!comentdatas.isEmpty()) {
-                                                            comentdatas.clear();
-                                                        }
-                                                        comentdatas = videoComment.getData().getCommentList();
-                                                        CommentCountEvent commentCountEvent = new CommentCountEvent();
-                                                        commentCountEvent.count = comentdatas.size();
-                                                        commentCountEvent.vid = homevideodatas.get(curposition).getVid();
-                                                        EventBus.getDefault().post(commentCountEvent);
-                                                        ((Activity) context).runOnUiThread(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment) + "(" + comentdatas.size() + ")");
-                                                                ed_comment.setText("");
-                                                                commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
-                                                                commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
-                                                                    @Override
-                                                                    public void authorityReplayData(int position) {
-                                                                        currentStatus = 2;
-                                                                        isAtClick = false;
-                                                                        authorytReplayPosition = position;
-                                                                        ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
-                                                                        ed_comment.setSelection(ed_comment.getText().length());
-                                                                        openKeybord(ed_comment, context);
-                                                                    }
-                                                                });
-                                                                comment_recycleview.setAdapter(commentAdapter);
-                                                            }
-                                                        });
+                                        final HashMap<String, String> commentmaps = new HashMap<>();
+                                        commentmaps.put("vid", homevideodatas.get(curposition).getVid());//"5995716959957168"
+                                        oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_VIDEOCOMMENT,
+                                                ((MyApplication) context.getApplicationContext()).getMaps(), commentmaps, new Callback() {
+                                                    @Override
+                                                    public void onFailure(Call call, IOException e) {
 
                                                     }
-                                                }
-                                            });
 
-                                } else if (publishComment.getCode() == 1005) {
-                                    ((Activity) context).runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            dismiss();
-                                            BaseUtils.getLoginDialog(context).show();
-                                        }
-                                    });
-                                } else if (publishComment.getCode() == 400) {
-                                    ((Activity) context).runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            dismiss();
-                                            Toast.makeText(context, "发送失败", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                                    @Override
+                                                    public void onResponse(Call call, Response response) throws IOException {
+                                                        String result = response.body().string();
+                                                        Log.d(TAG, "usercommentonResponse: \n" + result);
+                                                        Gson gson = new Gson();
+                                                        final VideoComment videoComment = gson.fromJson(result, VideoComment.class);
+                                                        if (videoComment.getCode() == 0) {
+                                                            if (!comentdatas.isEmpty()) {
+                                                                comentdatas.clear();
+                                                            }
+                                                            comentdatas = videoComment.getData().getCommentList();
+                                                            CommentCountEvent commentCountEvent = new CommentCountEvent();
+                                                            commentCountEvent.count = comentdatas.size();
+                                                            commentCountEvent.vid = homevideodatas.get(curposition).getVid();
+                                                            EventBus.getDefault().post(commentCountEvent);
+                                                            ((Activity) context).runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    allCommentcount.setText(context.getResources().getString(R.string.tv_allcomment) + "(" + comentdatas.size() + ")");
+                                                                    ed_comment.setText("");
+                                                                    commentAdapter = new CommentAdapter(comentdatas, context, isAuthority);
+                                                                    commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
+                                                                        @Override
+                                                                        public void authorityReplayData(int position) {
+                                                                            currentStatus = 2;
+                                                                            isAtClick = false;
+                                                                            authorytReplayPosition = position;
+                                                                            ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
+                                                                            ed_comment.setSelection(ed_comment.getText().length());
+                                                                            openKeybord(ed_comment, context);
+                                                                        }
+                                                                    });
+                                                                    comment_recycleview.setAdapter(commentAdapter);
+                                                                }
+                                                            });
+
+                                                        }
+                                                    }
+                                                });
+
+                                    } else if (publishComment.getCode() == 1005) {
+                                        ((Activity) context).runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                dismiss();
+                                                BaseUtils.getLoginDialog(context).show();
+                                            }
+                                        });
+                                    } else if (publishComment.getCode() == 400) {
+                                        ((Activity) context).runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                dismiss();
+                                                Toast.makeText(context, "发送失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
                                 }
-                            }
-                        });
-                break;
-            case R.id.et_comment:
-                openKeybord(ed_comment, context);
+                            });
+                    break;
+                case R.id.et_comment:
+                    openKeybord(ed_comment, context);
 
-                break;
-            case R.id.bt_commentcancel:
-                dismiss();
-                break;
-            case R.id.bt_at:
-//                if (!isAtClick) {
-//                    isAtClick = true;
-//                    if (!comentdatas.isEmpty()) {
-//                        loadAtData();
-//                    }
-//                } else {
-//                    isAtClick = false;
-//                    bl_at.setVisibility(View.GONE);
-//                }
-                AtPersonActivity.start(getActivity());
-                break;
-            default:
+                    break;
+                case R.id.bt_commentcancel:
+                    dismiss();
+                    break;
+                case R.id.bt_at:
+                    AtPersonActivity.start(getActivity());
+                    break;
+                default:
+            }
+        } else {
+            Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, LoginActivity.class);
+            context.startActivity(intent);
+            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
 

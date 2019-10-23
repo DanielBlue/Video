@@ -302,7 +302,11 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                         maps1.put("audioId", "null");
                     }
                     maps1.put("coverFile", Constant.DOWNBGM + File.separator + "audio.jpg");
-                    maps1.put("location", publishVideoInfo.getLocation());
+                    if (publishVideoInfo.getLocation()!=null){
+                        maps1.put("location", publishVideoInfo.getLocation());
+                    }else {
+                        maps1.put("location", "");
+                    }
                     if (ed_publishfoodid.getText().toString().trim().isEmpty()) {
                         maps1.put("shopId", "null");
                     } else if (!ed_publishfoodid.getText().toString().trim().isEmpty()) {

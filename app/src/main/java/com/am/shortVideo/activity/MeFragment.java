@@ -103,7 +103,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                     if (userInfo.getCode() == 0) {
                         PreferencesUtil.put(getActivity(), PreferencesUtil.SP_USER_INFO, new Gson().toJson(userInfo.getData().getUserInfo()));
 //                        MyApplication.getInstance().setUserInfo(userInfo.getData().getUserInfo());
-                        circleprogress.dismiss();
                         me_swiprefreshlayout.setRefreshing(false);
                         islogin = false;
                         bt_changpersoninfo.setText(getActivity().getResources().getString(R.string.me_editorinfo));
@@ -126,7 +125,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         mUid = userInfo.getData().getUserInfo().getUid();
                         getVideoList();
                     } else if (userInfo.getCode() == 1005) {
-                        circleprogress.dismiss();
                         islogin = true;
                         bt_changpersoninfo.setText("登录");
                         bt_changpersoninfo.setBackground(getActivity().getResources().getDrawable(R.drawable.bg_round_da6464));
@@ -229,7 +227,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             ((Activity) getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    circleprogress.dismiss();
                     me_swiprefreshlayout.setRefreshing(false);
                 }
             });
@@ -260,7 +257,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private SlidingMenu slidinmenu;
     private PublishVideoInfo publishVideoInfo;
     private RecyclerView me_recycleview2;
-    private CircleProgressDialog circleprogress;
     private UserVideoAdapter userVideoAdapter;
 
     @Nullable
@@ -269,7 +265,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.me_fragment, container, false);
         oktHttpUtil = ((MyApplication) getActivity().getApplication()).getOkHttpUtil();
         EventBus.getDefault().register(this);
-        circleprogress = new CircleProgressDialog(getActivity());
         initView();
 //        initData();
         slidinmenu = new SlidingMenu(getActivity());
@@ -285,10 +280,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    private void initData() {
+    public void initData() {
         oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_PERSONINFO
                 , ((MyApplication) getActivity().getApplicationContext()).getMaps(), userinfoCallback);
-        circleprogress.showDialog();
     }
 
     @Override

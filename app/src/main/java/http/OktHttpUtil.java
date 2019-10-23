@@ -145,7 +145,9 @@ public class OktHttpUtil {
                     multipartBody.addFormDataPart(head1.getKey(), file.getName(), filebody);
                 }
             } else {
-                multipartBody.addFormDataPart(head1.getKey(), head1.getValue());
+                if (head1.getKey()!=null&&head1.getValue()!=null){
+                    multipartBody.addFormDataPart(head1.getKey(), head1.getValue());
+                }
             }
         }
         Headers.Builder headbuilder = new Headers.Builder();

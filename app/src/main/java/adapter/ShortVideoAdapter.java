@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.am.shortVideo.EventBean.AttentionEvent;
 import com.am.shortVideo.R;
-import com.am.shortVideo.activity.LoginActivity;
 import com.am.shortVideo.activity.OtherUserInfoActivity;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -202,14 +201,8 @@ public class ShortVideoAdapter extends BaseQuickAdapter<IndexListBean, BaseViewH
         helper.getView(R.id.iv_usercomment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MyApplication.getInstance().getUserInfo() != null) {
-                    if (mContext instanceof AppCompatActivity) {
-                        ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction().add(CommentDialog.newInstance(getData(), helper.getAdapterPosition()), "CommentDialog").commitAllowingStateLoss();
-                    }
-                } else {
-                    Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(mContext, LoginActivity.class);
-                    mContext.startActivity(intent);
+                if (mContext instanceof AppCompatActivity) {
+                    ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction().add(CommentDialog.newInstance(getData(), helper.getAdapterPosition()), "CommentDialog").commitAllowingStateLoss();
                 }
 
             }
@@ -525,48 +518,23 @@ public class ShortVideoAdapter extends BaseQuickAdapter<IndexListBean, BaseViewH
         helper.getView(R.id.rl_bugfood).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.PersonInfo.REQUEST_HEADER_PERSONINFO
-                        , ((MyApplication) mContext.getApplicationContext()).getMaps(), new Callback() {
-                            @Override
-                            public void onFailure(Call call, IOException e) {
-
-                            }
-
-                            @Override
-                            public void onResponse(Call call, Response response) throws IOException {
-                                String userinfoResult = response.body().string();
-                                Gson gson = new Gson();
-                                UserInfo userinfo = gson.fromJson(userinfoResult, UserInfo.class);
-                                if (userinfo.getCode() == 0) {
-                                    ((Activity) mContext).runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (!SystemUtils.isAvilible(mContext, "com.android.healthapp")) {
-                                                Toast.makeText(mContext, "请先下载健德购购App", Toast.LENGTH_SHORT).show();
-                                                return;
-                                            }
-                                            Intent intent = new Intent();
-                                            ComponentName componentName = new ComponentName("com.android.healthapp",
-                                                    "com.android.healthapp.ui.activity.GoodConventionActivity");
-                                            intent.setComponent(componentName);
-                                            intent.putExtra("good_common_id", Integer.parseInt(item.getGoodsId()));//id
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!SystemUtils.isAvilible(mContext, "com.android.healthapp")) {
+                            Toast.makeText(mContext, "请先下载健德购购App", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Intent intent = new Intent();
+                        ComponentName componentName = new ComponentName("com.android.healthapp",
+                                "com.android.healthapp.ui.activity.GoodConventionActivity");
+                        intent.setComponent(componentName);
+                        intent.putExtra("good_common_id", Integer.parseInt(item.getGoodsId()));//id
 //                    intent = context.getPackageManager().getLaunchIntentForPackage("com.android.healthapp");
 //                    intent.putExtra("good_common_id", "123456");//id
-                                            mContext.startActivity(intent);
-                                        }
-                                    });
-                                } else if (userinfo.getCode() == 1005) {
-                                    ((Activity) mContext).runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            BaseUtils.getLoginDialog(mContext).show();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
-
+                        mContext.startActivity(intent);
+                    }
+                });
             }
         });
     }
