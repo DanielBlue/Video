@@ -4,51 +4,66 @@
                 android:layout_height="match_parent"
                 android:background="@color/theme_dark_line">
 
-    <RelativeLayout
-        android:id="@+id/rl_find"
+    <LinearLayout
+        android:id="@+id/ll_find"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="25dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="25dp"
-        android:background="@drawable/shapa_relative">
+        android:layout_height="40dp">
+        <RelativeLayout
+            android:id="@+id/rl_find"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:layout_marginStart="25dp"
+            android:background="@drawable/shapa_relative">
 
-        <ImageView
-            android:id="@+id/iv_search"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:src="@mipmap/search"/>
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:src="@mipmap/search"/>
 
-        <EditText
-            android:id="@+id/attention_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/iv_search"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:hint="@string/attention_editext"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="16sp"/>
+            <EditText
+                android:id="@+id/attention_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/iv_search"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="@string/attention_editext"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
 
-    </RelativeLayout>
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_toEndOf="@+id/ll_find"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="搜索"
+            />
+    </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_find">
+        android:layout_below="@id/ll_find">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_searchuserinfo_recycle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/rl_find"/>
+            android:layout_below="@id/ll_find"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

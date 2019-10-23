@@ -11,13 +11,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.am.shortVideo.EventBean.CommentCountEvent;
@@ -129,6 +129,7 @@ public class SearchUserVideoFragment extends Fragment {
     private CircleProgressDialog cicleprogress;
     private List<IndexListBean> datas = new ArrayList<>();
     private AttentionPersonVideoAdapter attentionPersonVideoAdapter;
+    private TextView mBtnSearch;
 
     @Nullable
     @Override
@@ -157,24 +158,17 @@ public class SearchUserVideoFragment extends Fragment {
                 ed_edittext.setCursorVisible(true);
             }
         });
-        ed_edittext.setOnKeyListener(new View.OnKeyListener() {
-
+        mBtnSearch = view.findViewById(R.id.btn_search);
+        mBtnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                //这里注意要作判断处理，ActionDown、ActionUp都会回调到这里，不作处理的话就会调用两次
-                if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                    //处理事件
-                    closeKeybord(ed_edittext, getActivity());
-                    if (!ed_edittext.getText().toString().trim().isEmpty()) {
-                        currentPage = 1;
-                        searchVideo(ed_edittext.getText().toString().trim());
-                    }
-                    return true;
+            public void onClick(View view) {
+                closeKeybord(ed_edittext, getActivity());
+                if (!ed_edittext.getText().toString().trim().isEmpty()) {
+                    currentPage = 1;
+                    searchVideo(ed_edittext.getText().toString().trim());
                 }
-                return false;
             }
         });
-
         srl_swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -250,12 +244,16 @@ public class SearchUserVideoFragment extends Fragment {
     }
 
     private void searchVideo(String str) {
-        HashMap<String, String> maps = new HashMap<>();
-        maps.put("key", str);
-        maps.put("page", currentPage + "");
-        okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_SEARCHVIDEO,
-                ((MyApplication) getActivity().getApplication()).getMaps(), maps, attentionPersonVideoCallback);
-        cicleprogress.showDialog();
+        if (str != null && !str.isEmpty()) {
+            HashMap<String, String> maps = new HashMap<>();
+            maps.put("key", str);
+            maps.put("page", currentPage + "");
+            okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_SEARCHVIDEO,
+                    ((MyApplication) getActivity().getApplication()).getMaps(), maps, attentionPersonVideoCallback);
+            cicleprogress.showDialog();
+        } else {
+            srl_swipeRefresh.setRefreshing(false);
+        }
     }
 
     //关闭软键盘

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +37,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private RecyclerView historymessage_Recycle;
     private HistoryMessageAdapter historyMessageAdatper;
     private EditText ed_edittext;
+    private TextView BtnSearch;
 
     @Override
     protected int getLayout() {
@@ -66,6 +66,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         like_title.setText("搜索");
         iv_back = (ImageView) findViewById(R.id.iv_back);
         ed_edittext = (EditText) findViewById(R.id.attention_edittext);
+        BtnSearch = findViewById(R.id.btn_search);
         ed_edittext.setCursorVisible(false);
         iv_back.setOnClickListener(this);
         historymessage_Recycle = (RecyclerView) findViewById(R.id.historymessage_recycleview);
@@ -78,32 +79,24 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 ed_edittext.setCursorVisible(true);
             }
         });
-        ed_edittext.setOnKeyListener(new View.OnKeyListener() {
-
+        BtnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                //这里注意要作判断处理，ActionDown、ActionUp都会回调到这里，不作处理的话就会调用两次
-                if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                    //处理事件
-                    if (!ed_edittext.getText().toString().trim().isEmpty()) {
-                        if (dbDatas.size() < 10) {
-                            String searchName = ed_edittext.getText().toString().trim();
-                            saveSearchBean(searchName);
-                        } else {
-                            SQLite.delete(UserModel.class).where(UserModel_Table.name.eq(dbDatas.get(9).getName())).execute();
-                            String searchName = ed_edittext.getText().toString().trim();
-                            saveSearchBean(searchName);
-                        }
-                        Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
-                        startActivity(intent);
-                        EventBus.getDefault().postSticky(MessageSearchinfo.getInstance(ed_edittext.getText().toString().trim()));
+            public void onClick(View view) {
+                if (!ed_edittext.getText().toString().trim().isEmpty()) {
+                    if (dbDatas.size() < 10) {
+                        String searchName = ed_edittext.getText().toString().trim();
+                        saveSearchBean(searchName);
+                    } else {
+                        SQLite.delete(UserModel.class).where(UserModel_Table.name.eq(dbDatas.get(9).getName())).execute();
+                        String searchName = ed_edittext.getText().toString().trim();
+                        saveSearchBean(searchName);
                     }
-                    return true;
+                    Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
+                    startActivity(intent);
+                    EventBus.getDefault().postSticky(MessageSearchinfo.getInstance(ed_edittext.getText().toString().trim()));
                 }
-                return false;
             }
         });
-
     }
 
     private void saveSearchBean(String searchName) {
