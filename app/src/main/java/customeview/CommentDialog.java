@@ -124,6 +124,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        closeKeybord(ed_comment,getActivity());
         EventBus.getDefault().unregister(this);
     }
 
@@ -303,7 +304,6 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                         maps.put("at_uid", "null");
                         url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
                     } else if (currentStatus == 1) {
-                        currentStatus = 0;
                         String commentcontents = ed_comment.getText().toString().trim();
                         String contents = commentcontents.substring(commentcontents.indexOf(":") + 1, commentcontents.length());
                         if (contents.isEmpty()) {
@@ -315,7 +315,6 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                         maps.put("at_uid", At_id);
                         url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHCOMMENT;
                     } else if (currentStatus == 2) {
-                        currentStatus = 0;
                         String commentcontents = ed_comment.getText().toString().trim();
                         String contents = commentcontents.substring(commentcontents.indexOf(":") + 1, commentcontents.length());
                         if (contents.isEmpty()) {
@@ -323,7 +322,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                             break;
                         }
                         maps.put("cid", "" + comentdatas.get(curposition).getId()); //;//"5995716959957168"
-                        maps.put("content", contents);
+                        maps.put("reply_content", contents);
                         //maps.put("at_uid","");
                         url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_REPLYCOMMENT;
                     }
@@ -342,21 +341,8 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                     Log.d(TAG, "onResponse: \n" + commentResult);
                                     Gson gson = new Gson();
                                     PublishComment publishComment = gson.fromJson(commentResult, PublishComment.class);
-                                    if (publishComment.getCode() == 0 && publishComment.getMessage().contains("成功评论")) {
-                                        Log.d(TAG, "onResponse-->comment:sucess ");
-//                                    VideoComment.DataBean.CommentListBean  commentListBean=new VideoComment.DataBean.CommentListBean();
-//                                    //commentListBean.setAvatar(publishComment.getData().getComment().getContent());
-//                                    commentListBean.setContent(publishComment.getData().getComment().getContent());
-//                                    commentListBean.setCommentTime(publishComment.getData().getComment().getCreateTime());
-//                                   comentdatas.add(commentListBean);
-//                                    ((Activity)context).runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            ed_comment.setText("");
-//                                            commentAdapter.notifyDataSetChanged();
-//                                            comment_recycleview.scrollToPosition(comentdatas.size()-1);
-//                                        }
-//                                    });
+                                    if (publishComment.getCode() == 0) {
+                                        currentStatus = 0;
                                         final HashMap<String, String> commentmaps = new HashMap<>();
                                         commentmaps.put("vid", homevideodatas.get(curposition).getVid());//"5995716959957168"
                                         oktHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_VIDEOCOMMENT,
@@ -414,14 +400,6 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                                 BaseUtils.getLoginDialog(context).show();
                                             }
                                         });
-                                    } else if (publishComment.getCode() == 400) {
-                                        ((Activity) context).runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                dismiss();
-                                                Toast.makeText(context, "发送失败", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
                                     }
                                 }
                             });
@@ -445,6 +423,8 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
             getActivity().getSupportFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(MessageEvent event) {

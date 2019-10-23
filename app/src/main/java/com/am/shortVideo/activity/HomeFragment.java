@@ -76,6 +76,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     HomeVideoImg homevideImg = (HomeVideoImg) msg.obj;
                     if (currentPage == 1) {
                         mAdapter.getData().clear();
+                        if (mCurPlayer != null) {
+                            mCurPlayer.getCurrentPlayer().release();
+                            mCurPlayer = null;
+                        }
                     }
                     if (homevideImg.getMessage().equals("成功")) {
                         //isCanPlay=true;
@@ -88,7 +92,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             mAdapter.addData(homevideImg.getData().getIndexList());
                             mAdapter.loadMoreComplete();
                         } else {
-                            mAdapter.loadMoreEnd();
+                            mAdapter.loadMoreEnd(true);
                         }
                         if (mCurPlayer == null) {
                             startPlay(0);
@@ -356,7 +360,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             View view = pagerSnapHelper.findSnapView(layoutManger);
             int position = layoutManger.getPosition(view);
             IndexListBean indexListBean = mAdapter.getData().get(position);
-            if (indexListBean.getVid().equals(commentCountEvent.vid)){
+            if (indexListBean.getVid().equals(commentCountEvent.vid)) {
                 indexListBean.setCommentCounts(commentCountEvent.count);
                 if (view != null) {
                     BaseViewHolder holder = (BaseViewHolder) mRvList.getChildViewHolder(view);
