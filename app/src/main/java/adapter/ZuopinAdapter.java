@@ -114,10 +114,12 @@ public class ZuopinAdapter extends BaseQuickAdapter<IndexListBean, BaseViewHolde
                 .setText(R.id.tv_likecount, item.getLikeCounts() + "")
                 .setText(R.id.tv_commentcount, item.getCommentCounts() + "")
                 .setText(R.id.tv_sharecount, item.getShareCounts() + "")
+                .setVisible(R.id.rl_location, item.getVideoPath() != null && !item.getVideoPath().isEmpty())
                 .setText(R.id.tv_foodname, item.getVideoDesc())
+                .setVisible(R.id.rl_bugfood, item.getGoodsName() != null && !item.getGoodsName().isEmpty())
                 .setText(R.id.tv_recommendfood, item.getGoodsName());
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
-        GlideUtils.showHeader(mContext,HttpUri.BASE_DOMAIN + item.getAvatar(),(ImageView) helper.getView(R.id.user_circleImage));
+        GlideUtils.showHeader(mContext, HttpUri.BASE_DOMAIN + item.getAvatar(), (ImageView) helper.getView(R.id.user_circleImage));
         if (item.getUid().equals(MyApplication.getInstance().getUseruid())) {
             helper.setVisible(R.id.user_attention, false);
         } else if (item.isFollowStatus()) {

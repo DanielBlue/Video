@@ -285,8 +285,8 @@ public class OtherUserInfoActivity extends BaseActivity implements View.OnClickL
             public void onItemClickListerner(int position) {
                 Intent intent = new Intent(OtherUserInfoActivity.this, ZuopinPlayingActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putInt("position", position);
                 bundle.putSerializable("datas", (Serializable) dates);
-                intent.putExtra("position", position);
                 intent.putExtra("currentPage", currentPage);
                 intent.putExtra("user_uid", dates.get(position).getUid());
                 intent.putExtra("homeVideoImg", bundle);

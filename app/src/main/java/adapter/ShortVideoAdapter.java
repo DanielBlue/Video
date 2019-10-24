@@ -69,6 +69,7 @@ public class ShortVideoAdapter extends BaseQuickAdapter<IndexListBean, BaseViewH
                 .setText(R.id.tv_commentcount, item.getCommentCounts() + "")
                 .setText(R.id.tv_sharecount, item.getShareCounts() + "")
                 .setText(R.id.tv_foodname, item.getVideoDesc())
+                .setVisible(R.id.rl_location, item.getVideoPath() != null && !item.getVideoPath().isEmpty())
                 .setVisible(R.id.rl_bugfood, item.getGoodsName() != null && !item.getGoodsName().isEmpty())
                 .setText(R.id.tv_recommendfood, item.getGoodsName());
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);

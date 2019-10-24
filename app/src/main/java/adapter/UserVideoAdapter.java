@@ -67,7 +67,7 @@ public class UserVideoAdapter extends MyAllBaseAdapter<IndexListBean, MyBaseView
                     Intent intent = new Intent(context, ZuopinPlayingActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("datas", (Serializable) dates);
-                    bundle.putSerializable("position", position);
+                    bundle.putInt("position", position);
                     bundle.putSerializable("videourl", dates.get(position));
                     bundle.putInt("type", 4);
                     intent.putExtra("homeVideoImg", bundle);

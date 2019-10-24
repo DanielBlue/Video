@@ -27,7 +27,6 @@ import com.am.shortVideo.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 import com.tiktokdemo.lky.tiktokdemo.Constant;
 
 import org.greenrobot.eventbus.EventBus;
@@ -144,7 +143,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                                     Intent intent = new Intent(getActivity(), ZuopinPlayingActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putSerializable("datas", (Serializable) mAdapter.getData());
-                                    bundle.putSerializable("position", position);
+                                    bundle.putInt("position", position);
                                     bundle.putSerializable("videourl", mAdapter.getData().get(position));
                                     bundle.putInt("type", 4);
                                     intent.putExtra("homeVideoImg", bundle);

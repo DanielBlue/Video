@@ -55,6 +55,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import util.BaseUtils;
 import util.HttpUri;
+import util.KeyboardUtils;
 import util.RecycleViewDivider;
 import util.SizeUtils;
 
@@ -123,9 +124,9 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        closeKeybord(ed_comment,getActivity());
         EventBus.getDefault().unregister(this);
+        super.onDestroyView();
+//        closeKeybord(ed_comment,getActivity());
     }
 
     @Override
@@ -190,7 +191,9 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                                     authorytReplayPosition = position;
                                                     ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
                                                     ed_comment.setSelection(ed_comment.getText().length());
-                                                    openKeybord(ed_comment, context);
+                                                    ed_comment.requestFocus();
+//                                                    openKeybord(ed_comment, context);
+                                                    KeyboardUtils.showSoftInput(ed_comment);
                                                 }
                                             });
                                             comment_recycleview.setAdapter(commentAdapter);
@@ -213,7 +216,9 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                                     authorytReplayPosition = position;
                                                     ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
                                                     ed_comment.setSelection(ed_comment.getText().length());
-                                                    openKeybord(ed_comment, context);
+                                                    ed_comment.requestFocus();
+//                                                    openKeybord(ed_comment, context);
+                                                    KeyboardUtils.showSoftInput(ed_comment);
                                                 }
                                             });
                                             comment_recycleview.setAdapter(commentAdapter);
@@ -287,7 +292,8 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         if (MyApplication.getInstance().getUserInfo() != null) {
             switch (v.getId()) {
                 case R.id.bt_sendcomment:
-                    closeKeybord(ed_comment, context);
+//                    closeKeybord(ed_comment, context);
+                    KeyboardUtils.hideSoftInput(ed_comment);
                     //String addData=ed_comment.getText().toString();
                     //comentdatas.add(addData);
                     //commentAdapter.notifyDataSetChanged();
@@ -321,7 +327,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                             Toast.makeText(context, "输入内容不能为空", Toast.LENGTH_SHORT).show();
                             break;
                         }
-                        maps.put("cid", "" + comentdatas.get(curposition).getId()); //;//"5995716959957168"
+                        maps.put("cid", "" + comentdatas.get(authorytReplayPosition).getId()); //;//"5995716959957168"
                         maps.put("reply_content", contents);
                         //maps.put("at_uid","");
                         url = HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_REPLYCOMMENT;
@@ -381,7 +387,9 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                                                             authorytReplayPosition = position;
                                                                             ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
                                                                             ed_comment.setSelection(ed_comment.getText().length());
-                                                                            openKeybord(ed_comment, context);
+                                                                            ed_comment.requestFocus();
+//                                                                            openKeybord(ed_comment, context);
+                                                                            KeyboardUtils.showSoftInput(ed_comment);
                                                                         }
                                                                     });
                                                                     comment_recycleview.setAdapter(commentAdapter);
@@ -405,10 +413,12 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                             });
                     break;
                 case R.id.et_comment:
-                    openKeybord(ed_comment, context);
+//                    openKeybord(ed_comment, context);
+                    KeyboardUtils.showSoftInput(ed_comment);
 
                     break;
                 case R.id.bt_commentcancel:
+                    KeyboardUtils.hideSoftInput(ed_comment);
                     dismiss();
                     break;
                 case R.id.bt_at:
@@ -437,7 +447,9 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                 At_id = uid;
                 ed_comment.setText("@" + nickname + ":");
                 ed_comment.setSelection(ed_comment.getText().length());
-                openKeybord(ed_comment, context);
+//                openKeybord(ed_comment, context);
+                KeyboardUtils.showSoftInput(ed_comment);
+
             }
         }
     }
