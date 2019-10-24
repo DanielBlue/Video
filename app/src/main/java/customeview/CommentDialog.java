@@ -186,14 +186,18 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                             commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
                                                 @Override
                                                 public void authorityReplayData(int position) {
-                                                    currentStatus = 2;
-                                                    isAtClick = false;
-                                                    authorytReplayPosition = position;
-                                                    ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
-                                                    ed_comment.setSelection(ed_comment.getText().length());
-                                                    ed_comment.requestFocus();
+                                                    if (comentdatas.get(position).getAuthorReply() == null) {
+                                                        currentStatus = 2;
+                                                        isAtClick = false;
+                                                        authorytReplayPosition = position;
+                                                        ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
+                                                        ed_comment.setSelection(ed_comment.getText().length());
+                                                        ed_comment.requestFocus();
 //                                                    openKeybord(ed_comment, context);
-                                                    KeyboardUtils.showSoftInput(ed_comment);
+                                                        KeyboardUtils.showSoftInput(ed_comment);
+                                                    } else {
+                                                        Toast.makeText(context, "该评论已回复", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
                                             });
                                             comment_recycleview.setAdapter(commentAdapter);
@@ -211,14 +215,18 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                             commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
                                                 @Override
                                                 public void authorityReplayData(int position) {
-                                                    currentStatus = 2;
-                                                    isAtClick = false;
-                                                    authorytReplayPosition = position;
-                                                    ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
-                                                    ed_comment.setSelection(ed_comment.getText().length());
-                                                    ed_comment.requestFocus();
+                                                    if (comentdatas.get(position).getAuthorReply() == null) {
+                                                        currentStatus = 2;
+                                                        isAtClick = false;
+                                                        authorytReplayPosition = position;
+                                                        ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
+                                                        ed_comment.setSelection(ed_comment.getText().length());
+                                                        ed_comment.requestFocus();
 //                                                    openKeybord(ed_comment, context);
-                                                    KeyboardUtils.showSoftInput(ed_comment);
+                                                        KeyboardUtils.showSoftInput(ed_comment);
+                                                    } else {
+                                                        Toast.makeText(context, "该评论已回复", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
                                             });
                                             comment_recycleview.setAdapter(commentAdapter);
@@ -382,14 +390,18 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                                                     commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
                                                                         @Override
                                                                         public void authorityReplayData(int position) {
-                                                                            currentStatus = 2;
-                                                                            isAtClick = false;
-                                                                            authorytReplayPosition = position;
-                                                                            ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
-                                                                            ed_comment.setSelection(ed_comment.getText().length());
-                                                                            ed_comment.requestFocus();
+                                                                            if (comentdatas.get(position).getAuthorReply()==null){
+                                                                                currentStatus = 2;
+                                                                                isAtClick = false;
+                                                                                authorytReplayPosition = position;
+                                                                                ed_comment.setText("回复" + comentdatas.get(position).getNickName() + ":");
+                                                                                ed_comment.setSelection(ed_comment.getText().length());
+                                                                                ed_comment.requestFocus();
 //                                                                            openKeybord(ed_comment, context);
-                                                                            KeyboardUtils.showSoftInput(ed_comment);
+                                                                                KeyboardUtils.showSoftInput(ed_comment);
+                                                                            }else {
+                                                                                Toast.makeText(context, "该评论已回复", Toast.LENGTH_SHORT).show();
+                                                                            }
                                                                         }
                                                                     });
                                                                     comment_recycleview.setAdapter(commentAdapter);
@@ -433,7 +445,6 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
             getActivity().getSupportFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
         }
     }
-
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
