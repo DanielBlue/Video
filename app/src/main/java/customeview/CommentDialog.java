@@ -153,7 +153,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         comment_recycleview.addItemDecoration(new RecycleViewDivider(context, LinearLayout.VERTICAL, 2, 0, 0, context.getResources().getColor(R.color.colorDarkGray)));
 
         bt_sendcomment.setOnClickListener(this);
-        ed_comment.setOnClickListener(this);
+//        ed_comment.setOnClickListener(this);
         bt_hidepop.setOnClickListener(this);
         bt_at.setOnClickListener(this);
 
@@ -424,11 +424,11 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                 }
                             });
                     break;
-                case R.id.et_comment:
-//                    openKeybord(ed_comment, context);
-                    KeyboardUtils.showSoftInput(ed_comment);
-
-                    break;
+//                case R.id.et_comment:
+////                    openKeybord(ed_comment, context);
+//                    KeyboardUtils.showSoftInput(ed_comment);
+//
+//                    break;
                 case R.id.bt_commentcancel:
                     KeyboardUtils.hideSoftInput(ed_comment);
                     dismiss();

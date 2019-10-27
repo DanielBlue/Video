@@ -127,7 +127,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         islogin = true;
                         bt_changpersoninfo.setText("登录");
                         bt_changpersoninfo.setBackground(getActivity().getResources().getDrawable(R.drawable.bg_round_da6464));
-                        me_recycleview.setAdapter(null);
+                        if (mAdapter != null) {
+                            mAdapter.replaceData(new ArrayList<IndexListBean>());
+                        }
                         me_recycleview2.setAdapter(null);
                     }
                     break;
@@ -170,6 +172,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         } else {
                             mAdapter.loadMoreEnd();
                         }
+                        me_recycleview.setVisibility(View.VISIBLE);
                     }
                     break;
                 case 3:
