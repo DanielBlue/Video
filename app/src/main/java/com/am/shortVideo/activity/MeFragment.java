@@ -32,6 +32,8 @@ import com.tiktokdemo.lky.tiktokdemo.Constant;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -153,6 +155,16 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                                     getActivity().startActivity(intent);
                                 }
                             });
+                            mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+                                @Override
+                                public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                                    switch (view.getId()) {
+                                        case R.id.btn_del:
+                                            deleteVideo(position);
+                                            break;
+                                    }
+                                }
+                            });
                             mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
                                 @Override
                                 public void onLoadMoreRequested() {
@@ -193,6 +205,37 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             }
         }
     };
+
+    /**
+     * 删除作品
+     */
+    private void deleteVideo(final int position) {
+        String vid = mAdapter.getData().get(position).getVid();
+        oktHttpUtil.setPostRequest(HttpUri.BASE_URL + "/api/video/delete/" + vid, new HashMap<String, String>(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    if (jsonObject.getInt("code") == 0) {
+                        mAdapter.remove(position);
+                        Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), jsonObject.getInt("message"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
     private String mUid;
 
     private void getVideoList() {

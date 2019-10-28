@@ -166,6 +166,10 @@ public class SearchUserVideoFragment extends Fragment {
                 if (!ed_edittext.getText().toString().trim().isEmpty()) {
                     currentPage = 1;
                     searchVideo(ed_edittext.getText().toString().trim());
+                } else {
+                    Toast.makeText(getActivity(), "关键词不能为空", Toast.LENGTH_SHORT).show();
+                    datas.clear();
+                    attentionPersonVideoAdapter.notifyDataSetChanged();
                 }
             }
         });

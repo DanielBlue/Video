@@ -28,6 +28,8 @@ public class MeVideoAdapter extends BaseQuickAdapter<IndexListBean, BaseViewHold
     protected void convert(BaseViewHolder helper, IndexListBean item) {
         Log.d(TAG, "onBindViewHolder:0 ");
         Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getCoverPath()).into((ImageView) helper.getView(R.id.iv_user_publishvideo));
-        helper.setText(R.id.tv_user_likecount, String.valueOf(item.getLikeCounts()));
+        helper.setText(R.id.tv_user_likecount, String.valueOf(item.getLikeCounts()))
+                .setVisible(R.id.btn_del, true)
+                .addOnClickListener(R.id.btn_del);
     }
 }

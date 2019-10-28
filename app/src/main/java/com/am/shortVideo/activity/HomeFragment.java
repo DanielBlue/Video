@@ -28,6 +28,7 @@ import com.am.shortVideo.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
+import com.shuyu.gsyvideoplayer.utils.NetworkUtils;
 import com.syd.oden.circleprogressdialog.core.CircleProgressDialog;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -75,7 +76,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 case 1:
                     HomeVideoImg homevideImg = (HomeVideoImg) msg.obj;
                     if (currentPage == 1) {
-                        mAdapter.getData().clear();
                         if (mCurPlayer != null) {
                             mCurPlayer.getCurrentPlayer().release();
                             mCurPlayer = null;
@@ -89,7 +89,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             home_swipeRefresh.setRefreshing(false);
                         }
                         if (homevideImg.getData().getIndexList().size() > 0) {
-                            mAdapter.addData(homevideImg.getData().getIndexList());
+                            if (currentPage == 1) {
+                                mAdapter.replaceData(homevideImg.getData().getIndexList());
+                                mRvList.scrollToPosition(0);
+                            } else {
+                                mAdapter.addData(homevideImg.getData().getIndexList());
+                            }
                             mAdapter.loadMoreComplete();
                         } else {
                             mAdapter.loadMoreEnd(true);
@@ -234,9 +239,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 switch (newState) {
                     case RecyclerView.SCROLL_STATE_IDLE://停止滑动
                         View view = pagerSnapHelper.findSnapView(layoutManger);
-                        int position = layoutManger.getPosition(view);
-                        if (position != mCurPosition) {
-                            startPlay(position);
+                        if (view!=null){
+                            int position = layoutManger.getPosition(view);
+                            if (position != mCurPosition) {
+                                startPlay(position);
+                            }
                         }
                         break;
                     case RecyclerView.SCROLL_STATE_DRAGGING://拖动
@@ -259,10 +266,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onRefresh() {
 //                okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_HOMEVIDEO, homevideoCallback);
-                currentPage = 1;
-                requestVideo();
+                refreshVideo();
             }
         });
+    }
+
+    public void refreshVideo() {
+        int netWorkType = NetworkUtils.getNetWorkType(MyApplication.mContext);
+        if (netWorkType != NetworkUtils.NETWORK_NO) {
+            home_swipeRefresh.setRefreshing(true);
+            currentPage = 1;
+            requestVideo();
+        }
     }
 
     public ShortVideoPlayer getCurPlayer() {

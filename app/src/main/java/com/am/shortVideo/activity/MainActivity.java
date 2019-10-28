@@ -269,6 +269,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case 0:
                 if (homeFragment != null) {
                     fragmentTran.show(homeFragment);
+                    if (curFragment == 0) {
+                        homeFragment.refreshVideo();
+                    }
                 } else {
                     homeFragment = new HomeFragment();
                     fragmentTran.add(R.id.fl_container, homeFragment);

@@ -173,6 +173,10 @@ public class SearchUserinfoFragment extends Fragment implements SliderView.Chang
                 if (!ed_edittext.getText().toString().trim().isEmpty()) {
                     currentPage = 1;
                     searchUser(ed_edittext.getText().toString().trim());
+                }else {
+                    Toast.makeText(getActivity(), "关键词不能为空", Toast.LENGTH_SHORT).show();
+                    datas.clear();
+                    searchUserinfoAdapter.notifyDataSetChanged();
                 }
             }
         });
