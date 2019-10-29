@@ -83,14 +83,18 @@ public class SearchUserVideoFragment extends Fragment {
                         srl_swipeRefresh.setRefreshing(false);
                     }
                     if (attentionPersonVidep.getCode() == 0) {
-                        currentPage++;
                         cicleprogress.dismiss();
                         if (attentionPersonVidep.getData().getIndexList() != null && !attentionPersonVidep.getData().getIndexList().isEmpty()) {
                             datas.addAll(attentionPersonVidep.getData().getIndexList());
                             attentionPersonVideoAdapter.notifyDataSetChanged();
                         } else {
-                            Toast.makeText(getActivity(), "没有搜索到相关视频", Toast.LENGTH_SHORT).show();
+                            if (currentPage == 1) {
+                                Toast.makeText(getActivity(), "没有搜索到相关视频", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "全部加载完毕", Toast.LENGTH_SHORT).show();
+                            }
                         }
+                        currentPage++;
                     } else if (attentionPersonVidep.getCode() == 1005) {
                         cicleprogress.dismiss();
                         BaseUtils.getLoginDialog(getActivity()).show();

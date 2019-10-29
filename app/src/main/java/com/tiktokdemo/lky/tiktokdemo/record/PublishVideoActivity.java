@@ -294,6 +294,13 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                     openAlertDialog(this);
                     return;
                 }
+
+                String message = ed_publishmessage.getText().toString().trim();
+                if (message.isEmpty()) {
+                    Toast.makeText(this, "描述不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (publishVideo()) {
                     HashMap<String, String> maps1 = new HashMap<>();
                     if (isSelectMusic) {
@@ -302,9 +309,9 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                         maps1.put("audioId", "null");
                     }
                     maps1.put("coverFile", Constant.DOWNBGM + File.separator + "audio.jpg");
-                    if (publishVideoInfo.getLocation()!=null){
+                    if (publishVideoInfo.getLocation() != null) {
                         maps1.put("location", publishVideoInfo.getLocation());
-                    }else {
+                    } else {
                         maps1.put("location", "");
                     }
                     if (ed_publishfoodid.getText().toString().trim().isEmpty()) {
@@ -317,11 +324,8 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                     } else {
                         maps1.put("uploadFile", Constant.RECORD_VIDEO_PATH_TEMP1 + File.separator + "shibo.mp4");
                     }
-                    if (ed_publishmessage.getText().toString().trim().isEmpty()) {
-                        maps1.put("videoDesc", "null");
-                    } else {
-                        maps1.put("videoDesc", ed_publishmessage.getText().toString().trim());
-                    }
+
+                    maps1.put("videoDesc", message);
 
                     maps1.put("videoDuration", publishVideoInfo.getVideoDuraion());
                     maps1.put("videoHeight", publishVideoInfo.getVideoheight());
