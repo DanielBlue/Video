@@ -211,7 +211,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      */
     private void deleteVideo(final int position) {
         String vid = mAdapter.getData().get(position).getVid();
-        oktHttpUtil.setPostRequest(HttpUri.BASE_URL + "/api/video/delete/" + vid, new HashMap<String, String>(), new Callback() {
+        oktHttpUtil.setPostRequest(HttpUri.BASE_URL + "/api/video/delete/" + vid, MyApplication.getInstance().getMaps(), new HashMap<String, String>(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -219,19 +219,23 @@ public class MeFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String result = response.body().string();
-                try {
-                    JSONObject jsonObject = new JSONObject(result);
-                    if (jsonObject.getInt("code") == 0) {
-                        mAdapter.remove(position);
-                        Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getActivity(), jsonObject.getInt("message"), Toast.LENGTH_SHORT).show();
+                final String result = response.body().string();
+                MyApplication.mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getInt("code") == 0) {
+                                mAdapter.remove(position);
+                                Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), jsonObject.getInt("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+                });
             }
         });
     }
