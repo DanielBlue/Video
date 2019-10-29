@@ -1013,7 +1013,7 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
             if (isSelectMusic) {
                 mMusicBean.setUrl(Constant.DOWNBGM + File.separator + playName + ".mp3");
 
-                showCutAudioLayout();
+//                showCutAudioLayout();
 
 //                mPresenter.cutAudio(Constant.DOWNBGM+File.separator+name+".mp3", 0, 200 * 1000000L, "cut_audio", new HomeCallBack() {
 //                    @Override
