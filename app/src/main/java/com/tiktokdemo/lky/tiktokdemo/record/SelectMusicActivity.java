@@ -1,10 +1,13 @@
 package com.tiktokdemo.lky.tiktokdemo.record;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,12 +23,13 @@ import com.google.gson.Gson;
 import com.tiktokdemo.lky.tiktokdemo.Constant;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import adapter.SelectMusicAdapter;
 import application.MyApplication;
 import bean.SelectMusicBean;
-import customeview.DownBGMPopupWindow;
 import http.OktHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -40,7 +44,7 @@ import util.StatusBarUtil;
  */
 
 public class SelectMusicActivity extends AppCompatActivity implements View.OnClickListener,
-        SelectMusicAdapter.SelectBgmStatus, DownBGMPopupWindow.DownBGMIsSucess {
+        SelectMusicAdapter.SelectBgmStatus{
     private TextView fans_title;
     private ImageView iv_back;
     private RecyclerView music_recycleview;
@@ -87,8 +91,9 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
             handler.sendMessage(message);
         }
     };
-    private DownBGMPopupWindow downbgmPopupWindow;
+    //    private DownBGMPopupWindow downbgmPopupWindow;
     private String curId;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,6 +113,11 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initView() {
+        progressDialog = new ProgressDialog(SelectMusicActivity.this);
+        progressDialog.setMessage("下载中...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+
         fans_title = (TextView) findViewById(R.id.bt_systemmessage);
         fans_title.setText("音乐列表");
         iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -145,7 +155,7 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
-    public void selectBgmExits(boolean isSlect, SelectMusicBean.DataBean.IndexListBean value, String curid) {
+    public void selectBgmExits(boolean isSlect, final SelectMusicBean.DataBean.IndexListBean value, String curid) {
         this.value = value;
         curId = curid;
         if (isSlect) {
@@ -154,21 +164,111 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
             onClick(iv_back);
         } else {
 //            Toast.makeText(this, "未下载歌曲,请下载", Toast.LENGTH_SHORT).show();
-            downbgmPopupWindow = new DownBGMPopupWindow(this, value);
-            downbgmPopupWindow.setDownStatusLinstener(this);
+//            downbgmPopupWindow = new DownBGMPopupWindow(this, value);
+//            downbgmPopupWindow.setDownStatusLinstener(this);
+
+            new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
+                    .setMessage(R.string.tv_downbgm)
+                    .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            OktHttpUtil.getInstance().downMusicFile(HttpUri.BASE_DOMAIN + value.getAudioUrl(), new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isSelectMusic = false;
+                                            Toast.makeText(SelectMusicActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    writeFile(response, value);
+                                }
+                            });
+                            dialog.dismiss();
+                            progressDialog.show();
+                        }
+                    })
+                    .show();
         }
     }
 
-    @Override
-    public void downisSucess(boolean isSucess) {
-        if (isSucess) {
-            isSelectMusic = true;
-            Toast.makeText(this, "下载成功", Toast.LENGTH_SHORT).show();
-        } else {
-            isSelectMusic = false;
-            Toast.makeText(this, "下载失败", Toast.LENGTH_SHORT).show();
-
+    private void writeFile(Response response, SelectMusicBean.DataBean.IndexListBean value) {
+        InputStream is = null;
+        FileOutputStream fos = null;
+        is = response.body().byteStream();
+        File file = new File(Constant.DOWNBGM, value.getName() + ".mp3");
+        try {
+            fos = new FileOutputStream(file);
+            byte[] bytes = new byte[1024];
+            int len = 0;
+            //获取下载的文件的大小
+            long fileSize = response.body().contentLength();
+            long sum = 0;
+            int porSize = 0;
+            while ((len = is.read(bytes)) != -1) {
+                fos.write(bytes);
+                sum += len;
+                porSize = (int) ((sum * 1.0f / fileSize) * 100);
+                Log.d("myTag", "writeFile: " + porSize);
+                if (porSize == 100) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            isSelectMusic = true;
+                            progressDialog.dismiss();
+                            Toast.makeText(SelectMusicActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        } catch (Exception e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    isSelectMusic = false;
+                    progressDialog.dismiss();
+                    Toast.makeText(SelectMusicActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
+        Log.i("myTag", "下载成功");
     }
+
+//    @Override
+//    public void downisSucess(boolean isSucess) {
+//        if (isSucess) {
+//            isSelectMusic = true;
+//            Toast.makeText(this, "下载成功", Toast.LENGTH_SHORT).show();
+//        } else {
+//            isSelectMusic = false;
+//            Toast.makeText(this, "下载失败", Toast.LENGTH_SHORT).show();
+//
+//        }
+//
+//    }
 }
