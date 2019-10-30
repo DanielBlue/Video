@@ -46,7 +46,7 @@ public class RecordVideoPresenter implements RecordVideoContract.Presenter {
     private RecordTimeType mRecordTimeType = RecordTimeType.RECORD_TIME_15;
     private final String SPEED_AUDIO_FILE_NAME = "SpeedAudioFile";
     private final int VIDEO_RECORD_MIN_TIME = 3000;
-//    public final int VIDEO_RECORD_MAX_TIME = 15000;
+    //    public final int VIDEO_RECORD_MAX_TIME = 15000;
     public final int VIDEO_RECORD_MAX_TIME_120 = 120000;
 
     private int mMaxRecordTime = 15000;
@@ -255,18 +255,19 @@ public class RecordVideoPresenter implements RecordVideoContract.Presenter {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            cutAudio(mMusicBean.getUrl(), 0, 15 * 1000000L, "cut_audio", new HomeCallBack() {
-                @Override
-                public void finish(Object obj) {//15s的音频文件生成成功
-                    mBGMPath = obj.toString();
-                    createSpeedAudioFiles();//开始创建各个不同的速率下的音频文件
-                }
-
-                @Override
-                public void error(String errorStr) {
-
-                }
-            });
+            mBGMPath = mMusicBean.getUrl();
+//            cutAudio(mMusicBean.getUrl(), 0, 15 * 1000000L, "cut_audio", new HomeCallBack() {
+//                @Override
+//                public void finish(Object obj) {//15s的音频文件生成成功
+//                    mBGMPath = obj.toString();
+////                    createSpeedAudioFiles();//开始创建各个不同的速率下的音频文件
+//                }
+//
+//                @Override
+//                public void error(String errorStr) {
+//
+//                }
+//            });
         }
     }
 
@@ -882,8 +883,9 @@ public class RecordVideoPresenter implements RecordVideoContract.Presenter {
                     pathFile.mkdirs();
                 }
                 HeyhouVideo heyhouVideo = new HeyhouVideo();
+//                mRecordTimeType != RecordTimeType.RECORD_TIME_15 ? 1.0d : (TextUtils.isEmpty(mBGMPath) ? 0.5d : 0d), 0.5d,、
                 heyhouVideo.combine(mRecordVideoInfos, (mBGMPath == null || mRecordTimeType != RecordTimeType.RECORD_TIME_15) ? "" : mBGMPath,
-                        mRecordTimeType != RecordTimeType.RECORD_TIME_15 ? 1.0d : (TextUtils.isEmpty(mBGMPath) ? 0.5d : 0d), 0.5d,
+                        0d, 1d,
                         Constant.RECORD_VIDEO_PATH_TEMP + File.separator + "shibo" + ".mp4", new VideoListener() {
 
                             @Override

@@ -69,7 +69,8 @@
     <string name="tv_emptycommnet">还没有评论消息哦</string>
     <string name="tv_emptyfans">还没有粉丝哦</string>
     <string name="tv_logincontent">未登录，请先登录！</string>
-    <string name="tv_downbgm">未下载该歌曲，是否下载！</string>
+    <!--<string name="tv_downbgm">未下载该歌曲，是否下载！</string>-->
+    <string name="tv_downbgm">即将开始下载该歌曲</string>
     <string name="me_editorinfo">编辑资料</string>
     <string name="me_personaltitle">个性签名：</string>
     <string name="me_zantitle">获赞</string>

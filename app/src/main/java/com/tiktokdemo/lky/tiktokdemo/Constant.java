@@ -24,6 +24,6 @@ public class Constant {
     public static final String CUT_AUDIO_CACHE_PATH = PIC_FILE + File.separator + "cut";
     public static final String RECORD_CROP_PHOTO_CACHE_PATH = DIC_FILE + File.separator + "record_crop";
     public static final String RECORD_VIDEO_TEMP_PATH = PIC_FILE + File.separator + "record_video_temp";
-    public static final String SPEED_AUDIO_CACHE_PATH = DIC_FILE + File.separator + "speed_audio";
+    public static final String SPEED_AUDIO_CACHE_PATH = PIC_FILE + File.separator + "speed_audio";
     public static final String DOWNBGM = PIC_FILE + File.separator + "audio";
 }

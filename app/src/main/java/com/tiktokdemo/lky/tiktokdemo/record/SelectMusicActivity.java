@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import com.am.shortVideo.R;
 import com.google.gson.Gson;
+import com.tiktokdemo.lky.tiktokdemo.Constant;
 
+import java.io.File;
 import java.io.IOException;
 
 import adapter.SelectMusicAdapter;
@@ -31,6 +33,7 @@ import okhttp3.Response;
 import util.BaseUtils;
 import util.HttpUri;
 import util.RecycleViewDivider;
+import util.StatusBarUtil;
 
 /**
  * Created by 李杰 on 2019/9/13.
@@ -92,6 +95,15 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.selectmusic_layout);
         okHttpUtil = OktHttpUtil.getInstance();
+        //当FitsSystemWindows设置 true 时，会在屏幕最上方预留出状态栏高度的 padding
+        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+        //设置状态栏透明
+        StatusBarUtil.setTranslucentStatus(this);
+        if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
+            //如果不支持设置深色风格 为了兼容总不能让状态栏白白的看不清, 于是设置一个状态栏颜色为半透明,
+            //这样半透明+白=灰, 状态栏的文字能看得清
+            StatusBarUtil.setStatusBarColor(this, 0x55000000);
+        }
         initView();
     }
 
@@ -106,6 +118,14 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
         music_recycleview.addItemDecoration(new RecycleViewDivider(this, LinearLayout.VERTICAL, 2, 0, 0, getResources().getColor(R.color.gray_normal)));
         okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.BGM.REQUEST_HEADER_BGM,
                 ((MyApplication) getApplicationContext()).getMaps(), selectMusicCallBack);
+        File file = new File(Constant.DOWNBGM);
+        if (file.exists()) {
+            for (File childFile : file.listFiles()) {
+                if (childFile.isFile()) {
+                    childFile.delete();
+                }
+            }
+        }
     }
 
     @Override
@@ -133,7 +153,7 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
             Toast.makeText(this, "选择成功", Toast.LENGTH_SHORT).show();
             onClick(iv_back);
         } else {
-            Toast.makeText(this, "未下载歌曲,请下载", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "未下载歌曲,请下载", Toast.LENGTH_SHORT).show();
             downbgmPopupWindow = new DownBGMPopupWindow(this, value);
             downbgmPopupWindow.setDownStatusLinstener(this);
         }
