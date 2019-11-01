@@ -1,13 +1,11 @@
 package com.tiktokdemo.lky.tiktokdemo.record;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -114,7 +112,7 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
 
     private void initView() {
         progressDialog = new ProgressDialog(SelectMusicActivity.this);
-        progressDialog.setMessage("下载中...");
+        progressDialog.setMessage("加载中...");
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
 
@@ -167,41 +165,43 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
 //            downbgmPopupWindow = new DownBGMPopupWindow(this, value);
 //            downbgmPopupWindow.setDownStatusLinstener(this);
 
-            new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
-                    .setMessage(R.string.tv_downbgm)
-                    .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
+//            new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
+//                    .setMessage(R.string.tv_downbgm)
+//                    .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                        }
+//                    })
+//                    .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .show();
+
+            OktHttpUtil.getInstance().downMusicFile(HttpUri.BASE_DOMAIN + value.getAudioUrl(), new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
+                        public void run() {
+                            isSelectMusic = false;
+                            Toast.makeText(SelectMusicActivity.this, "加载失败，请重试", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                         }
-                    })
-                    .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
+                    });
+                }
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            OktHttpUtil.getInstance().downMusicFile(HttpUri.BASE_DOMAIN + value.getAudioUrl(), new Callback() {
-                                @Override
-                                public void onFailure(Call call, IOException e) {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            isSelectMusic = false;
-                                            Toast.makeText(SelectMusicActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
-                                            progressDialog.dismiss();
-                                        }
-                                    });
-                                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    writeFile(response, value);
+                }
+            });
 
-                                @Override
-                                public void onResponse(Call call, Response response) throws IOException {
-                                    writeFile(response, value);
-                                }
-                            });
-                            dialog.dismiss();
-                            progressDialog.show();
-                        }
-                    })
-                    .show();
+            progressDialog.show();
         }
     }
 
@@ -229,7 +229,8 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
                         public void run() {
                             isSelectMusic = true;
                             progressDialog.dismiss();
-                            Toast.makeText(SelectMusicActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+                            onClick(iv_back);
+                            Toast.makeText(SelectMusicActivity.this, "选择成功", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -240,7 +241,7 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
                 public void run() {
                     isSelectMusic = false;
                     progressDialog.dismiss();
-                    Toast.makeText(SelectMusicActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SelectMusicActivity.this, "加载失败请重试", Toast.LENGTH_SHORT).show();
                 }
             });
             e.printStackTrace();
@@ -256,7 +257,6 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
                 e.printStackTrace();
             }
         }
-        Log.i("myTag", "下载成功");
     }
 
 //    @Override

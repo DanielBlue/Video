@@ -352,6 +352,10 @@ public class RecordVideoPresenter implements RecordVideoContract.Presenter {
         }
     }
 
+    public void setmBGMPath(String mBGMPath) {
+        this.mBGMPath = mBGMPath;
+    }
+
     /**
      * 重置裁剪的音乐
      *
@@ -884,8 +888,8 @@ public class RecordVideoPresenter implements RecordVideoContract.Presenter {
                 }
                 HeyhouVideo heyhouVideo = new HeyhouVideo();
 //                mRecordTimeType != RecordTimeType.RECORD_TIME_15 ? 1.0d : (TextUtils.isEmpty(mBGMPath) ? 0.5d : 0d), 0.5d,、
-                heyhouVideo.combine(mRecordVideoInfos, (mBGMPath == null || mRecordTimeType != RecordTimeType.RECORD_TIME_15) ? "" : mBGMPath,
-                        0d, 1d,
+                heyhouVideo.combine(mRecordVideoInfos, mBGMPath,
+                        TextUtils.isEmpty(mBGMPath) ? 1d : 0d, TextUtils.isEmpty(mBGMPath) ? 0d : 1d,
                         Constant.RECORD_VIDEO_PATH_TEMP + File.separator + "shibo" + ".mp4", new VideoListener() {
 
                             @Override

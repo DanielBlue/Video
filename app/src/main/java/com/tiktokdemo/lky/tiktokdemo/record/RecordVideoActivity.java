@@ -3,11 +3,13 @@ package com.tiktokdemo.lky.tiktokdemo.record;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -162,7 +164,7 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
     protected void onStart() {
         super.onStart();
         isWindowGone = false;
-        mPresenter.checkBGMPathUpdata();
+//        mPresenter.checkBGMPathUpdata();
         try {
             //mPresenter.startCutAudioPlay();
         } catch (Exception e) {
@@ -493,8 +495,24 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
                     if (mPresenter.isRecording()) {
                         mCircleRecordView.cancelTouch();
                     }
-                    mPresenter.combineVideo();
+                    new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
+                            .setMessage("是否选择背景音乐")
+                            .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mPresenter.combineVideo();
+                                }
+                            })
+                            .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
 
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    isDown = false;
+                                    Intent intent = new Intent(RecordVideoActivity.this, SelectMusicActivity.class);
+                                    startActivityForResult(intent, 1);
+                                }
+                            })
+                            .show();
                 }
                 break;
             case R.id.tidal_pat_record_video_cut_music_img://剪音乐
@@ -503,9 +521,10 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
 //                    return ;
 //                }
 //                showCutAudioLayout();
-                isDown = false;
-                Intent intent = new Intent(this, SelectMusicActivity.class);
-                startActivityForResult(intent, 1);
+
+//                isDown = false;
+//                Intent intent = new Intent(this, SelectMusicActivity.class);
+//                startActivityForResult(intent, 1);
                 break;
             case R.id.tidal_pat_record_video_beauty_img://美颜
                 mPresenter.changeBeautyOpen();
@@ -1012,6 +1031,7 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
             Log.d("jiejie", "isSelectMusic:\t " + isSelectMusic + "name:\t" + playName);
             if (isSelectMusic) {
                 mMusicBean.setUrl(Constant.DOWNBGM + File.separator + playName + ".mp3");
+                mPresenter.setmBGMPath(mMusicBean.getUrl());
 
 //                showCutAudioLayout();
 
@@ -1030,6 +1050,8 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
                 //mPresenter.combineVideo(0,7, Constant.DOWNBGM+ File.separator+name+".wav");
                 // Toast.makeText(this,"视频音乐合成中...",Toast.LENGTH_SHORT).show();
             }
+            mPresenter.combineVideo();
+
         }
     }
 

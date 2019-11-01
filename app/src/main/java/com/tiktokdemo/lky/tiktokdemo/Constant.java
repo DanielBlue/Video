@@ -17,7 +17,7 @@ public class Constant {
 
     public static final String RECORD_AUDIO_CACHE_PATH_TEMP = DIC_FILE + File.separator + "record_audio_cache";
     public static final String IMAGE_SAVE_PATH = PIC_FILE + File.separator + "image";
-    public static final String RECORD_VIDEO_PATH_TEMP = DIC_FILE + File.separator + "record_video";
+    public static final String RECORD_VIDEO_PATH_TEMP = PIC_FILE + File.separator + "record_video";
 //    public static final String RECORD_VIDEO_PATH_TEMP = PIC_FILE + File.separator + "record_video1";
     public static final String RECORD_VIDEO_PATH_TEMP1 = PIC_FILE + File.separator + "record_video1";
     public static final String RECORD_VIDEO_PATH = PIC_FILE + File.separator + "record_video";
