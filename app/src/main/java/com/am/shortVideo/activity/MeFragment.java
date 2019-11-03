@@ -184,7 +184,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         } else {
                             mAdapter.loadMoreEnd();
                         }
-                        me_recycleview.setVisibility(View.VISIBLE);
+                        if (curSelect == 0) {
+                            me_recycleview.setVisibility(View.VISIBLE);
+                        }
                     }
                     break;
                 case 3:
@@ -376,7 +378,11 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onRefresh() {
                 if (curSelect == 0) {
-                    initData();
+                    if (MyApplication.getInstance().getUserInfo() != null) {
+                        initData();
+                    } else {
+                        me_swiprefreshlayout.setRefreshing(false);
+                    }
                 } else {
                     getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
                 }

@@ -29,7 +29,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -72,7 +71,7 @@ import util.StatusBarUtil;
  * Created by 李杰 on 2019/9/13.
  */
 
-public class PublishVideoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, View.OnKeyListener {
+public class PublishVideoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher{
     private static final String TAG = "PublishVideoActivity";
     private ImageView personinfo_back;
     private Button personinfo_save;
@@ -224,8 +223,6 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
         personinfo_save.setOnClickListener(this);
         personinfo_back.setOnClickListener(this);
         ed_publishmessage.addTextChangedListener(this);
-        ed_publishfoodid.setOnKeyListener(this);
-        ed_publishfoodid.setOnKeyListener(this);
         bt_publishVideo.setOnClickListener(this);
         rl_editext.setOnClickListener(this);
         getVideoInfo(mTidalPatRecordDraftBean.getVideoLocalUrl());
@@ -284,7 +281,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                 openKeybord(ed_publishmessage, this);
                 break;
             case R.id.personinfo_back:
-                finish();
+                onBackPressed();
                 break;
             case R.id.personinfo_save:
                 saveVideo(mTidalPatRecordDraftBean);
@@ -505,25 +502,6 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
                 InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-    }
-
-    //关闭软键盘
-    public static void closeKeybord(EditText mEditText, Context mContext) {
-        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
-    }
-
-    @Override
-    public boolean onKey(View view, int keyCode, KeyEvent event) {
-        if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-            if (view.getId() == R.id.ed_inputthinking) {
-                closeKeybord(ed_publishmessage, this);
-            } else if (view.getId() == R.id.ed_inputfoodid) {
-                closeKeybord(ed_publishfoodid, this);
-            }
-            return true;
-        }
-        return false;
     }
 
     public void openGPS(Context context) {

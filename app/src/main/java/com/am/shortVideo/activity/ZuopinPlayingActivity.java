@@ -287,6 +287,7 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
     private void initView() {
         iv_back = (ImageView) findViewById(R.id.personinfo_back);
         mRvList = (RecyclerView) findViewById(R.id.recyle_view);
+        findViewById(R.id.personinfo_save).setVisibility(View.INVISIBLE);
 //        drawLayout=(DrawerLayout)findViewById(R.id.ac_drawlayout);
 //          rl_menu=(RelativeLayout)findViewById(R.id.rl);
 //          bt_menu=(Button)findViewById(R.id.bt_menu);
@@ -327,7 +328,7 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
                 }
                 break;
             case R.id.personinfo_back:
-                finish();
+                onBackPressed();
                 break;
 //            case R.id.bt_comment:
 //               new CommentPopupWindow(this);

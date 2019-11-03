@@ -457,12 +457,9 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
                             }
                             RecordVideoActivity.this.finish();
                             break;
-                        case 1:
-                            mPresenter.resetRecord();
-                            break;
                     }
                 }
-            }, getString(R.string.tidal_pat_record_delete_video_out), getString(R.string.tidal_pat_record_reset));
+            }, getString(R.string.tidal_pat_record_delete_video_out));
         } else {
             finish();
         }
