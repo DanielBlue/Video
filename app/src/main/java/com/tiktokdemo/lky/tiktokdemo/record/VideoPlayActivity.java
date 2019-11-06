@@ -5,9 +5,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -67,7 +69,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     private View mCutAudioScaleLayout;
     private View mCutAudioLayout;
     private ScaleRoundRectView mCutAudioScaleRoundRectView;
-    private TextView mCutAudioCurrentTxt,mCutAudioMaxTxt;
+    private TextView mCutAudioCurrentTxt, mCutAudioMaxTxt;
     private View mVolumeLayout;
     private TidalPatAdjustSeekBar mOriginalSeekBar;
     private TidalPatAdjustSeekBar mBackgroundSeekBar;
@@ -103,19 +105,19 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         setContentView(R.layout.activity_tidal_pat_record_upload);
         setStatusBar();
         mUploadFilePath = getIntent().getStringExtra("mUploadFilePath");
-        isFromEdit = getIntent().getBooleanExtra("isFromEdit",false);
-        isFromCrop = getIntent().getBooleanExtra("isFromCrop",false);
-        isSelectMusic = getIntent().getBooleanExtra("isSelectMusic",false);
-       if(isSelectMusic){
-           curAudio =getIntent().getStringExtra("AudioId" );
-           playName=getIntent().getStringExtra("Name");
-       }
-        mMusicBean = (MusicBean) getIntent().getSerializableExtra("MusicBean");
+        isFromEdit = getIntent().getBooleanExtra("isFromEdit", false);
+        isFromCrop = getIntent().getBooleanExtra("isFromCrop", false);
+//        isSelectMusic = getIntent().getBooleanExtra("isSelectMusic", false);
+//        if (isSelectMusic) {
+//            curAudio = getIntent().getStringExtra("AudioId");
+//            playName = getIntent().getStringExtra("Name");
+//        }
+//        mMusicBean = (MusicBean) getIntent().getSerializableExtra("MusicBean");
         mTidalPatRecordDraftBean = (TidalPatRecordDraftBean) getIntent().getSerializableExtra("mTidalPatRecordDraftBean");
 
         mLoadingView = findViewById(R.id.personal_show_record_video_loading_layout);
-        personinfo_back=(ImageView)findViewById(R.id.personinfo_back);
-        personinfo_save=(Button)findViewById(R.id.personinfo_save);
+        personinfo_back = (ImageView) findViewById(R.id.personinfo_back);
+        personinfo_save = (Button) findViewById(R.id.personinfo_save);
         personinfo_save.setText("下一步");
         personinfo_save.setOnClickListener(this);
         personinfo_back.setOnClickListener(this);
@@ -123,18 +125,18 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         Animation set = AnimationUtils.loadAnimation(this, R.anim.anim_center_rotate);
         set.setInterpolator(new LinearInterpolator());
         (findViewById(R.id.personal_show_loading_img)).startAnimation(set);
-        if(mTidalPatRecordDraftBean == null){
+        if (mTidalPatRecordDraftBean == null) {
             mTidalPatRecordDraftBean = new TidalPatRecordDraftBean();
             mTidalPatRecordDraftBean.setVideoLocalUrl(mUploadFilePath);
-        }else{
-            if(!isFromEdit){
+        } else {
+            if (!isFromEdit) {
                 isDraft = true;
-            }else{
+            } else {
                 mTidalPatRecordDraftBean.setSpecialEffectsParentType(SpecialEffectsParentType.FILTER);
                 mTidalPatRecordDraftBean.setSpecialEffectsType(null);
                 mTidalPatRecordDraftBean.setSpecialEffectsFiltersFromList(new ArrayList<SpecialEffectsProgressBean>());
             }
-            if(mMusicBean == null){
+            if (mMusicBean == null) {
                 mMusicBean = new MusicBean();
             }
             mMusicBean.setUrl(mTidalPatRecordDraftBean.getMusicLocalUrl());
@@ -144,24 +146,24 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
             mUploadFilePath = mTidalPatRecordDraftBean.getVideoLocalUrl();
             mLocalFilePaths = mTidalPatRecordDraftBean.getVideoLocalArrayFromList();
         }
-        if(mMusicBean != null){
+        if (mMusicBean != null) {
             mTidalPatRecordDraftBean.setMusicCover(mMusicBean.getCover());
             mTidalPatRecordDraftBean.setMusicId(mMusicBean.getMusicId());
             mTidalPatRecordDraftBean.setMusicName(mMusicBean.getName());
             mTidalPatRecordDraftBean.setMusicLocalUrl(mMusicBean.getUrl());
         }
 
-        if(TextUtils.isEmpty(mUploadFilePath)){
-            ToastTool.showShort(this,R.string.home_data_error);
+        if (TextUtils.isEmpty(mUploadFilePath)) {
+            ToastTool.showShort(this, R.string.home_data_error);
             finish();
-            return ;
+            return;
         }
-        if(!new File(mUploadFilePath).exists()){
-            ToastTool.showShort(this,R.string.tidal_detail_upload_video_not_find);
+        if (!new File(mUploadFilePath).exists()) {
+            ToastTool.showShort(this, R.string.tidal_detail_upload_video_not_find);
             finish();
-            return ;
+            return;
         }
-        mPresenter = new VideoPlayPresenter(this,mTidalPatRecordDraftBean,mMusicBean);
+        mPresenter = new VideoPlayPresenter(this, mTidalPatRecordDraftBean, mMusicBean);
         initView();
     }
 
@@ -194,18 +196,18 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         mVolumeLayout.setOnClickListener(this);
         mOriginalSeekBar = (TidalPatAdjustSeekBar) findViewById(R.id.tidal_pat_record_volume_original_sound_seek_bar);
         mBackgroundSeekBar = (TidalPatAdjustSeekBar) findViewById(R.id.tidal_pat_record_volume_background_music_seek_bar);
-        if(mMusicBean != null && mMusicBean.getMusicId() != 0){
-            mOriginalSeekBar.setDefaultProgress(isDraft?mTidalPatRecordDraftBean.getOriginalVolume():0f);
-        }else{
-            mOriginalSeekBar.setDefaultProgress(isDraft?mTidalPatRecordDraftBean.getOriginalVolume():50f);
+        if (mMusicBean != null && mMusicBean.getMusicId() != 0) {
+            mOriginalSeekBar.setDefaultProgress(isDraft ? mTidalPatRecordDraftBean.getOriginalVolume() : 0f);
+        } else {
+            mOriginalSeekBar.setDefaultProgress(isDraft ? mTidalPatRecordDraftBean.getOriginalVolume() : 50f);
         }
-        mBackgroundSeekBar.setDefaultProgress(isDraft?mTidalPatRecordDraftBean.getBackgroundVolume():50f);
+        mBackgroundSeekBar.setDefaultProgress(isDraft ? mTidalPatRecordDraftBean.getBackgroundVolume() : 50f);
         mOriginalSeekBar.setOnAdjustSeekBarScrollListener(mOnAdjustSeekBarOriginalListener);
         mBackgroundSeekBar.setOnAdjustSeekBarScrollListener(mOnAdjustSeekBarBackgroundListener);
         findViewById(R.id.tidal_pat_record_cut_audio_confirm_img).setOnClickListener(this);
         findViewById(R.id.tidal_pat_upload_video_volume_img).setOnClickListener(this);
         ImageView volumeImg = (ImageView) findViewById(R.id.tidal_pat_upload_video_volume_img);
-        volumeImg.setImageResource(mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15?R.mipmap.btn_volume_pre:R.mipmap.chaopai_yinliang);
+        volumeImg.setImageResource(mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15 ? R.mipmap.btn_volume_pre : R.mipmap.chaopai_yinliang);
         volumeImg.setOnClickListener(this);
         mCutMusicImg.setOnClickListener(this);
         findViewById(R.id.tidal_pat_record_voice_complete_btn).setOnClickListener(this);
@@ -218,9 +220,9 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         mCutMusicImg.setImageResource((mMusicBean == null || mTidalPatRecordDraftBean == null
                 || TextUtils.isEmpty(mMusicBean.getUrl()) || TextUtils.isEmpty(mTidalPatRecordDraftBean.getMusicLocalUrl()))
                 || mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15
-                ?R.mipmap.btn_cut_dis:R.mipmap.chaopai_luzhi_jianyinyue);
+                ? R.mipmap.btn_cut_dis : R.mipmap.chaopai_luzhi_jianyinyue);
         ImageView specialEffectsImg = (ImageView) findViewById(R.id.tidal_pat_upload_video_special_effects_img);
-        specialEffectsImg.setImageResource(mTidalPatRecordDraftBean.getRecordTimeType() == RecordTimeType.RECORD_TIME_15?R.mipmap.chaopai_teixao:R.mipmap.chaopai_teixao_nor);
+        specialEffectsImg.setImageResource(mTidalPatRecordDraftBean.getRecordTimeType() == RecordTimeType.RECORD_TIME_15 ? R.mipmap.chaopai_teixao : R.mipmap.chaopai_teixao_nor);
         specialEffectsImg.setOnClickListener(this);
 
         initSpecialEffectsView();
@@ -238,7 +240,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         @Override
         public void onEventUp(int progress) {
             mTidalPatRecordDraftBean.setOriginalVolume(progress);
-            mPresenter.combineVideo(mOriginalSeekBar.getProgress()/mOriginalSeekBar.getMax(),mBackgroundSeekBar.getProgress()/mBackgroundSeekBar.getMax());
+            mPresenter.combineVideo(mOriginalSeekBar.getProgress() / mOriginalSeekBar.getMax(), mBackgroundSeekBar.getProgress() / mBackgroundSeekBar.getMax());
         }
 
         @Override
@@ -259,7 +261,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         @Override
         public void onEventUp(int progress) {
             mTidalPatRecordDraftBean.setBackgroundVolume(progress);
-            mPresenter.combineVideo(mOriginalSeekBar.getProgress()/mOriginalSeekBar.getMax(),mBackgroundSeekBar.getProgress()/mBackgroundSeekBar.getMax());
+            mPresenter.combineVideo(mOriginalSeekBar.getProgress() / mOriginalSeekBar.getMax(), mBackgroundSeekBar.getProgress() / mBackgroundSeekBar.getMax());
         }
 
         @Override
@@ -273,12 +275,12 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     private ScaleRoundRectView.OnDragListener mOnDragListener = new ScaleRoundRectView.OnDragListener() {
         @Override
         public void onPositionChange(int position) {
-            mCutAudioCurrentTxt.setText(StringUtil.generateTimeFromSymbol(position*1000L));
+            mCutAudioCurrentTxt.setText(StringUtil.generateTimeFromSymbol(position * 1000L));
         }
 
         @Override
         public void onChangeUp(float position) {
-            if(mTidalPatRecordDraftBean != null){
+            if (mTidalPatRecordDraftBean != null) {
                 mTidalPatRecordDraftBean.setCutMusicPosition((long) (position * 1000000L));
             }
             mPresenter.changeCutAudio(position);
@@ -289,18 +291,18 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     protected void onStop() {
         super.onStop();
         isActivityStop = true;
-        if(mCutAudioLayout.getVisibility() == View.VISIBLE){
+        if (mCutAudioLayout.getVisibility() == View.VISIBLE) {
             mCutAudioLayout.setVisibility(View.GONE);
             mParentUploadLayout.setVisibility(View.VISIBLE);
         }
-        if(mVolumeLayout.getVisibility() == View.VISIBLE){
+        if (mVolumeLayout.getVisibility() == View.VISIBLE) {
             mVolumeLayout.setVisibility(View.GONE);
             mParentUploadLayout.setVisibility(View.VISIBLE);
         }
-        try{
+        try {
             mVideoPlayView.pause();
             mPresenter.pausePlayer();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -310,32 +312,33 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         super.onStart();
         isActivityStop = false;
         mPresenter.checkBGMPathUpdata();
-        try{
-            if(!isSpecialEffectsEditMode){
+        try {
+            if (!isSpecialEffectsEditMode) {
                 mVideoPlayView.play();
-            }else{
+            } else {
                 mVideoPlayView.play();
                 mPlayHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mVideoPlayView.pause();
                     }
-                },20);
+                }, 20);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * 保存后返回mainActivity并释放资源
+     *
      * @param isJumpHome
      */
-    public void clearCacheDataAndStartMainActivity(boolean isJumpHome){
-        try{
+    public void clearCacheDataAndStartMainActivity(boolean isJumpHome) {
+        try {
             mVideoPlayView.stop();
             mVideoPlayView.destroyRender();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         SpecialEffectsPlayManager.stopPlay();
@@ -345,59 +348,58 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     }
 
 
-
     @Override
     public void onBackPressed() {
-        if(mPresenter.isCombining() || mPresenter.isAudioCuting() || mLoadingView.getVisibility() == View.VISIBLE){
-            return ;
+        if (mPresenter.isCombining() || mPresenter.isAudioCuting() || mLoadingView.getVisibility() == View.VISIBLE) {
+            return;
         }
-        if(isSpecialEffectsEditMode){
+        if (isSpecialEffectsEditMode) {
             outSpecialEffectsMode(false);
-            return ;
+            return;
         }
-        if(mCutAudioLayout.getVisibility() == View.VISIBLE){
+        if (mCutAudioLayout.getVisibility() == View.VISIBLE) {
             hideCutAudioLayout();
-            return ;
+            return;
         }
-        if(mVolumeLayout.getVisibility() == View.VISIBLE){
+        if (mVolumeLayout.getVisibility() == View.VISIBLE) {
             hideVolumeLayout();
-            return ;
+            return;
         }
-        if(!isDraft){
-            if(mTidalPatRecordDraftBean.isHasSpecialEffects()){
-                        FileUtils.deleteFile(mUploadFilePath);
-                        finish();
-            }else{
+        if (!isDraft) {
+            if (mTidalPatRecordDraftBean.isHasSpecialEffects()) {
+                FileUtils.deleteFile(mUploadFilePath);
+                finish();
+            } else {
                 finish();
             }
 
-        }else if(isFromCrop){
-                    FileUtils.deleteFile(mUploadFilePath);
-                    finish();
-        } else{
-                    finish();
+        } else if (isFromCrop) {
+            FileUtils.deleteFile(mUploadFilePath);
+            finish();
+        } else {
+            finish();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try{
+        try {
             mVideoPlayView.stop();
             mVideoPlayView.destroyRender();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         SpecialEffectsPlayManager.stopPlay();
-        clearSpecialEffectsAndOut(false,false);
+        clearSpecialEffectsAndOut(false, false);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tidal_pat_record_voice_complete_btn://完成
                 mTidalPatRecordDraftBean.setCreateTime(Calendar.getInstance().getTimeInMillis());
-                if(mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15){
+                if (mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15) {
                     mTidalPatRecordDraftBean.setMusicCover("");
                     mTidalPatRecordDraftBean.setMusicLocalUrl("");
                     mTidalPatRecordDraftBean.setMusicName("");
@@ -418,19 +420,19 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 //                    return ;
 //                }
 //                showCutAudioLayout();
-                   // mPresenter.combineVideo(7,1,Constant.SONG1);
-                Intent intent=new Intent(this,SelectMusicActivity.class);
-                startActivityForResult(intent,1);
+                // mPresenter.combineVideo(7,1,Constant.SONG1);
+                Intent intent = new Intent(this, SelectMusicActivity.class);
+                startActivityForResult(intent, 1);
                 break;
             case R.id.tidal_pat_record_cut_audio_confirm_img://剪音乐完成
-                if(mPresenter.isAudioCuting()){
-                    return ;
+                if (mPresenter.isAudioCuting()) {
+                    return;
                 }
                 hideCutAudioLayout();
                 break;
             case R.id.tidal_pat_upload_video_volume_img://音量
-                if(mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15){
-                    return ;
+                if (mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15) {
+                    return;
                 }
                 showVolumeLayout();
                 break;
@@ -438,8 +440,8 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
                 hideVolumeLayout();
                 break;
             case R.id.tidal_pat_upload_video_special_effects_img://特效
-                if(mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15){
-                    return ;
+                if (mTidalPatRecordDraftBean.getRecordTimeType() != RecordTimeType.RECORD_TIME_15) {
+                    return;
                 }
                 inSpecialEffectsMode();
                 break;
@@ -449,30 +451,67 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
                 onBackPressed();
                 break;
             case R.id.personinfo_save:
-                    Intent intent1 = new Intent(this, PublishVideoActivity.class);
-                    intent1.putExtra("mTidalPatRecordDraftBean", mTidalPatRecordDraftBean);
-                    intent1.putExtra("isSelectMusic",isSelectMusic);
-                    if(isSelectMusic) {
-                        intent1.putExtra("AudioId", curAudio);
-                        intent1.putExtra("Name",playName);
-                    }
-                    startActivity(intent1);
-                    break;
+                new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
+                        .setMessage("是否选择背景音乐")
+                        .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                enterPublish();
+                            }
+                        })
+                        .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(VideoPlayActivity.this, SelectMusicActivity.class);
+                                startActivityForResult(intent, 1);
+                            }
+                        })
+                        .show();
+                break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            isSelectMusic = data.getBooleanExtra("result1", false);
+            playName = data.getStringExtra("result2");
+            if (isSelectMusic) {
+                mMusicBean.setUrl(Constant.DOWNBGM + File.separator + playName + ".mp3");
+                curAudio = data.getStringExtra("result3");
+            }
+            enterPublish();
+        }
+    }
+
+    /**
+     * 发布视频
+     */
+    public void enterPublish() {
+        Intent intent1 = new Intent(this, PublishVideoActivity.class);
+        intent1.putExtra("mTidalPatRecordDraftBean", mTidalPatRecordDraftBean);
+        intent1.putExtra("isSelectMusic", isSelectMusic);
+        if (isSelectMusic) {
+            intent1.putExtra("AudioId", curAudio);
+            intent1.putExtra("Name", playName);
+        }
+        startActivity(intent1);
     }
 
     /**
      * 显示音量布局
      */
-    public void showVolumeLayout(){
+    public void showVolumeLayout() {
         mVolumeLayout.setVisibility(View.VISIBLE);
         mParentUploadLayout.setVisibility(View.GONE);
-        if(mMusicBean != null && mMusicBean.getMusicId() != 0){
-            if(!mBackgroundSeekBar.isCanScroll()){
+        if (mMusicBean != null && mMusicBean.getMusicId() != 0) {
+            if (!mBackgroundSeekBar.isCanScroll()) {
                 mBackgroundSeekBar.setCanScroll(true);
             }
-        }else{
-            if(mBackgroundSeekBar.isCanScroll()){
+        } else {
+            if (mBackgroundSeekBar.isCanScroll()) {
                 mBackgroundSeekBar.setCanScroll(false);
             }
         }
@@ -481,7 +520,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     /**
      * 隐藏音量布局
      */
-    public void hideVolumeLayout(){
+    public void hideVolumeLayout() {
         mVolumeLayout.setVisibility(View.GONE);
         mParentUploadLayout.setVisibility(View.VISIBLE);
     }
@@ -489,13 +528,13 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     /**
      * 显示剪音乐布局
      */
-    public void showCutAudioLayout(){
+    public void showCutAudioLayout() {
         mCutAudioLayout.setVisibility(View.VISIBLE);
         mParentUploadLayout.setVisibility(View.GONE);
         mVideoPlayView.stop();
 
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mCutAudioScaleLayout, View.TRANSLATION_Y,mCutAudioScaleLayout.getHeight()==0? DensityUtils
-                .dp2px(200):mCutAudioScaleLayout.getHeight(),0f);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mCutAudioScaleLayout, View.TRANSLATION_Y, mCutAudioScaleLayout.getHeight() == 0 ? DensityUtils
+                .dp2px(200) : mCutAudioScaleLayout.getHeight(), 0f);
         objectAnimator.setDuration(300);
         objectAnimator.start();
         mPresenter.resetPlayer();
@@ -504,21 +543,22 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     /**
      * 隐藏剪音乐布局
      */
-    public void hideCutAudioLayout(){
+    public void hideCutAudioLayout() {
         mCutAudioLayout.setVisibility(View.GONE);
         mParentUploadLayout.setVisibility(View.VISIBLE);
         mPresenter.releasePlayer();
-        mPresenter.combineVideo(mOriginalSeekBar.getProgress()/mOriginalSeekBar.getMax(),mBackgroundSeekBar.getProgress()/mBackgroundSeekBar.getMax());
+        mPresenter.combineVideo(mOriginalSeekBar.getProgress() / mOriginalSeekBar.getMax(), mBackgroundSeekBar.getProgress() / mBackgroundSeekBar.getMax());
     }
 
     /**
      * 保存视频
+     *
      * @param tidalPatRecordDraftBean
      */
     public void saveVideo(final TidalPatRecordDraftBean tidalPatRecordDraftBean) {
-        if(TextUtils.isEmpty(tidalPatRecordDraftBean.getVideoName())){
-            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(),Constant.RECORD_VIDEO_PATH,System.currentTimeMillis() + ".mp4");
-            ToastTool.showShort(this,"视频已保存至：" + Constant.RECORD_VIDEO_PATH + File.separator + System.currentTimeMillis() + ".mp4");
+        if (TextUtils.isEmpty(tidalPatRecordDraftBean.getVideoName())) {
+            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH, System.currentTimeMillis() + ".mp4");
+            ToastTool.showShort(this, "视频已保存至：" + Constant.RECORD_VIDEO_PATH + File.separator + System.currentTimeMillis() + ".mp4");
             clearCacheDataAndStartMainActivity(true);
         }
     }
@@ -546,18 +586,18 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     /**
      * 初始化特效布局
      */
-    private void initSpecialEffectsView(){
+    private void initSpecialEffectsView() {
         SpecialEffectsPlayManager.getInstance().setSpecialEffectsFilters(mTidalPatRecordDraftBean.getSpecialEffectsFiltersFromList());
         SpecialEffectsPlayManager.getInstance().setCurrentSpecialEffectsFilterType(mTidalPatRecordDraftBean.getSpecialEffectsType());
-        if(mTidalPatRecordDraftBean.getSpecialEffectsParentType() != null){
+        if (mTidalPatRecordDraftBean.getSpecialEffectsParentType() != null) {
             mPresenter.setSpecialEffectsParentType(mTidalPatRecordDraftBean.getSpecialEffectsParentType());
         }
-        if(mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME && SpecialEffectsPlayManager.getInstance().getCurrentSpecialEffectsFilterType() == SpecialEffectsType.TimeBack){
+        if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME && SpecialEffectsPlayManager.getInstance().getCurrentSpecialEffectsFilterType() == SpecialEffectsType.TimeBack) {
             mPresenter.setSpecialEffectsTimeBackVideoPath(mTidalPatRecordDraftBean.getVideoLocalUrl());
         }
 
         mSpecialEffectsSelectorRV = (RecyclerView) findViewById(R.id.tidal_pat_upload_se_recycler_view);
-        mSpecialEffectsSelectorRV.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        mSpecialEffectsSelectorRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mTidalPatSpecialEffectsFilterAdapter = new TidalPatSpecialEffectsFilterAdapter();
         mTidalPatSpecialEffectsTimeAdapter = new TidalPatSpecialEffectsTimeAdapter();
         mTidalPatSpecialEffectsFilterAdapter.setTidalPatSpecialEffectsFilterClickListener(mTidalPatSpecialEffectsFilterClickListener);
@@ -575,7 +615,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         mSETimeTxt.setOnClickListener(specialEffectsViewClickListener);
         findViewById(R.id.tidal_pat_upload_se_save_txt).setOnClickListener(specialEffectsViewClickListener);
         findViewById(R.id.tidal_pat_upload_se_cancel_txt).setOnClickListener(specialEffectsViewClickListener);
-        ((TextView)findViewById(R.id.tv_title)).setText("");
+        ((TextView) findViewById(R.id.tv_title)).setText("");
 
         mSEPlayEndTxt = (TextView) findViewById(R.id.tidal_pat_upload_se_time_current_txt);
         mSERemoveTxt = (TextView) findViewById(R.id.tidal_pat_upload_se_remove_txt);
@@ -586,9 +626,9 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
             @Override
             public void onProgress(int progress) {
                 if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME && SpecialEffectsPlayManager.getInstance().getCurrentSpecialEffectsFilterType() == SpecialEffectsType.TimeBack) {
-                    mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol((long) (mSpecialEffectsSeekBar.getMax()-progress)));
-                    mVideoPlayView.seekTo((long) ((mSpecialEffectsSeekBar.getMax()-progress) * 1000L));
-                }else{
+                    mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol((long) (mSpecialEffectsSeekBar.getMax() - progress)));
+                    mVideoPlayView.seekTo((long) ((mSpecialEffectsSeekBar.getMax() - progress) * 1000L));
+                } else {
                     mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol(progress));
                     mVideoPlayView.seekTo(progress * 1000);
                 }
@@ -597,22 +637,22 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
             @Override
             public void onEventUp(int progress) {
                 if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME && SpecialEffectsPlayManager.getInstance().getCurrentSpecialEffectsFilterType() == SpecialEffectsType.TimeBack) {
-                    mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol((long) (mSpecialEffectsSeekBar.getMax()-progress)));
-                    long position = (long) ((mSpecialEffectsSeekBar.getMax()-progress) * 1000L);
+                    mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol((long) (mSpecialEffectsSeekBar.getMax() - progress)));
+                    long position = (long) ((mSpecialEffectsSeekBar.getMax() - progress) * 1000L);
 
-                    if(position>=mVideoPlayView.getDuration()){
+                    if (position >= mVideoPlayView.getDuration()) {
                         mVideoPlayView.seekTo(0);
                         mSpecialEffectsSeekBar.setProgress(0);
-                    }else{
+                    } else {
                         mVideoPlayView.seekTo(position);
                     }
-                }else{
+                } else {
                     mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol(progress));
                     long position = progress * 1000;
-                    if(position>=mVideoPlayView.getDuration()){
+                    if (position >= mVideoPlayView.getDuration()) {
                         mVideoPlayView.seekTo(0);
                         mSpecialEffectsSeekBar.setProgress(0);
-                    }else{
+                    } else {
                         mVideoPlayView.seekTo(position);
                     }
                 }
@@ -635,30 +675,30 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 
             @Override
             public void onPlayTime(long time) {
-                if(!isSpecialEffectsEditMode){
-                    return ;
+                if (!isSpecialEffectsEditMode) {
+                    return;
                 }
                 if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME && SpecialEffectsPlayManager.getInstance().getCurrentSpecialEffectsFilterType() == SpecialEffectsType.TimeBack) {
                     mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol(time));
-                    mSpecialEffectsSeekBar.setProgress(mSpecialEffectsSeekBar.getMax()-time);
-                }else{
+                    mSpecialEffectsSeekBar.setProgress(mSpecialEffectsSeekBar.getMax() - time);
+                } else {
                     mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol(time));
                     mSpecialEffectsSeekBar.setProgress(time);
                 }
-                if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.FILTER && !isFilterTouch){
+                if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.FILTER && !isFilterTouch) {
                     SpecialEffectsType specialEffectsType = SpecialEffectsPlayManager.getInstance().getTypeFromTime(time);
-                    if(specialEffectsType != null){
+                    if (specialEffectsType != null) {
                         mVideoPlayView.setFilter(specialEffectsType.getFilter());
                     }
                 }
 
-                if(isFilterTouch && isFilterStart){
+                if (isFilterTouch && isFilterStart) {
                     isFilterStart = false;
                     SpecialEffectsProgressBean tempBean = mSpecialEffectsSeekBar.getOperationFilter();
-                    if(tempBean != null){
-                        if(Math.abs(tempBean.getTimeStart() - time) > 200){
+                    if (tempBean != null) {
+                        if (Math.abs(tempBean.getTimeStart() - time) > 200) {
                             tempBean.setTimeStart(time);
-                        }else if(tempBean.getTimeStart() < 200){
+                        } else if (tempBean.getTimeStart() < 200) {
                             tempBean.setTimeStart(0);
                         }
                     }
@@ -667,7 +707,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 
             @Override
             public void onPause() {
-                if(isSpecialEffectsEditMode){
+                if (isSpecialEffectsEditMode) {
                     mVideoPlayBtn.setVisibility(View.VISIBLE);
                 }
             }
@@ -679,14 +719,14 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 
             @Override
             public void onStop() {
-                if(isSpecialEffectsEditMode){
+                if (isSpecialEffectsEditMode) {
                     mVideoPlayBtn.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFinish() {
-                if(isSpecialEffectsEditMode){
+                if (isSpecialEffectsEditMode) {
                     mVideoPlayBtn.setVisibility(View.VISIBLE);
                     cancelItemTouch(true);
                     mPresenter.changeSpecialEffectsMode(mPresenter.getSpecialEffectsParentType());
@@ -697,14 +737,14 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void showToast(String msg) {
-        ToastTool.showShort(AppUtil.getApplicationContext(),msg);
+        ToastTool.showShort(AppUtil.getApplicationContext(), msg);
     }
 
     @Override
     public void showLoadingView(boolean isShow, int loadingTxtRes) {
-        if(mLoadingView != null){
-            mLoadingView.setVisibility(isShow?View.VISIBLE:View.GONE);
-            if(loadingTxtRes != 0){
+        if (mLoadingView != null) {
+            mLoadingView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+            if (loadingTxtRes != 0) {
                 TextView textView = (TextView) findViewById(R.id.tidal_pat_record_video_loading_txt);
                 textView.setText(loadingTxtRes);
             }
@@ -719,7 +759,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void checkMusicLength(int duration) {
-        mCutAudioScaleRoundRectView.setMax((int) (duration/1000f));
+        mCutAudioScaleRoundRectView.setMax((int) (duration / 1000f));
         mCutAudioScaleRoundRectView.setProgress(0);
         mCutAudioCurrentTxt.setText(StringUtil.generateTimeFromSymbol(0));
         mCutAudioMaxTxt.setText(StringUtil.generateTimeFromSymbol(duration));
@@ -731,12 +771,12 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void combineVideoFinish(boolean isLooping,String path) {
+    public void combineVideoFinish(boolean isLooping, String path) {
         mTidalPatRecordDraftBean.setVideoLocalUrl(path);
         mVideoPlayView.setLooping(isLooping);
-        if(!isActivityStop){
+        if (!isActivityStop) {
             mVideoPlayView.setVideoPath(path);
-        }else{
+        } else {
             mVideoPlayView.setVideoPathNotPlay(path);
         }
     }
@@ -748,7 +788,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void inTimeBackState(String path){
+    public void inTimeBackState(String path) {
         mVideoPlayView.stop();
         mVideoPlayView.setVideoPathNotPlay(path);
         mTidalPatSpecialEffectsTimeAdapter.setCurrentType(SpecialEffectsType.TimeBack);
@@ -765,7 +805,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void inTimeNotState(String path){
+    public void inTimeNotState(String path) {
         mTidalPatSpecialEffectsTimeAdapter.setCurrentType(SpecialEffectsType.Default);
         ArrayList<SpecialEffectsProgressBean> specialEffectsProgressBeen = new ArrayList<>();
         mSpecialEffectsSeekBar.setSpecialEffectsProgressBeen(specialEffectsProgressBeen);
@@ -777,7 +817,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void resetSpecialEffectsSeekBar(boolean isMax) {
-        mSpecialEffectsSeekBar.setProgress(isMax?mSpecialEffectsSeekBar.getMax():0);
+        mSpecialEffectsSeekBar.setProgress(isMax ? mSpecialEffectsSeekBar.getMax() : 0);
     }
 
     @Override
@@ -795,7 +835,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
             public void run() {
                 mSEPlayEndTxt.setText(StringUtil.generateTimeFromSymbol(0));
             }
-        },100);
+        }, 100);
     }
 
     @Override
@@ -816,24 +856,24 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         saveVideo(mTidalPatRecordDraftBean);
     }
 
-    class SpecialEffectsViewClickListener implements View.OnClickListener{
+    class SpecialEffectsViewClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            if(isFilterTouch){
-                return ;
+            if (isFilterTouch) {
+                return;
             }
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.tidal_pat_upload_se_bottom_filter_txt:
-                    if(mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.FILTER){
+                    if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.FILTER) {
                         return;
                     }
                     mPresenter.changeSpecialEffectsMode(SpecialEffectsParentType.FILTER);
                     selectedFilterMode();
                     break;
                 case R.id.tidal_pat_upload_se_bottom_time_txt:
-                    if(mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME){
-                        return ;
+                    if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME) {
+                        return;
                     }
                     mPresenter.changeSpecialEffectsMode(SpecialEffectsParentType.TIME);
                     selectedTimeMode();
@@ -845,17 +885,17 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
                     outSpecialEffectsMode(false);
                     break;
                 case R.id.tidal_pat_record_video_upload_pv:
-                    if(isSpecialEffectsEditMode){
+                    if (isSpecialEffectsEditMode) {
                         mVideoPlayView.changeState();
                     }
                     break;
                 case R.id.tidal_pat_upload_se_remove_txt:
                     SpecialEffectsPlayManager.getInstance().removeLastFilter();
-                    mSERemoveTxt.setVisibility(SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() <= 0?
-                            View.GONE: View.VISIBLE);
+                    mSERemoveTxt.setVisibility(SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() <= 0 ?
+                            View.GONE : View.VISIBLE);
                     long lastTime = 0;
-                    if(SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() > 0){
-                        lastTime = SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().get(SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size()-1).getTimeEnd();
+                    if (SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() > 0) {
+                        lastTime = SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().get(SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() - 1).getTimeEnd();
                     }
                     mSpecialEffectsSeekBar.setProgress(lastTime);
                     mSpecialEffectsSeekBar.clearOperationFilter();
@@ -871,31 +911,31 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     /**
      * 选择灵魂出窍模式
      */
-    private void selectedFilterMode(){
+    private void selectedFilterMode() {
         final View seekLayout = findViewById(R.id.tidal_pat_upload_se_seek_layout);
         final TextView hintTxt = (TextView) findViewById(R.id.tidal_pat_upload_se_hint_txt);
 
-        AnimatorUtils.viewAlphaAnimator(findViewById(R.id.tidal_pat_upload_se_bottom_time_view),false,200,null).start();
-        AnimatorUtils.viewAlphaAnimator(seekLayout,false,200,null).start();
-        AnimatorUtils.viewAlphaAnimator(hintTxt,false,200,null).start();
+        AnimatorUtils.viewAlphaAnimator(findViewById(R.id.tidal_pat_upload_se_bottom_time_view), false, 200, null).start();
+        AnimatorUtils.viewAlphaAnimator(seekLayout, false, 200, null).start();
+        AnimatorUtils.viewAlphaAnimator(hintTxt, false, 200, null).start();
         AnimatorUtils.viewAlphaAnimator(mSpecialEffectsSelectorRV, false, 200, new AnimatorUtils.FreeAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mSpecialEffectsSelectorRV.setAdapter(mTidalPatSpecialEffectsFilterAdapter);
                 hintTxt.setText(R.string.tidal_pat_upload_position_selected_hint);
-                AnimatorUtils.viewAlphaAnimator(findViewById(R.id.tidal_pat_upload_se_bottom_filter_view),true,200,null).start();
-                AnimatorUtils.viewAlphaAnimator(seekLayout,true,200,null).start();
-                AnimatorUtils.viewAlphaAnimator(hintTxt,true,200,null).start();
-                AnimatorUtils.viewAlphaAnimator(mSERemoveTxt,SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() > 0,
-                        SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() <= 10?0:200,null).start();
-                AnimatorUtils.viewAlphaAnimator(mSpecialEffectsSelectorRV,true,200,null).start();
+                AnimatorUtils.viewAlphaAnimator(findViewById(R.id.tidal_pat_upload_se_bottom_filter_view), true, 200, null).start();
+                AnimatorUtils.viewAlphaAnimator(seekLayout, true, 200, null).start();
+                AnimatorUtils.viewAlphaAnimator(hintTxt, true, 200, null).start();
+                AnimatorUtils.viewAlphaAnimator(mSERemoveTxt, SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() > 0,
+                        SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() <= 10 ? 0 : 200, null).start();
+                AnimatorUtils.viewAlphaAnimator(mSpecialEffectsSelectorRV, true, 200, null).start();
             }
         }).start();
 
-        AnimatorUtils.textViewColorChangeAnimator(mSETimeTxt, getResources().getColor(R.color.white), getResources().getColor(R.color.few_60_transparency_white), 200, new AnimatorUtils.FreeAnimatorListener(){
+        AnimatorUtils.textViewColorChangeAnimator(mSETimeTxt, getResources().getColor(R.color.white), getResources().getColor(R.color.few_60_transparency_white), 200, new AnimatorUtils.FreeAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                AnimatorUtils.textViewColorChangeAnimator(mSEFilterTxt,getResources().getColor(R.color.few_60_transparency_white),getResources().getColor(R.color.white), 200,null).start();
+                AnimatorUtils.textViewColorChangeAnimator(mSEFilterTxt, getResources().getColor(R.color.few_60_transparency_white), getResources().getColor(R.color.white), 200, null).start();
             }
         }).start();
     }
@@ -903,32 +943,32 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     /**
      * 选择时光倒流模式
      */
-    private void selectedTimeMode(){
+    private void selectedTimeMode() {
 
         final View seekLayout = findViewById(R.id.tidal_pat_upload_se_seek_layout);
         final TextView hintTxt = (TextView) findViewById(R.id.tidal_pat_upload_se_hint_txt);
 
-        AnimatorUtils.viewAlphaAnimator(findViewById(R.id.tidal_pat_upload_se_bottom_filter_view),false,200,null).start();
-        AnimatorUtils.viewAlphaAnimator(seekLayout,false,200,null).start();
-        AnimatorUtils.viewAlphaAnimator(hintTxt,false,200,null).start();
-        AnimatorUtils.viewAlphaAnimator(mSERemoveTxt,false,200,null).start();
+        AnimatorUtils.viewAlphaAnimator(findViewById(R.id.tidal_pat_upload_se_bottom_filter_view), false, 200, null).start();
+        AnimatorUtils.viewAlphaAnimator(seekLayout, false, 200, null).start();
+        AnimatorUtils.viewAlphaAnimator(hintTxt, false, 200, null).start();
+        AnimatorUtils.viewAlphaAnimator(mSERemoveTxt, false, 200, null).start();
         AnimatorUtils.viewAlphaAnimator(mSpecialEffectsSelectorRV, false, 200, new AnimatorUtils.FreeAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mSpecialEffectsSelectorRV.setAdapter(mTidalPatSpecialEffectsTimeAdapter);
                 mSERemoveTxt.setVisibility(View.GONE);
                 hintTxt.setText(R.string.tidal_pat_upload_time_back_hint);
-                AnimatorUtils.viewAlphaAnimator(findViewById(R.id.tidal_pat_upload_se_bottom_time_view),true,200,null).start();
-                AnimatorUtils.viewAlphaAnimator(seekLayout,true,200,null).start();
-                AnimatorUtils.viewAlphaAnimator(hintTxt,true,200,null).start();
-                AnimatorUtils.viewAlphaAnimator(mSpecialEffectsSelectorRV,true,200,null).start();
+                AnimatorUtils.viewAlphaAnimator(findViewById(R.id.tidal_pat_upload_se_bottom_time_view), true, 200, null).start();
+                AnimatorUtils.viewAlphaAnimator(seekLayout, true, 200, null).start();
+                AnimatorUtils.viewAlphaAnimator(hintTxt, true, 200, null).start();
+                AnimatorUtils.viewAlphaAnimator(mSpecialEffectsSelectorRV, true, 200, null).start();
             }
         }).start();
 
         AnimatorUtils.textViewColorChangeAnimator(mSEFilterTxt, getResources().getColor(R.color.white), getResources().getColor(R.color.few_60_transparency_white), 200, new AnimatorUtils.FreeAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                AnimatorUtils.textViewColorChangeAnimator(mSETimeTxt,getResources().getColor(R.color.few_60_transparency_white),getResources().getColor(R.color.white), 200,null).start();
+                AnimatorUtils.textViewColorChangeAnimator(mSETimeTxt, getResources().getColor(R.color.few_60_transparency_white), getResources().getColor(R.color.white), 200, null).start();
             }
         }).start();
     }
@@ -943,14 +983,14 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     /**
      * 进入特效编辑模式
      */
-    private void inSpecialEffectsMode(){
-        mPresenter.inSpecialEffectsModeReady(mOriginalSeekBar.getProgress()/mOriginalSeekBar.getMax(),mBackgroundSeekBar.getProgress()/mBackgroundSeekBar.getMax());
-        if(mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME){
+    private void inSpecialEffectsMode() {
+        mPresenter.inSpecialEffectsModeReady(mOriginalSeekBar.getProgress() / mOriginalSeekBar.getMax(), mBackgroundSeekBar.getProgress() / mBackgroundSeekBar.getMax());
+        if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME) {
             selectedTimeMode();
-        }else{
+        } else {
             selectedFilterMode();
-            mSERemoveTxt.setVisibility(SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() <= 0?
-                    View.GONE: View.VISIBLE);
+            mSERemoveTxt.setVisibility(SpecialEffectsPlayManager.getInstance().getSpecialEffectsFilters().size() <= 0 ?
+                    View.GONE : View.VISIBLE);
         }
         isSpecialEffectsEditMode = true;
         AnimatorSet animatorSet = new AnimatorSet();
@@ -960,13 +1000,13 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
             public void onAnimationEnd(Animator animation) {
                 mParentUploadLayout.setVisibility(View.GONE);
                 mSpecialEffectsSeekBar.setProgress((mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME
-                        && SpecialEffectsPlayManager.getInstance().getCurrentSpecialEffectsFilterType() == SpecialEffectsType.TimeBack)?mSpecialEffectsSeekBar.getMax():0);
+                        && SpecialEffectsPlayManager.getInstance().getCurrentSpecialEffectsFilterType() == SpecialEffectsType.TimeBack) ? mSpecialEffectsSeekBar.getMax() : 0);
             }
         });
 
-        final View titleLayout  = findViewById(R.id.tidal_pat_upload_se_title_layout);
+        final View titleLayout = findViewById(R.id.tidal_pat_upload_se_title_layout);
         final View bottomLayout = findViewById(R.id.tidal_pat_upload_se_bottom_layout);
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1f,0f);
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1f, 0f);
         valueAnimator.setDuration(400);
         final LinearLayout.LayoutParams titleLayoutParams = (LinearLayout.LayoutParams) titleLayout.getLayoutParams();
         final LinearLayout.LayoutParams bottomLayoutParams = (LinearLayout.LayoutParams) bottomLayout.getLayoutParams();
@@ -974,119 +1014,121 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
         mPlayViewWidth = mVideoPlayLayout.getWidth();
         mPlayViewHeight = mVideoPlayLayout.getHeight();
         final int minPlayViewHeight = mPlayViewHeight - DensityUtils.dp2px(57) - DensityUtils.dp2px(200);
-        final float playViewScale = mPlayViewWidth/(float)mPlayViewHeight;
+        final float playViewScale = mPlayViewWidth / (float) mPlayViewHeight;
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                titleLayoutParams.topMargin = (int) (-DensityUtils.dp2px(57) * (float)animation.getAnimatedValue());
+                titleLayoutParams.topMargin = (int) (-DensityUtils.dp2px(57) * (float) animation.getAnimatedValue());
                 titleLayout.setLayoutParams(titleLayoutParams);
-                bottomLayoutParams.bottomMargin = (int) (-DensityUtils.dp2px(200) * (float)animation.getAnimatedValue());
+                bottomLayoutParams.bottomMargin = (int) (-DensityUtils.dp2px(200) * (float) animation.getAnimatedValue());
                 bottomLayout.setLayoutParams(bottomLayoutParams);
-                playViewParams.width = (int) ((minPlayViewHeight + ((mPlayViewHeight - minPlayViewHeight)* (float)animation.getAnimatedValue())) * playViewScale);
-                playViewParams.bottomMargin = (int) (DensityUtils.dp2px(18) * (1f-(float)animation.getAnimatedValue()));
+                playViewParams.width = (int) ((minPlayViewHeight + ((mPlayViewHeight - minPlayViewHeight) * (float) animation.getAnimatedValue())) * playViewScale);
+                playViewParams.bottomMargin = (int) (DensityUtils.dp2px(18) * (1f - (float) animation.getAnimatedValue()));
                 mVideoPlayLayout.setLayoutParams(playViewParams);
             }
         });
-        animatorSet.playSequentially(animator,valueAnimator);
+        animatorSet.playSequentially(animator, valueAnimator);
         animatorSet.start();
     }
 
     /**
      * 推出特效编辑模式
+     *
      * @param isSave
      */
-    private void outSpecialEffectsMode(boolean isSave){
+    private void outSpecialEffectsMode(boolean isSave) {
         mVideoPlayView.setLooping(true);
-        if(isSave){
+        if (isSave) {
             saveSpecialEffectsAndOut();
-        }else{
-            clearSpecialEffectsAndOut(true,true);
+        } else {
+            clearSpecialEffectsAndOut(true, true);
         }
     }
 
     /**
      * 保存特效并退出
      */
-    private void saveSpecialEffectsAndOut(){
+    private void saveSpecialEffectsAndOut() {
         mVideoPlayView.stop();
-        if(mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME
+        if (mPresenter.getSpecialEffectsParentType() == SpecialEffectsParentType.TIME
                 && SpecialEffectsPlayManager.getInstance().getCurrentSpecialEffectsFilterType() == SpecialEffectsType.TimeBack
-                && !TextUtils.isEmpty(mPresenter.getSpecialEffectsTimeBackVideoPath())){
+                && !TextUtils.isEmpty(mPresenter.getSpecialEffectsTimeBackVideoPath())) {
             mVideoPlayView.setVideoPath(
-                    TextUtils.isEmpty(mPresenter.getSpecialEffectsTimeBackVideoPath())?mTidalPatRecordDraftBean.getVideoLocalUrl():mPresenter.getSpecialEffectsTimeBackVideoPath());
-        }else{
-            mPresenter.combineVideo(mOriginalSeekBar.getProgress()/mOriginalSeekBar.getMax(),mBackgroundSeekBar.getProgress()/mBackgroundSeekBar.getMax());
+                    TextUtils.isEmpty(mPresenter.getSpecialEffectsTimeBackVideoPath()) ? mTidalPatRecordDraftBean.getVideoLocalUrl() : mPresenter.getSpecialEffectsTimeBackVideoPath());
+        } else {
+            mPresenter.combineVideo(mOriginalSeekBar.getProgress() / mOriginalSeekBar.getMax(), mBackgroundSeekBar.getProgress() / mBackgroundSeekBar.getMax());
         }
         outSpecialEffectsAnimator();
     }
 
     /**
      * 清除特效并退出
-     * @param isOut 退出
+     *
+     * @param isOut          退出
      * @param isCombineVideo 是否合成视频
      */
-    private void clearSpecialEffectsAndOut(boolean isOut,boolean isCombineVideo){
-        if(mTidalPatSpecialEffectsTimeAdapter == null){
-            return ;
+    private void clearSpecialEffectsAndOut(boolean isOut, boolean isCombineVideo) {
+        if (mTidalPatSpecialEffectsTimeAdapter == null) {
+            return;
         }
         mTidalPatRecordDraftBean.setHasSpecialEffects(false);
         mTidalPatSpecialEffectsTimeAdapter.setCurrentType(SpecialEffectsType.Default);
         SpecialEffectsPlayManager.getInstance().setCurrentSpecialEffectsFilterType(SpecialEffectsType.Default);
         mSpecialEffectsSeekBar.clearData();
         SpecialEffectsPlayManager.getInstance().clearFilters();
-        if(isOut){
+        if (isOut) {
             outSpecialEffectsAnimator();
         }
-        if(isCombineVideo){
-            mPresenter.combineVideo(mOriginalSeekBar.getProgress()/mOriginalSeekBar.getMax(),mBackgroundSeekBar.getProgress()/mBackgroundSeekBar.getMax());
+        if (isCombineVideo) {
+            mPresenter.combineVideo(mOriginalSeekBar.getProgress() / mOriginalSeekBar.getMax(), mBackgroundSeekBar.getProgress() / mBackgroundSeekBar.getMax());
         }
     }
 
     /**
      * 动画
      */
-    private void outSpecialEffectsAnimator(){
+    private void outSpecialEffectsAnimator() {
         mVideoPlayBtn.setVisibility(View.GONE);
         isSpecialEffectsEditMode = false;
         AnimatorSet animatorSet = new AnimatorSet();
-        Animator animator = AnimatorUtils.viewAlphaAnimator(mParentUploadLayout,true,200,null);
+        Animator animator = AnimatorUtils.viewAlphaAnimator(mParentUploadLayout, true, 200, null);
 
 
-        final View titleLayout  = findViewById(R.id.tidal_pat_upload_se_title_layout);
+        final View titleLayout = findViewById(R.id.tidal_pat_upload_se_title_layout);
         final View bottomLayout = findViewById(R.id.tidal_pat_upload_se_bottom_layout);
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f,1f);
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
         valueAnimator.setDuration(400);
         final LinearLayout.LayoutParams titleLayoutParams = (LinearLayout.LayoutParams) titleLayout.getLayoutParams();
         final LinearLayout.LayoutParams bottoLayoutmParams = (LinearLayout.LayoutParams) bottomLayout.getLayoutParams();
         final LinearLayout.LayoutParams playViewParams = (LinearLayout.LayoutParams) mVideoPlayLayout.getLayoutParams();
         final int minPlayViewHeight = mPlayViewHeight - DensityUtils.dp2px(57) - DensityUtils.dp2px(200);
-        final float playViewScale = mPlayViewWidth/(float)mPlayViewHeight;
+        final float playViewScale = mPlayViewWidth / (float) mPlayViewHeight;
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                titleLayoutParams.topMargin = (int) (-DensityUtils.dp2px(57) * (float)animation.getAnimatedValue());
+                titleLayoutParams.topMargin = (int) (-DensityUtils.dp2px(57) * (float) animation.getAnimatedValue());
                 titleLayout.setLayoutParams(titleLayoutParams);
-                bottoLayoutmParams.bottomMargin = (int) (-DensityUtils.dp2px(200) * (float)animation.getAnimatedValue());
+                bottoLayoutmParams.bottomMargin = (int) (-DensityUtils.dp2px(200) * (float) animation.getAnimatedValue());
                 bottomLayout.setLayoutParams(bottoLayoutmParams);
-                playViewParams.width = (int) ((minPlayViewHeight + ((mPlayViewHeight - minPlayViewHeight)* (float)animation.getAnimatedValue())) * playViewScale);
-                playViewParams.bottomMargin = (int) (DensityUtils.dp2px(18) * (1f-(float)animation.getAnimatedValue()));
+                playViewParams.width = (int) ((minPlayViewHeight + ((mPlayViewHeight - minPlayViewHeight) * (float) animation.getAnimatedValue())) * playViewScale);
+                playViewParams.bottomMargin = (int) (DensityUtils.dp2px(18) * (1f - (float) animation.getAnimatedValue()));
                 mVideoPlayLayout.setLayoutParams(playViewParams);
 
             }
         });
-        animatorSet.playSequentially(valueAnimator,animator);
+        animatorSet.playSequentially(valueAnimator, animator);
         animatorSet.start();
     }
 
-    private void cancelItemTouch(boolean isFinish){
-        if(!isFilterTouch){
-            return ;
+    private void cancelItemTouch(boolean isFinish) {
+        if (!isFilterTouch) {
+            return;
         }
         isFilterTouch = false;
         mVideoPlayView.setFilter(SpecialEffectsType.Default.getFilter());
-        SpecialEffectsProgressBean specialEffectsProgressBean = mSpecialEffectsSeekBar.setOperationFilter(false,null);
-        if(isFinish){
-            if(System.currentTimeMillis() - mFilterTouchTime > 50){
+        SpecialEffectsProgressBean specialEffectsProgressBean = mSpecialEffectsSeekBar.setOperationFilter(false, null);
+        if (isFinish) {
+            if (System.currentTimeMillis() - mFilterTouchTime > 50) {
                 specialEffectsProgressBean.setTimeEnd((long) mSpecialEffectsSeekBar.getMax());
             }
         }
@@ -1102,14 +1144,14 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
     TidalPatSpecialEffectsFilterClickListener mTidalPatSpecialEffectsFilterClickListener = new TidalPatSpecialEffectsFilterClickListener() {
         @Override
         public void onItemTouchDown(int position, SpecialEffectsType specialEffectsType) {
-            if(specialEffectsType == SpecialEffectsType.SoulOut){
+            if (specialEffectsType == SpecialEffectsType.SoulOut) {
                 isFilterTouch = true;
                 isFilterStart = true;
                 mFilterTouchTime = System.currentTimeMillis();
                 SpecialEffectsProgressBean specialEffectsProgressBean = new SpecialEffectsProgressBean();
                 specialEffectsProgressBean.setType(SpecialEffectsType.SoulOut);
                 specialEffectsProgressBean.setShowColor(0xFFEB4293);
-                mSpecialEffectsSeekBar.setOperationFilter(true,specialEffectsProgressBean);
+                mSpecialEffectsSeekBar.setOperationFilter(true, specialEffectsProgressBean);
                 mVideoPlayView.setFilter(specialEffectsType.getFilter());
                 mVideoPlayView.play();
             }
@@ -1117,7 +1159,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 
         @Override
         public void onItemTouchUp(int position) {
-            if(isFilterTouch){
+            if (isFilterTouch) {
                 mVideoPlayView.pause();
                 isFilterStart = false;
                 cancelItemTouch(false);
@@ -1126,7 +1168,7 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
 
         @Override
         public void onItemStateChange(int position, boolean isSelected, SpecialEffectsType specialEffectsType) {
-            mPresenter.changeSpecialEffects(specialEffectsType,mOriginalSeekBar.getProgress()/mOriginalSeekBar.getMax(),mBackgroundSeekBar.getProgress()/mBackgroundSeekBar.getMax());
+            mPresenter.changeSpecialEffects(specialEffectsType, mOriginalSeekBar.getProgress() / mOriginalSeekBar.getMax(), mBackgroundSeekBar.getProgress() / mBackgroundSeekBar.getMax());
         }
     };
 

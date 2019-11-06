@@ -138,7 +138,7 @@ public class OktHttpUtil {
         MultipartBody.Builder multipartBody = new MultipartBody.Builder();
         multipartBody.setType(MultipartBody.FORM);
         for (Map.Entry<String, String> head1 : map1.entrySet()) {
-            if (head1.getKey().equals("coverFile") || head1.getKey().equals("uploadFile")) {
+            if (head1.getKey().equals("cover") || head1.getKey().equals("video")) {
                 File file = new File(head1.getValue());
                 if (file.exists()){
                     RequestBody filebody = RequestBody.create(MediaType.parse("application/octet-stream"), file);

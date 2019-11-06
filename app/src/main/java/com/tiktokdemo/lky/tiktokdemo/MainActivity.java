@@ -1,27 +1,30 @@
 package com.tiktokdemo.lky.tiktokdemo;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.am.shortVideo.R;
+import com.am.shortVideo.activity.LoginActivity;
 import com.tiktokdemo.lky.tiktokdemo.record.RecordVideoActivity;
 import com.tiktokdemo.lky.tiktokdemo.record.VideoCropActivity;
 import com.tiktokdemo.lky.tiktokdemo.record.bean.MusicBean;
 import com.tiktokdemo.lky.tiktokdemo.utils.AppUtil;
 import com.tiktokdemo.lky.tiktokdemo.utils.FileUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import application.MyApplication;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,34 +33,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String mLocalMusicPath = Constant.PIC_FILE + File.separator + LOCAL_MUSIC_NAME;
     private String mLocalVideoPath = Constant.PIC_FILE + File.separator + LOCAL_VIDEO_NAME;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.capture_main);
         findViewById(R.id.main_record_btn).setOnClickListener(this);
         findViewById(R.id.main_crop_btn).setOnClickListener(this);
         requestPermissions();
     }
-    @Override public void onClick(View v) {
-        switch (v.getId()){
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.main_record_btn:
-                if(!FileUtils.checkFileExits(mLocalMusicPath)){
-                    FileUtils.copyFileFromAssets(this,LOCAL_MUSIC_NAME,Constant.PIC_FILE);
+                if (MyApplication.getInstance().getUserInfo() != null) {
+                    if (!FileUtils.checkFileExits(mLocalMusicPath)) {
+                        FileUtils.copyFileFromAssets(this, LOCAL_MUSIC_NAME, Constant.PIC_FILE);
+                    }
+                    MusicBean searchMusicResultBean = new MusicBean();
+                    searchMusicResultBean.setMusicId(1);
+                    searchMusicResultBean.setUrl(mLocalMusicPath);
+                    searchMusicResultBean.setLocalPath(mLocalMusicPath);
+                    searchMusicResultBean.setName(LOCAL_MUSIC_NAME);
+                    Intent intent = new Intent(this, RecordVideoActivity.class);
+                    intent.putExtra("MusicBean", searchMusicResultBean);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
                 }
-                MusicBean searchMusicResultBean = new MusicBean();
-                searchMusicResultBean.setMusicId(1);
-                searchMusicResultBean.setUrl(mLocalMusicPath);
-                searchMusicResultBean.setLocalPath(mLocalMusicPath);
-                searchMusicResultBean.setName(LOCAL_MUSIC_NAME);
-                Intent intent = new Intent(this, RecordVideoActivity.class);
-                intent.putExtra("MusicBean",searchMusicResultBean);
-                startActivity(intent);
+
                 break;
             case R.id.main_crop_btn:
-                if(!FileUtils.checkFileExits(mLocalVideoPath)){
-                    FileUtils.copyFileFromAssets(this,LOCAL_VIDEO_NAME,Constant.PIC_FILE);
+                if (!FileUtils.checkFileExits(mLocalVideoPath)) {
+                    FileUtils.copyFileFromAssets(this, LOCAL_VIDEO_NAME, Constant.PIC_FILE);
                 }
                 Intent cropIntent = new Intent(this, VideoCropActivity.class);
-                cropIntent.putExtra("mCurrentVideoPath",mLocalVideoPath);
+                cropIntent.putExtra("mCurrentVideoPath", mLocalVideoPath);
                 startActivity(cropIntent);
                 break;
         }
@@ -65,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void requestPermissions() {
-        String[] permissions = new String[]{Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         applyPermissions(permissions);
     }
 
@@ -176,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-
 
 
     public interface PermissionTask {

@@ -149,7 +149,7 @@
     <string name="tidal_pat_upload_succeed_add_format">+%d积分</string>
     <string name="tidal_pat_upload_title_sensitive">标题包含敏感词</string>
     <string name="tidal_pat_upload_remove_hint">删除该视频？</string>
-    <string name="tidal_pat_record_combining">合成中...</string>
+    <string name="tidal_pat_record_combining">加载中...</string>
     <string name="tidal_pat_record_music_cutting">裁剪中...</string>
     <string name="tidal_pat_draft_title">草稿箱</string>
     <string name="tidal_pat_draft_clear_tip">清空</string>

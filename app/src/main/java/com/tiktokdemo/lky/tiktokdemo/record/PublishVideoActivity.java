@@ -30,7 +30,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -71,7 +70,7 @@ import util.StatusBarUtil;
  * Created by 李杰 on 2019/9/13.
  */
 
-public class PublishVideoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher{
+public class PublishVideoActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
     private static final String TAG = "PublishVideoActivity";
     private ImageView personinfo_back;
     private Button personinfo_save;
@@ -172,7 +171,7 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
     private RelativeLayout rl_editext;
     private ProgressDialog progressDialog;
     private boolean isSelectMusic;
-    private String curAudio;
+    private String curAudio = "";
     private String playName;
     private String mLocalVideoFileName;
     private boolean isFromDraft;
@@ -277,9 +276,6 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.rl_editext:
-                openKeybord(ed_publishmessage, this);
-                break;
             case R.id.personinfo_back:
                 onBackPressed();
                 break;
@@ -303,9 +299,9 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                     if (isSelectMusic) {
                         maps1.put("audioId", curAudio);
                     } else {
-                        maps1.put("audioId", "null");
+                        maps1.put("audioId", "0");
                     }
-                    maps1.put("coverFile", Constant.DOWNBGM + File.separator + "audio.jpg");
+                    maps1.put("cover", Constant.DOWNBGM + File.separator + "audio.jpg");
                     if (publishVideoInfo.getLocation() != null) {
                         maps1.put("location", publishVideoInfo.getLocation());
                     } else {
@@ -317,18 +313,20 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
                         maps1.put("shopId", ed_publishfoodid.getText().toString().trim());
                     }
                     if (isFromDraft) {
-                        maps1.put("uploadFile", mTidalPatRecordDraftBean.getVideoLocalUrl());
+                        maps1.put("video", mTidalPatRecordDraftBean.getVideoLocalUrl());
                     } else {
-                        maps1.put("uploadFile", Constant.RECORD_VIDEO_PATH_TEMP1 + File.separator + "shibo.mp4");
+                        maps1.put("video", Constant.RECORD_VIDEO_PATH_TEMP1 + File.separator + "shibo.mp4");
                     }
 
-                    maps1.put("videoDesc", message);
+                    maps1.put("desc", message);
 
-                    maps1.put("videoDuration", publishVideoInfo.getVideoDuraion());
-                    maps1.put("videoHeight", publishVideoInfo.getVideoheight());
-                    maps1.put("videoWidth", publishVideoInfo.getVideowidth());
+                    maps1.put("duration", publishVideoInfo.getVideoDuraion());
+                    maps1.put("height", publishVideoInfo.getVideoheight());
+                    maps1.put("width", publishVideoInfo.getVideowidth());
                     openGrogressAlterdialog();
-                    okHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.VIDEO.REQUEST_HEADER_PUBLISHVIDEO
+//                    HttpUri.VIDEO.REQUEST_HEADER_PUBLISHVIDEO
+
+                    okHttpUtil.setPostRequest(HttpUri.BASE_URL + "/api/video/compound"
                             , ((MyApplication) getApplication()).getMaps(), maps1, 1, new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
@@ -491,16 +489,6 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void afterTextChanged(Editable editable) {
-
-    }
-
-    //打开软键盘
-    public void openKeybord(EditText mEditText, Context mContext) {
-        InputMethodManager imm = (InputMethodManager) mContext
-                .getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-                InputMethodManager.HIDE_IMPLICIT_ONLY);
 
     }
 

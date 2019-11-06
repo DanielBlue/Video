@@ -54,6 +54,21 @@
         android:layout_marginEnd="20dp"
         android:background="@color/white">
 
+        <EditText
+            android:id="@+id/ed_inputthinking"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:gravity="top"
+            android:hint="@string/hint_message"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="30dp"
+            android:textColorHint="@color/gray_normal"
+            android:textSize="16sp" />
+
         <TextView
             android:id="@+id/tv_limitinput"
             android:layout_width="wrap_content"
@@ -66,19 +81,6 @@
             android:text="@string/tv_limitinput"
             android:textColor="@color/black"
             android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/ed_inputthinking"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@null"
-            android:hint="@string/hint_message"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray_normal"
-            android:textSize="16sp" />
     </RelativeLayout>
 
     <EditText

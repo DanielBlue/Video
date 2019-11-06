@@ -3,13 +3,11 @@ package com.tiktokdemo.lky.tiktokdemo.record;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -492,24 +490,7 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
                     if (mPresenter.isRecording()) {
                         mCircleRecordView.cancelTouch();
                     }
-                    new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
-                            .setMessage("是否选择背景音乐")
-                            .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mPresenter.combineVideo();
-                                }
-                            })
-                            .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    isDown = false;
-                                    Intent intent = new Intent(RecordVideoActivity.this, SelectMusicActivity.class);
-                                    startActivityForResult(intent, 1);
-                                }
-                            })
-                            .show();
+                    mPresenter.combineVideo();
                 }
                 break;
             case R.id.tidal_pat_record_video_cut_music_img://剪音乐
