@@ -3,6 +3,7 @@ package com.tiktokdemo.lky.tiktokdemo.record;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -116,6 +117,7 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
     private boolean isSelectMusic;
     private String playName;
     private String curAudio;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +132,22 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
         //mMusicBean = (MusicBean) getIntent().getSerializableExtra("MusicBean");
         mMusicBean = new MusicBean();
         mPresenter = new RecordVideoPresenter(this, mMusicBean);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("加载中...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        MyApplication.mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+            }
+        }, 4000);
+
         initView();
         boolean isAudioPermission = CheckPermissionUtil.isHasAudioPermission(this);
         if (!isAudioPermission) {

@@ -120,7 +120,8 @@ public class ZuopinAdapter extends BaseQuickAdapter<IndexListBean, BaseViewHolde
                 .setText(R.id.tv_recommendfood, item.getGoodsName());
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
         GlideUtils.showHeader(mContext, HttpUri.BASE_DOMAIN + item.getAvatar(), (ImageView) helper.getView(R.id.user_circleImage));
-        if (item.getUid().equals(MyApplication.getInstance().getUseruid())) {
+        if (MyApplication.getInstance().getUserInfo()!=null||
+                item.getUid().equals(MyApplication.getInstance().getUserInfo().uid)) {
             helper.setVisible(R.id.user_attention, false);
         } else if (item.isFollowStatus()) {
             helper.setVisible(R.id.user_attention, true)
@@ -200,7 +201,8 @@ public class ZuopinAdapter extends BaseQuickAdapter<IndexListBean, BaseViewHolde
         helper.getView(R.id.iv_usershare).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final UMWeb web = new UMWeb(HttpUri.BASE_DOMAIN + item.getVideoUrl());
+                final UMWeb web = new UMWeb("http://shortvideo.jdecology.com/share/" + item.getVid());
+//                final UMWeb web = new UMWeb(HttpUri.BASE_DOMAIN + item.getVideoUrl());
                 web.setTitle(item.getNickName());
 //                web.setThumb(umImage);
                 web.setDescription(item.getVideoDesc());

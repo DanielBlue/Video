@@ -174,7 +174,8 @@ public class AttentionPersonVideoAdapter extends MyAllBaseAdapter<IndexListBean,
             holder.iv_attentionperson_shareimg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    web = new UMWeb(HttpUri.BASE_DOMAIN + datas.get(position).getVideoUrl());
+                    web = new UMWeb("http://shortvideo.jdecology.com/share/" + datas.get(position).getVid());
+//                    web = new UMWeb(HttpUri.BASE_DOMAIN + datas.get(position).getVideoUrl());
                     web.setTitle(datas.get(position).getNickName());
 //                    web.setThumb(umImage);
                     web.setDescription(datas.get(position).getVideoDesc());

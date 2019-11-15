@@ -19,6 +19,7 @@ import android.location.LocationManager;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -444,17 +445,24 @@ public class PublishVideoActivity extends AppCompatActivity implements View.OnCl
     //保存视频
     public void saveVideo(final TidalPatRecordDraftBean tidalPatRecordDraftBean) {
         if (TextUtils.isEmpty(tidalPatRecordDraftBean.getVideoName())) {
-//            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH, System.currentTimeMillis() + ".mp4");
+            String videoPath = mTidalPatRecordDraftBean.getVideoLocalUrl();
+            File file = new File(videoPath);
 
-            ToastTool.showShort(this, "保存成功！");
-            ContentResolver localContentResolver = getContentResolver();
-            ContentValues localContentValues = getVideoContentValues(new File(mTidalPatRecordDraftBean.getVideoLocalUrl()), System.currentTimeMillis());
-            Uri localUri = localContentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, localContentValues);
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri));
+            if (file.exists()) {
+                File newFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/");
+                FileUtils.copyFile(file.getAbsolutePath(),newFile.getAbsolutePath(),"video.mp4");
+
+                ContentResolver localContentResolver = getContentResolver();
+                ContentValues localContentValues = getVideoContentValues(this, newFile, System.currentTimeMillis());
+                Uri localUri = localContentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, localContentValues);
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri));
+
+                ToastTool.showShort(this, "保存成功："+newFile.getPath());
+            }
         }
     }
 
-    public static ContentValues getVideoContentValues(File paramFile, long paramLong) {
+    public ContentValues getVideoContentValues(Context paramContext, File paramFile, long paramLong) {
         ContentValues localContentValues = new ContentValues();
         localContentValues.put("title", paramFile.getName());
         localContentValues.put("_display_name", paramFile.getName());

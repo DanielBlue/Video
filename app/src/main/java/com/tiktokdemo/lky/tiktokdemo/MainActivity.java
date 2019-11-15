@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.main_record_btn:
                 if (MyApplication.getInstance().getUserInfo() != null) {
-                    if (!FileUtils.checkFileExits(mLocalMusicPath)) {
-                        FileUtils.copyFileFromAssets(this, LOCAL_MUSIC_NAME, Constant.PIC_FILE);
-                    }
+//                    if (!FileUtils.checkFileExits(mLocalMusicPath)) {
+//                        FileUtils.copyFileFromAssets(this, LOCAL_MUSIC_NAME, Constant.PIC_FILE);
+//                    }
                     MusicBean searchMusicResultBean = new MusicBean();
                     searchMusicResultBean.setMusicId(1);
                     searchMusicResultBean.setUrl(mLocalMusicPath);

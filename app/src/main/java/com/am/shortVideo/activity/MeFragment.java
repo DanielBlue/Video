@@ -1,6 +1,8 @@
 package com.am.shortVideo.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -11,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -94,6 +97,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private int curSelect = 0;
     private MeVideoAdapter mAdapter;
     private int currentPage = 1;
+    private ProgressDialog progressDialog;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -157,10 +161,24 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                             });
                             mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
                                 @Override
-                                public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                                public void onItemChildClick(BaseQuickAdapter adapter, View view, final int position) {
                                     switch (view.getId()) {
                                         case R.id.btn_del:
-                                            deleteVideo(position);
+                                            new AlertDialog.Builder(getActivity(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+                                                    .setMessage("确定删除该视频吗")
+                                                    .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+
+                                                        }
+                                                    })
+                                                    .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            deleteVideo(position);
+                                                        }
+                                                    })
+                                                    .show();
                                             break;
                                     }
                                 }
@@ -171,6 +189,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                                     getVideoList();
                                 }
                             }, me_recycleview);
+                            mAdapter.disableLoadMoreIfNotFullPage();
                         }
 
                         List<IndexListBean> indexList = serachPublishVideo.getData().getIndexList();
@@ -212,34 +231,41 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      * 删除作品
      */
     private void deleteVideo(final int position) {
-        String vid = mAdapter.getData().get(position).getVid();
-        oktHttpUtil.setPostRequest(HttpUri.BASE_URL + "/api/video/delete/" + vid, MyApplication.getInstance().getMaps(), new HashMap<String, String>(), new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+        if (position >= 0) {
+            progressDialog.show();
+            String vid = mAdapter.getData().get(position).getVid();
+            oktHttpUtil.setPostRequest(HttpUri.BASE_URL + "/api/video/delete/" + vid, MyApplication.getInstance().getMaps(), new HashMap<String, String>(), new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String result = response.body().string();
-                MyApplication.mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject jsonObject = new JSONObject(result);
-                            if (jsonObject.getInt("code") == 0) {
-                                mAdapter.remove(position);
-                                Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getActivity(), jsonObject.getInt("message"), Toast.LENGTH_SHORT).show();
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    progressDialog.dismiss();
+                    final String result = response.body().string();
+                    MyApplication.mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                if (jsonObject.getInt("code") == 0) {
+                                    if (position < mAdapter.getData().size()) {
+                                        mAdapter.remove(position);
+                                        Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(getActivity(), jsonObject.getInt("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
     }
 
     private String mUid;
@@ -328,6 +354,12 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         slidinmenu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
 //        slidinmenu.showContent();
 //        slidinmenu.toggle();
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("加载中...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+
         return view;
     }
 
@@ -339,6 +371,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        currentPage = 1;
         initData();
     }
 
@@ -379,6 +412,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             public void onRefresh() {
                 if (curSelect == 0) {
                     if (MyApplication.getInstance().getUserInfo() != null) {
+                        currentPage = 1;
                         initData();
                     } else {
                         me_swiprefreshlayout.setRefreshing(false);
@@ -427,9 +461,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getLoginStatus(MessageWrap messageWrap) {
         Log.d(TAG, "getLoginStatus: ");
-        if (messageWrap.getMessage().equals("true")) {
-            initData();
-        } else if (messageWrap.getMessage().equals("false")) {
+        if (messageWrap.getMessage().equals("false")) {
             me_circleImageView.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.default_avatar));
             me_nickname.setText("");
             me_useraccount.setText("");
@@ -437,7 +469,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             me_fanscount.setText("");
             me_zanscount.setText("");
             me_attentioncount.setText("");
-            initData();
         }
     }
 
@@ -526,7 +557,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 }
 
                 HashMap<String, String> maps = new HashMap<>();
-                maps.put("user_id", MyApplication.getInstance().getUseruid());
+                maps.put("user_id", MyApplication.getInstance().getUserInfo() == null ? ""
+                        : MyApplication.getInstance().getUserInfo().uid);
                 oktHttpUtil.setPostRequest(HttpUri.BASE_URL + HttpUri.LoginOrRegister.REQUEST_HEADER_LOGOUT
                         , ((MyApplication) getActivity().getApplicationContext()).getMaps(), maps, new Callback() {
                             @Override
@@ -560,6 +592,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     public void getCaoGaoImg(String path) {
         File file = new File(path);
         if (!file.exists()) {
+            me_swiprefreshlayout.setRefreshing(false);
             Toast.makeText(getActivity(), "没有相关文件", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -579,6 +612,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         }
         if (bitmaps.isEmpty()) {
             Toast.makeText(getActivity(), "没有相关文件", Toast.LENGTH_SHORT).show();
+            me_swiprefreshlayout.setRefreshing(false);
             return;
         }
         CaogaoImgAdapter caogaoImgAdapter = new CaogaoImgAdapter(bitmaps, getActivity());

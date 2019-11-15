@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <files-path name="files" path="files" />
-    <cache-path name="name" path="path" />
-    <external-path name="external" path="." />
-    <external-files-path name="name" path="path" />
-    <external-cache-path name="name" path="path" />
+    <!--cache/img-->
+    <external-cache-path path="/img" name="img"/>
+    <!--外部根目录-->
+    <root-path path="/" name="root"/>
+
+    <external-path path="/ShiBo/" name="file_dir"/>
+
+    <external-path name="beta_external_path" path="Download/"/>
+
+    <external-path name="beta_external_files_path" path="Android/data/"/>
 </paths>

@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -75,13 +74,18 @@ public class ShortVideoAdapter extends BaseQuickAdapter<IndexListBean, BaseViewH
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
         GlideUtils.showHeader(mContext, HttpUri.BASE_DOMAIN + item.getAvatar(), (ImageView) helper.getView(R.id.user_circleImage));
 
-        if (item.isFollowStatus() || TextUtils.equals(item.getUid(), ((MyApplication) mContext.getApplicationContext()).getUseruid())) {
-            helper.setVisible(R.id.user_attention, true)
-                    .setBackgroundRes(R.id.user_attention, R.mipmap.list_follow);
+        if (MyApplication.getInstance().getUserInfo() != null && item.getUid().equals(MyApplication.getInstance().getUserInfo().uid)) {
+            helper.setVisible(R.id.user_attention, false);
         } else {
-            helper.setVisible(R.id.user_attention, true)
-                    .setBackgroundRes(R.id.user_attention, R.mipmap.add);
+            if (item.isFollowStatus()) {
+                helper.setVisible(R.id.user_attention, true)
+                        .setBackgroundRes(R.id.user_attention, R.mipmap.list_follow);
+            } else {
+                helper.setVisible(R.id.user_attention, true)
+                        .setBackgroundRes(R.id.user_attention, R.mipmap.add);
+            }
         }
+
         if (item.isLikeStatus()) {
             helper.setImageResource(R.id.iv_support, R.mipmap.list_xihuan);
         } else {
@@ -213,7 +217,8 @@ public class ShortVideoAdapter extends BaseQuickAdapter<IndexListBean, BaseViewH
         helper.getView(R.id.iv_usershare).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final UMWeb web = new UMWeb(HttpUri.BASE_DOMAIN + item.getVideoUrl());
+                final UMWeb web = new UMWeb("http://shortvideo.jdecology.com/share/" + item.getVid());
+//                final UMWeb web = new UMWeb(HttpUri.BASE_DOMAIN + item.getVideoUrl());
                 web.setTitle(item.getNickName());
 //                web.setThumb(umImage);
                 web.setDescription(item.getVideoDesc());

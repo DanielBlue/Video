@@ -529,7 +529,7 @@ public class RecordVideoPresenter implements RecordVideoContract.Presenter {
 
                 @Override
                 public void onRecordError(String msg) {
-                    mView.showToast(msg);
+//                    mView.showToast(msg);
                 }
 
                 @Override

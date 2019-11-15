@@ -65,11 +65,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 case 1:
                     UserInfo userInfo = (UserInfo) msg.obj;
                     if (userInfo.getCode() == 0) {
-                        isLogin = true;
                         Intent intent = new Intent(MainActivity.this, RecordVideoActivity.class);
                         startActivity(intent);
                     } else if (userInfo.getCode() == 1005) {
-                        isLogin = false;
                         BaseUtils.getLoginDialog(MainActivity.this).show();
                     }
                     break;
@@ -100,7 +98,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mHandler.sendMessage(message);
         }
     };
-    private boolean isLogin;
 
 
     @Override
@@ -161,8 +158,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initView() {
-        isLogin = MyApplication.getInstance().getUserInfo() != null;
-
         iv_home = (ImageView) findViewById(R.id.iv_home);
         iv_attention = (ImageView) findViewById(R.id.iv_attention);
         bt_capture = (Button) findViewById(R.id.bt_capture);
@@ -180,10 +175,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getLoginStatus(MessageWrap messageWrap) {
         Log.d(TAG, "getLoginStatus: ");
-        if (messageWrap.getMessage().equals("true")) {
-            isLogin = true;
-        } else if (messageWrap.getMessage().equals("false")) {
-            isLogin = false;
+        if (messageWrap.getMessage().equals("false")) {
             updateHomeRedDotState(false);
         }
     }
@@ -234,7 +226,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 switchFragment(1);
                 break;
             case R.id.bt_capture:
-                if (isLogin) {
+                if (MyApplication.getInstance().getUserInfo() != null) {
                     Intent intent = new Intent(MainActivity.this, RecordVideoActivity.class);
                     startActivity(intent);
                 } else {

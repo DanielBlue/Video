@@ -44,6 +44,7 @@
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
+        android:roundIcon="@mipmap/app_icon_round"
         android:theme="@style/Dialog_Fullscreen">
         <activity android:name=".activity.AtPersonActivity">
         </activity>
@@ -58,16 +59,19 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.FansActivity"
+        <activity
+            android:name=".activity.FansActivity"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".activity.LikeListActivity"
+        <activity
+            android:name=".activity.LikeListActivity"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".activity.CommentAndActivity"
+        <activity
+            android:name=".activity.CommentAndActivity"
             android:screenOrientation="portrait"
             />
         <activity
@@ -77,21 +81,26 @@
         </activity>
         <activity
             android:name=".activity.OtherUserInfoActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.HomeShowVideoActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-        <activity android:name=".activity.ShortVideoPlayingActivity"
+        <activity
+            android:name=".activity.HomeShowVideoActivity"
             android:screenOrientation="portrait"
             >
         </activity>
-        <activity android:name=".activity.RegisterActivity"
+        <activity
+            android:name=".activity.ShortVideoPlayingActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+        <activity
+            android:name=".activity.RegisterActivity"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".activity.LoginActivity"
+        <activity
+            android:name=".activity.LoginActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             >
         </activity>
@@ -105,33 +114,42 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
-        <activity android:name=".activity.SwitchChannelActivity"
+        <activity
+            android:name=".activity.SwitchChannelActivity"
             android:screenOrientation="portrait"
             >
         </activity>
-        <activity android:name=".activity.LookFullScreenVideo"
+        <activity
+            android:name=".activity.LookFullScreenVideo"
             android:screenOrientation="portrait"
             >
         </activity>
-        <activity android:name=".activity.ZuopinPlayingActivity"
+        <activity
+            android:name=".activity.ZuopinPlayingActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            />
+        <activity
+            android:name=".activity.CaogaoPlayingActivity"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".activity.CaogaoPlayingActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".activity.UpdateAppActivity"
+        <activity
+            android:name=".activity.UpdateAppActivity"
             android:screenOrientation="portrait"
             >
         </activity>
-        <activity android:name=".activity.ResetPasswordActivity"
+        <activity
+            android:name=".activity.ResetPasswordActivity"
             android:screenOrientation="portrait"
             >
         </activity>
-        <activity android:name=".activity.ChangePassword"
+        <activity
+            android:name=".activity.ChangePassword"
             android:screenOrientation="portrait"
             >
         </activity>
-        <activity android:name=".activity.SelectOnOrOffMessageActivity"
+        <activity
+            android:name=".activity.SelectOnOrOffMessageActivity"
             android:screenOrientation="portrait"
             >
         </activity> <!-- 微信界面 -->
@@ -144,20 +162,20 @@
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
-            android:noHistory="true" >
+            android:noHistory="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="tencent101783528" />
+                <data android:scheme="tencent101783528"/>
             </intent-filter>
         </activity>
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
 
         <!-- 视频录制相关功能 -->
@@ -166,6 +184,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name="com.tiktokdemo.lky.tiktokdemo.record.RecordVideoActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
         <activity

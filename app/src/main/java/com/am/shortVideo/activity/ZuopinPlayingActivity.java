@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.am.shortVideo.EventBean.CommentCountEvent;
 import com.am.shortVideo.R;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.umeng.socialize.UMShareAPI;
@@ -153,12 +152,13 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
         layoutManger = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRvList.setLayoutManager(layoutManger);
         mAdapter = new ZuopinAdapter(datas);
-        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-            @Override
-            public void onLoadMoreRequested() {
-                requsetVideo();
-            }
-        }, mRvList);
+        mAdapter.setEnableLoadMore(false);
+//        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+//            @Override
+//            public void onLoadMoreRequested() {
+//                requsetVideo();
+//            }
+//        }, mRvList);
         mRvList.setAdapter(mAdapter);
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

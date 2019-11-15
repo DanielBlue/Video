@@ -1,8 +1,10 @@
 package adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,12 +63,26 @@ public class CaogaoImgAdapter extends MyAllBaseAdapter<PublishVideoInfo, MyBaseV
             userVideoViewHolder.btn_del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    File file = new File(dates.get(position).getLocalurl());
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    dates.remove(position);
-                    notifyDataSetChanged();
+                    new AlertDialog.Builder(context, R.style.Theme_AppCompat_Light_Dialog_Alert)
+                            .setMessage("确定删除该视频吗")
+                            .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    File file = new File(dates.get(position).getLocalurl());
+                                    if (file.exists()) {
+                                        file.delete();
+                                    }
+                                    dates.remove(position);
+                                    notifyDataSetChanged();
+                                }
+                            })
+                            .show();
                 }
             });
             userVideoViewHolder.iv_user_publishvideo.setOnClickListener(new View.OnClickListener() {

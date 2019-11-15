@@ -557,8 +557,8 @@ public class VideoPlayActivity extends Activity implements View.OnClickListener,
      */
     public void saveVideo(final TidalPatRecordDraftBean tidalPatRecordDraftBean) {
         if (TextUtils.isEmpty(tidalPatRecordDraftBean.getVideoName())) {
-            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH, System.currentTimeMillis() + ".mp4");
-            ToastTool.showShort(this, "视频已保存至：" + Constant.RECORD_VIDEO_PATH + File.separator + System.currentTimeMillis() + ".mp4");
+//            FileUtils.copyFile(mTidalPatRecordDraftBean.getVideoLocalUrl(), Constant.RECORD_VIDEO_PATH, System.currentTimeMillis() + ".mp4");
+//            ToastTool.showShort(this, "视频已保存至：" + Constant.RECORD_VIDEO_PATH + File.separator + System.currentTimeMillis() + ".mp4");
             clearCacheDataAndStartMainActivity(true);
         }
     }
