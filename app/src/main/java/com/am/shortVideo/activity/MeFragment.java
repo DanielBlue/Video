@@ -462,13 +462,14 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     public void getLoginStatus(MessageWrap messageWrap) {
         Log.d(TAG, "getLoginStatus: ");
         if (messageWrap.getMessage().equals("false")) {
-            me_circleImageView.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.default_avatar));
-            me_nickname.setText("");
-            me_useraccount.setText("");
-            me_personalcontent.setText("");
-            me_fanscount.setText("");
-            me_zanscount.setText("");
-            me_attentioncount.setText("");
+//            me_circleImageView.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.default_avatar));
+//            me_nickname.setText("");
+//            me_useraccount.setText("");
+//            me_personalcontent.setText("");
+//            me_fanscount.setText("");
+//            me_zanscount.setText("");
+//            me_attentioncount.setText("");
+            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         }
     }
 

@@ -206,6 +206,8 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
             mViewDotSupport.setVisibility(View.INVISIBLE);
             mViewDotFans.setVisibility(View.INVISIBLE);
             mViewDotComment.setVisibility(View.INVISIBLE);
+
+            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         }
     }
 

@@ -153,7 +153,6 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         comment_recycleview.addItemDecoration(new RecycleViewDivider(context, LinearLayout.VERTICAL, 2, 0, 0, context.getResources().getColor(R.color.colorDarkGray)));
 
         bt_sendcomment.setOnClickListener(this);
-//        ed_comment.setOnClickListener(this);
         bt_hidepop.setOnClickListener(this);
         bt_at.setOnClickListener(this);
 
@@ -297,14 +296,13 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        if (MyApplication.getInstance().getUserInfo() != null) {
+        if (v.getId() == R.id.bt_commentcancel) {
+            KeyboardUtils.hideSoftInput(ed_comment);
+            dismiss();
+        } else if (MyApplication.getInstance().getUserInfo() != null) {
             switch (v.getId()) {
                 case R.id.bt_sendcomment:
-//                    closeKeybord(ed_comment, context);
                     KeyboardUtils.hideSoftInput(ed_comment);
-                    //String addData=ed_comment.getText().toString();
-                    //comentdatas.add(addData);
-                    //commentAdapter.notifyDataSetChanged();
                     String url = "";
                     HashMap<String, String> maps = new HashMap<>();
                     if (currentStatus == 0) {
@@ -390,7 +388,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                                                     commentAdapter.setOnAuthorityReplayLinstener(new CommentAdapter.AuthorityReplayCallBack() {
                                                                         @Override
                                                                         public void authorityReplayData(int position) {
-                                                                            if (comentdatas.get(position).getAuthorReply()==null){
+                                                                            if (comentdatas.get(position).getAuthorReply() == null) {
                                                                                 currentStatus = 2;
                                                                                 isAtClick = false;
                                                                                 authorytReplayPosition = position;
@@ -399,7 +397,7 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                                                                 ed_comment.requestFocus();
 //                                                                            openKeybord(ed_comment, context);
                                                                                 KeyboardUtils.showSoftInput(ed_comment);
-                                                                            }else {
+                                                                            } else {
                                                                                 Toast.makeText(context, "该评论已回复", Toast.LENGTH_SHORT).show();
                                                                             }
                                                                         }
@@ -423,15 +421,6 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
                                     }
                                 }
                             });
-                    break;
-//                case R.id.et_comment:
-////                    openKeybord(ed_comment, context);
-//                    KeyboardUtils.showSoftInput(ed_comment);
-//
-//                    break;
-                case R.id.bt_commentcancel:
-                    KeyboardUtils.hideSoftInput(ed_comment);
-                    dismiss();
                     break;
                 case R.id.bt_at:
                     AtPersonActivity.start(getActivity());

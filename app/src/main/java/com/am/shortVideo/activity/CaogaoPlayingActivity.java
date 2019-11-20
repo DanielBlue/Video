@@ -93,11 +93,13 @@ public class CaogaoPlayingActivity extends BaseActivity implements View.OnClickL
             }
         });
 //        getCaoGaoImg(Constant.RECORD_VIDEO_PATH);
+        final int position = getIntent().getBundleExtra("data").getInt("position", 0);
+        mRvList.scrollToPosition(position);
         MyApplication.mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (mCurPlayer == null) {
-                    startPlay(0);
+                    startPlay(position);
                 }
             }
         }, 500);

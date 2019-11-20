@@ -157,20 +157,20 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
         UserInfoBean userInfo = MyApplication.getInstance().getUserInfo();
         if (userInfo != null) {
             if (userInfo.level == 1) {
-                mPresenter.setAUDIO_PLAY_DURATION(20);
-                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("20秒");
-            } else if (userInfo.level == 2) {
                 mPresenter.setAUDIO_PLAY_DURATION(30);
                 ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("30秒");
+            } else if (userInfo.level == 2) {
+                mPresenter.setAUDIO_PLAY_DURATION(40);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("40秒");
             } else if (userInfo.level == 3) {
-                mPresenter.setAUDIO_PLAY_DURATION(45);
-                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("45秒");
+                mPresenter.setAUDIO_PLAY_DURATION(55);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("55秒");
             } else if (userInfo.level == 4) {
-                mPresenter.setAUDIO_PLAY_DURATION(60);
-                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("60秒");
+                mPresenter.setAUDIO_PLAY_DURATION(80);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("80秒");
             } else {
-                mPresenter.setAUDIO_PLAY_DURATION(15);
-                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("15秒");
+                mPresenter.setAUDIO_PLAY_DURATION(20);
+                ((TextView) findViewById(R.id.item_record_time_selector_txt_15)).setText("20秒");
             }
 
         }
@@ -978,17 +978,17 @@ public class RecordVideoActivity extends Activity implements View.OnClickListene
 //        resetRecord();
         UserInfoBean userInfo = MyApplication.getInstance().getUserInfo();
         if (userInfo.level == 0) {
-            mPresenter.setMaxRecordTime(15000);
-        } else if (userInfo.level == 1) {
             mPresenter.setMaxRecordTime(20000);
-        } else if (userInfo.level == 2) {
+        } else if (userInfo.level == 1) {
             mPresenter.setMaxRecordTime(30000);
+        } else if (userInfo.level == 2) {
+            mPresenter.setMaxRecordTime(40000);
         } else if (userInfo.level == 3) {
-            mPresenter.setMaxRecordTime(45000);
+            mPresenter.setMaxRecordTime(55000);
         } else if (userInfo.level == 4) {
-            mPresenter.setMaxRecordTime(60000);
+            mPresenter.setMaxRecordTime(80000);
         } else {
-            mPresenter.setMaxRecordTime(15000);
+            mPresenter.setMaxRecordTime(20000);
         }
         mSpeedLevelControllerView.setVisibility(View.VISIBLE);
         mBreakProgressView.setMax(mPresenter.getMaxRecordTime());

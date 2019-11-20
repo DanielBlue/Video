@@ -95,6 +95,7 @@ public class CaogaoImgAdapter extends MyAllBaseAdapter<PublishVideoInfo, MyBaseV
                     Intent intent = new Intent(context, CaogaoPlayingActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("datas", (Serializable) videoUrlList);
+                    bundle.putInt("position", position);
                     bundle.putInt("type", 5);
                     intent.putExtra("data", bundle);
                     context.startActivity(intent);

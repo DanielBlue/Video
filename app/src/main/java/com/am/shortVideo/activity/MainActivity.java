@@ -177,6 +177,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Log.d(TAG, "getLoginStatus: ");
         if (messageWrap.getMessage().equals("false")) {
             updateHomeRedDotState(false);
+            switchFragment(0);
         }
     }
 
@@ -273,9 +274,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case 1:
                 if (attentionFragment == null) {
                     attentionFragment = new AttentionFragment();
-                    fragmentTran.add(R.id.fl_container, attentionFragment);
-                } else {
+                }
+                if (attentionFragment.isAdded()) {
                     fragmentTran.show(attentionFragment);
+                } else {
+                    fragmentTran.add(R.id.fl_container, attentionFragment);
                 }
                 break;
             case 2:
@@ -285,21 +288,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case 3:
                 if (messageFragment == null) {
                     messageFragment = new MessageFragment();
-                    fragmentTran.add(R.id.fl_container, messageFragment);
-                } else {
+                }
+                if (messageFragment.isAdded()) {
                     fragmentTran.show(messageFragment);
+                } else {
+                    fragmentTran.add(R.id.fl_container, messageFragment);
                 }
 
                 break;
             case 4:
                 if (meFragment == null) {
                     meFragment = new MeFragment();
-                    fragmentTran.add(R.id.fl_container, meFragment);
-                } else {
+                }
+                if (meFragment.isAdded()) {
                     fragmentTran.show(meFragment);
                     if (MyApplication.getInstance().getUserInfo() != null) {
                         meFragment.initData();
                     }
+                } else {
+                    fragmentTran.add(R.id.fl_container, meFragment).show(meFragment);
                 }
                 break;
             default:
