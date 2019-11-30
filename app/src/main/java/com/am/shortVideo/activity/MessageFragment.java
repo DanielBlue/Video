@@ -185,11 +185,11 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
                 int pushType = ((RedDotEvent) event).getPushType();
                 boolean isShow = ((RedDotEvent) event).isShow();
                 if (pushType == 1) {
-                    mViewDotSupport.setVisibility(isShow?View.VISIBLE:View.INVISIBLE);
+                    mViewDotSupport.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
                 } else if (pushType == 2) {
-                    mViewDotFans.setVisibility(isShow?View.VISIBLE:View.INVISIBLE);
+                    mViewDotFans.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
                 } else if (pushType == 3) {
-                    mViewDotComment.setVisibility(isShow?View.VISIBLE:View.INVISIBLE);
+                    mViewDotComment.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
                 }
 
                 updateHomeRedDotState();
@@ -201,7 +201,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener {
     public void getLoginStatus(MessageWrap messageWrap) {
         Log.d(TAG, "getLoginStatus: ");
         if (messageWrap.getMessage().equals("true")) {
-
+            initData();
         } else if (messageWrap.getMessage().equals("false")) {
             mViewDotSupport.setVisibility(View.INVISIBLE);
             mViewDotFans.setVisibility(View.INVISIBLE);

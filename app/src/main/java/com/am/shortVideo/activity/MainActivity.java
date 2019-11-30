@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -134,20 +133,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-//        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putInt("POSITIONKEY", curFragment);
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+////        super.onSaveInstanceState(outState, outPersistentState);
+//        outState.putInt("POSITIONKEY", curFragment);
+//    }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        // 获取保存的数组下标
-        curFragment = savedInstanceState.getInt("POSITIONKEY");
-        // 回复视图状态，恢复为fragmen的切换状态
-        switchFragment(curFragment);
-        super.onRestoreInstanceState(savedInstanceState);
-    }
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        // 获取保存的数组下标
+//        curFragment = savedInstanceState.getInt("POSITIONKEY");
+//        // 回复视图状态，恢复为fragmen的切换状态
+//        switchFragment(curFragment);
+//        super.onRestoreInstanceState(savedInstanceState);
+//    }
 
     private void setLinstener() {
         iv_home.setOnClickListener(this);
@@ -177,6 +176,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Log.d(TAG, "getLoginStatus: ");
         if (messageWrap.getMessage().equals("false")) {
             updateHomeRedDotState(false);
+            switchFragment(0);
+        } else {
             switchFragment(0);
         }
     }
@@ -224,7 +225,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 switchFragment(0);
                 break;
             case R.id.iv_attention:
-                switchFragment(1);
+                if (MyApplication.getInstance().getUserInfo() != null) {
+                    switchFragment(1);
+                } else {
+                    BaseUtils.getLoginDialog(MainActivity.this).show();
+                }
                 break;
             case R.id.bt_capture:
                 if (MyApplication.getInstance().getUserInfo() != null) {
@@ -236,7 +241,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.iv_message:
-                switchFragment(3);
+                if (MyApplication.getInstance().getUserInfo() != null) {
+                    switchFragment(3);
+                } else {
+                    BaseUtils.getLoginDialog(MainActivity.this).show();
+                }
                 break;
             case R.id.iv_me:
                 switchFragment(4);

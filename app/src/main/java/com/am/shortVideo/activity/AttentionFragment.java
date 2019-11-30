@@ -86,9 +86,14 @@ public class AttentionFragment extends Fragment implements View.OnClickListener 
     public void getLoginStatus(MessageWrap messageWrap) {
         Log.d(TAG, "getLoginStatus: ");
         if (messageWrap.getMessage().equals("true")) {
+            if (attentionPersonFragment == null) {
+                attentionPersonFragment.onRefresh();
+            }
+            if (videoShowFragment == null) {
+                videoShowFragment.onRefresh();
+            }
 
         } else if (messageWrap.getMessage().equals("false")) {
-
             getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         }
     }

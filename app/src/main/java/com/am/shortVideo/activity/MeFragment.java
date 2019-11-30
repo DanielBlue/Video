@@ -136,65 +136,61 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         if (mAdapter != null) {
                             mAdapter.replaceData(new ArrayList<IndexListBean>());
                         }
-                        me_recycleview2.setAdapter(null);
                     }
                     break;
                 case 2:
                     SerachPublishVideo serachPublishVideo = (SerachPublishVideo) msg.obj;
                     if (serachPublishVideo.getCode() == 0) {
-                        if (mAdapter == null) {
-                            mAdapter = new MeVideoAdapter(new ArrayList<IndexListBean>());
-                            me_recycleview.setAdapter(mAdapter);
-                            mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                                    Intent intent = new Intent(getActivity(), ZuopinPlayingActivity.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable("datas", (Serializable) mAdapter.getData());
-                                    bundle.putInt("position", position);
-                                    bundle.putSerializable("videourl", mAdapter.getData().get(position));
-                                    bundle.putInt("type", 4);
-                                    intent.putExtra("homeVideoImg", bundle);
-                                    intent.putExtra("user_uid", mAdapter.getData().get(position).getUid());
-                                    getActivity().startActivity(intent);
-                                }
-                            });
-                            mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
-                                @Override
-                                public void onItemChildClick(BaseQuickAdapter adapter, View view, final int position) {
-                                    switch (view.getId()) {
-                                        case R.id.btn_del:
-                                            new AlertDialog.Builder(getActivity(), R.style.Theme_AppCompat_Light_Dialog_Alert)
-                                                    .setMessage("确定删除该视频吗")
-                                                    .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-
-                                                        }
-                                                    })
-                                                    .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            deleteVideo(position);
-                                                        }
-                                                    })
-                                                    .show();
-                                            break;
-                                    }
-                                }
-                            });
-                            mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-                                @Override
-                                public void onLoadMoreRequested() {
-                                    getVideoList();
-                                }
-                            }, me_recycleview);
-                            mAdapter.disableLoadMoreIfNotFullPage();
-                        }
-
                         List<IndexListBean> indexList = serachPublishVideo.getData().getIndexList();
                         if (indexList.size() > 0) {
                             if (currentPage++ == 1) {
+                                mAdapter = new MeVideoAdapter(new ArrayList<IndexListBean>());
+                                me_recycleview.setAdapter(mAdapter);
+                                mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                        Intent intent = new Intent(getActivity(), ZuopinPlayingActivity.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("datas", (Serializable) mAdapter.getData());
+                                        bundle.putInt("position", position);
+                                        bundle.putSerializable("videourl", mAdapter.getData().get(position));
+                                        bundle.putInt("type", 4);
+                                        intent.putExtra("homeVideoImg", bundle);
+                                        intent.putExtra("user_uid", mAdapter.getData().get(position).getUid());
+                                        getActivity().startActivity(intent);
+                                    }
+                                });
+                                mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+                                    @Override
+                                    public void onItemChildClick(BaseQuickAdapter adapter, View view, final int position) {
+                                        switch (view.getId()) {
+                                            case R.id.btn_del:
+                                                new AlertDialog.Builder(getActivity(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+                                                        .setMessage("确定删除该视频吗")
+                                                        .setNegativeButton(R.string.bt_eidtorcancel, new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                            }
+                                                        })
+                                                        .setPositiveButton(R.string.bt_eidtorconfirm, new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                deleteVideo(position);
+                                                            }
+                                                        })
+                                                        .show();
+                                                break;
+                                        }
+                                    }
+                                });
+                                mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+                                    @Override
+                                    public void onLoadMoreRequested() {
+                                        getVideoList();
+                                    }
+                                }, me_recycleview);
+                                mAdapter.disableLoadMoreIfNotFullPage();
                                 mAdapter.setNewData(indexList);
                             } else {
                                 mAdapter.addData(indexList);
@@ -205,6 +201,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                         }
                         if (curSelect == 0) {
                             me_recycleview.setVisibility(View.VISIBLE);
+                            me_recycleview2.setVisibility(View.GONE);
                         }
                     }
                     break;
@@ -327,6 +324,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private Button bt_menu;
     private LinearLayout ll1;
     private LinearLayout ll2;
+    private LinearLayout ll7;
     private LinearLayout ll3;
     private LinearLayout ll4;
     private LinearLayout ll5;
@@ -343,7 +341,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         oktHttpUtil = ((MyApplication) getActivity().getApplication()).getOkHttpUtil();
         EventBus.getDefault().register(this);
         initView();
-//        initData();
         slidinmenu = new SlidingMenu(getActivity());
         slidinmenu.setMode(SlidingMenu.RIGHT);
         slidinmenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
@@ -359,7 +356,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         progressDialog.setMessage("加载中...");
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
-
         return view;
     }
 
@@ -380,12 +376,14 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         view1 = LayoutInflater.from(getActivity()).inflate(R.layout.layout_right_menu, null);
         ll1 = (LinearLayout) view1.findViewById(R.id.ll1);
         ll2 = (LinearLayout) view1.findViewById(R.id.ll2);
+        ll7 = (LinearLayout) view1.findViewById(R.id.ll7);
         ll3 = (LinearLayout) view1.findViewById(R.id.ll3);
         ll4 = (LinearLayout) view1.findViewById(R.id.ll4);
         ll5 = (LinearLayout) view1.findViewById(R.id.ll5);
         ll6 = (LinearLayout) view1.findViewById(R.id.ll6);
         ll1.setOnClickListener(this);
         ll2.setOnClickListener(this);
+        ll7.setOnClickListener(this);
         ll3.setOnClickListener(this);
         ll4.setOnClickListener(this);
         ll5.setOnClickListener(this);
@@ -444,6 +442,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
 //                        ,((MyApplication)getActivity().getApplication()).getMaps(),maps,video_zuopingCallback);
             }
         });
+        me_recycleview.setVisibility(View.VISIBLE);
         me_recycleview2.setVisibility(View.GONE);
     }
 
@@ -503,7 +502,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                     me_recycleview2.setVisibility(View.GONE);
                     me_line3.setVisibility(View.VISIBLE);
                     me_line2.setVisibility(View.GONE);
-                    initData();
                 }
                 break;
             case R.id.bt_menu:
@@ -523,9 +521,12 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 Log.d(TAG, "onClick: ll1");
                 startActivity(new Intent(getActivity(), AboutUsActivity.class));
                 break;
+
+            case R.id.ll7://隐私协议
+                UserAgreementActivity.start(getActivity(), 1);
+                break;
             case R.id.ll2://用户协议
-                Log.d(TAG, "onClick: ll2");
-                startActivity(new Intent(getActivity(), UserAgreementActivity.class));
+                UserAgreementActivity.start(getActivity(), 2);
                 break;
             case R.id.ll3://账号管理
                 Log.d(TAG, "onClick: ll3");

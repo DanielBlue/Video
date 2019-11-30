@@ -233,6 +233,14 @@ public class ZuopinPlayingActivity extends BaseActivity implements View.OnClickL
         }, 1000);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mCurPlayer != null) {
+            mCurPlayer.getCurrentPlayer().onVideoPause();
+        }
+    }
+
     private int mCurPosition = -1;
     private ShortVideoPlayer mCurPlayer;
 

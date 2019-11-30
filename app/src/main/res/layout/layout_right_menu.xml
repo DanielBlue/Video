@@ -35,12 +35,37 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll7"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/ll1"
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="10dp"
+                android:src="@mipmap/xieyi" />
+
+            <TextView
+                android:id="@+id/tv7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:text="@string/tv2_info"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/ll2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@id/ll1"
+            android:layout_below="@id/ll7"
             android:layout_marginStart="10dp"
             android:orientation="horizontal">
 
@@ -58,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
-                android:text="@string/tv2_info"
+                android:text="隐私协议"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>

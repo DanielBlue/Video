@@ -120,7 +120,7 @@ public class ZuopinAdapter extends BaseQuickAdapter<IndexListBean, BaseViewHolde
                 .setText(R.id.tv_recommendfood, item.getGoodsName());
 //        Glide.with(mContext).load(HttpUri.BASE_DOMAIN + item.getVideoUrl()).into(shortViewHolder.videoPlay.thumbImageView);
         GlideUtils.showHeader(mContext, HttpUri.BASE_DOMAIN + item.getAvatar(), (ImageView) helper.getView(R.id.user_circleImage));
-        if (MyApplication.getInstance().getUserInfo()!=null||
+        if (MyApplication.getInstance().getUserInfo() != null ||
                 item.getUid().equals(MyApplication.getInstance().getUserInfo().uid)) {
             helper.setVisible(R.id.user_attention, false);
         } else if (item.isFollowStatus()) {
@@ -444,18 +444,17 @@ public class ZuopinAdapter extends BaseQuickAdapter<IndexListBean, BaseViewHolde
         helper.getView(R.id.rl_bugfood).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!((MyApplication) mContext.getApplicationContext()).getMaps().isEmpty()) {
+                if (MyApplication.getInstance().getUserInfo() != null) {
                     if (!SystemUtils.isAvilible(mContext, "com.android.healthapp")) {
                         Toast.makeText(mContext, "请先下载健德购购App", Toast.LENGTH_SHORT).show();
                         return;
                     }
+
                     Intent intent = new Intent();
                     ComponentName componentName = new ComponentName("com.android.healthapp",
                             "com.android.healthapp.ui.activity.GoodConventionActivity");
                     intent.setComponent(componentName);
-                    intent.putExtra("good_common_id", item.getGoodsId());//id
-//                    intent = mContext.getPackageManager().getLaunchIntentForPackage("com.android.healthapp");
-//                    intent.putExtra("good_common_id", "123456");//id
+                    intent.putExtra("good_common_id", Integer.parseInt(item.getGoodsId()));//id
                     mContext.startActivity(intent);
                 } else {
                     BaseUtils.getLoginDialog(mContext).show();
