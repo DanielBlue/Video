@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -76,11 +77,11 @@ public class SelectMusicAdapter extends MyBaseAdapter<SelectMusicBean.DataBean.I
     public class SelectMusicViewHolder extends MyBaseViewHolder {
         private TextView tv_musicName;
         private TextView tv_musicDuration;
-        private RelativeLayout rl_selectmusicitem;
+        private LinearLayout rl_selectmusicitem;
 
         public SelectMusicViewHolder(View itemView) {
             super(itemView);
-            rl_selectmusicitem = (RelativeLayout) itemView.findViewById(R.id.rl_selectitem);
+            rl_selectmusicitem = (LinearLayout) itemView.findViewById(R.id.rl_selectitem);
             tv_musicName = (TextView) itemView.findViewById(R.id.music_name);
             tv_musicDuration = (TextView) itemView.findViewById(R.id.music_duration);
         }

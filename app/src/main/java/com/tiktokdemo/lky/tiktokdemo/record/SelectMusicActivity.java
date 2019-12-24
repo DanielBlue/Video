@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 import adapter.SelectMusicAdapter;
 import application.MyApplication;
@@ -42,7 +43,7 @@ import util.StatusBarUtil;
  */
 
 public class SelectMusicActivity extends AppCompatActivity implements View.OnClickListener,
-        SelectMusicAdapter.SelectBgmStatus{
+        SelectMusicAdapter.SelectBgmStatus {
     private TextView fans_title;
     private ImageView iv_back;
     private RecyclerView music_recycleview;
@@ -124,8 +125,10 @@ public class SelectMusicActivity extends AppCompatActivity implements View.OnCli
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         music_recycleview.setLayoutManager(linearLayoutManager);
         music_recycleview.addItemDecoration(new RecycleViewDivider(this, LinearLayout.VERTICAL, 2, 0, 0, getResources().getColor(R.color.gray_normal)));
+        HashMap<String, String> paramMap = new HashMap<>();
+        paramMap.put("pageSize", "100");
         okHttpUtil.sendGetRequest(HttpUri.BASE_URL + HttpUri.BGM.REQUEST_HEADER_BGM,
-                ((MyApplication) getApplicationContext()).getMaps(), selectMusicCallBack);
+                ((MyApplication) getApplicationContext()).getMaps(), paramMap, selectMusicCallBack);
         File file = new File(Constant.DOWNBGM);
         if (file.exists()) {
             for (File childFile : file.listFiles()) {

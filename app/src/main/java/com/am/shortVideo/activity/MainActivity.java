@@ -38,6 +38,7 @@ import okhttp3.Response;
 import util.BaseUtils;
 import util.HttpUri;
 import util.PreferencesUtil;
+import util.SpUtils;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
@@ -165,6 +166,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mViewDotMessage = findViewById(R.id.view_dot_message);
         fragmentManger = getSupportFragmentManager();
         switchFragment(0);
+        if (SpUtils.getBoolean("is_first",true)){
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage("\"健德视播\"在联网的过程中才可以使用,使用过程中会获取手机权限:\n" +
+                            "包含存储,定位,相机功能,您在使用健德视播过程中,对于任何及所有与您对健德视播任何服务的使用有关的任何第三方的作为、不作为和行为，健德视播概不承担责任。如果涉及违法行为,将依法向相关部门举报.\n" +
+                            "如果您不同意我们采集信息或者不同意获取相关的手机权限,会导致相关功能无法正常使用,我们将无法为您提供更好的服务.请先仔细阅读本软件用户使用协议和隐私政策.\n" +
+                            "\n" +
+                            "点击\"同意\",即表示您同意上述内容以及\"健德视播用户协议\"和\"健德视播隐私政策\"")
+                    .setPositiveButton("同意", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            SpUtils.putBoolean("is_first",false);
+                        }
+                    })
+                    .setNegativeButton("取消",new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    }).show();
+        }
     }
 
     public void updateHomeRedDotState(boolean isShow) {

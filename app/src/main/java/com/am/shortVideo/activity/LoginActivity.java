@@ -162,6 +162,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         tv_register = (TextView) findViewById(R.id.tv_register);
         tv_login = (TextView) findViewById(R.id.tv_login);
         iv_back.setOnClickListener(this);
+
+        findViewById(R.id.btn_user_agree).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserAgreementActivity.start(LoginActivity.this, 1);
+            }
+        });
+        findViewById(R.id.btn_private_link).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserAgreementActivity.start(LoginActivity.this, 2);
+            }
+        });
     }
 
     @Override

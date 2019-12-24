@@ -143,7 +143,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                     if (serachPublishVideo.getCode() == 0) {
                         List<IndexListBean> indexList = serachPublishVideo.getData().getIndexList();
                         if (indexList.size() > 0) {
-                            if (currentPage++ == 1) {
+                            if (currentPage++ == 1 || mAdapter == null) {
                                 mAdapter = new MeVideoAdapter(new ArrayList<IndexListBean>());
                                 me_recycleview.setAdapter(mAdapter);
                                 mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -197,7 +197,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                             }
                             mAdapter.loadMoreComplete();
                         } else {
-                            mAdapter.loadMoreEnd();
+                            if (mAdapter != null) {
+                                mAdapter.loadMoreEnd();
+                            }
                         }
                         if (curSelect == 0) {
                             me_recycleview.setVisibility(View.VISIBLE);

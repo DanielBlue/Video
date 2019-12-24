@@ -21,7 +21,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [qqappid      : "101783528",
                                 JPUSH_PKGNAME: applicationId, //JPush上注册的包名.
