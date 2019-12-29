@@ -190,12 +190,15 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                                         getVideoList();
                                     }
                                 }, me_recycleview);
-                                mAdapter.disableLoadMoreIfNotFullPage();
                                 mAdapter.setNewData(indexList);
                             } else {
                                 mAdapter.addData(indexList);
                             }
-                            mAdapter.loadMoreComplete();
+                            if (indexList.size()<10){
+                                mAdapter.loadMoreComplete();
+                            }else {
+                                mAdapter.loadMoreEnd();
+                            }
                         } else {
                             if (mAdapter != null) {
                                 mAdapter.loadMoreEnd();
