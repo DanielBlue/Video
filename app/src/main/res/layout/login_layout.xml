@@ -76,16 +76,30 @@
         android:layout_marginRight="50dp"
         android:background="@color/text_666666" />
 
-    <TextView
-        android:id="@+id/tv_register"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
-        android:padding="15dp"
-        android:text="@string/user_register"
-        android:textColor="@color/text_333333"
-        android:textSize="15dp" />
-
+        android:layout_marginRight="50dp"
+        >
+        <TextView
+            android:id="@+id/tv_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@string/user_register"
+            android:textColor="@color/text_333333"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/tv_forget_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:layout_gravity="right"
+            android:text="忘记密码"
+            android:textColor="@color/text_333333"
+            android:textSize="15dp" />
+    </FrameLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_gravity="center"

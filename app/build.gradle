@@ -20,8 +20,8 @@ android {
         applicationId "com.am.shortVideo"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.1"
+        versionCode 2
+        versionName "1.0.1"
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [qqappid      : "101783528",
                                 JPUSH_PKGNAME: applicationId, //JPush上注册的包名.
@@ -29,7 +29,7 @@ android {
                                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
         ndk {
-            abiFilters "armeabi","x86"
+            abiFilters "armeabi", "x86"
 //            abiFilters "armeabi-v7a"
         }
         multiDexEnabled true
@@ -75,6 +75,7 @@ dependencies {
     implementation 'com.contrarywind:Android-PickerView:3.2.7'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.github.autume:CircleProgressDialog:1.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
     implementation "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"

@@ -175,6 +175,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 UserAgreementActivity.start(LoginActivity.this, 2);
             }
         });
+        findViewById(R.id.tv_forget_password).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ForgetPassWordActivity.start(LoginActivity.this);
+            }
+        });
+
+
+
+
     }
 
     @Override
